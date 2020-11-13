@@ -4,7 +4,10 @@
 sudo apt install python-catkin-tools  
 sudo pip3 install rospkg catkin_pkg  
 
-# モデル
+## システム関係図
+![system_diagram.png](https://github.com/tsukurobo/abu2021/blob/main/README/system_diagram.png)
+
+## モデル
 ![omni_model.jpg](https://github.com/tsukurobo/abu2021/blob/main/README/omni_model.jpg)
 
 ## 仕様
