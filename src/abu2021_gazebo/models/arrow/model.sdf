@@ -1,0 +1,32 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+  <model name="arrow">
+    <link name="link">
+      <inertial>
+        <mass>0.086</mass>
+        <inertia>
+          <ixx>0</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>4e-6</iyy>
+          <iyz>0</iyz>
+          <izz>4e-6</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://arrow/arrow.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://arrow/arrow.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
