@@ -1,0 +1,4 @@
+<launch>
+	<node pkg="joy" name="joy_node" type="joy_node"/>
+	<node pkg="auto_drive_sim" name="get_joy" type="get_joy"/>
+</launch>
