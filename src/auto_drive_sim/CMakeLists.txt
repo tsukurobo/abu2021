@@ -51,6 +51,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   vw_cmd.msg
+  wheel_cmd.msg
 )
 
 ## Generate services in the 'srv' folder
