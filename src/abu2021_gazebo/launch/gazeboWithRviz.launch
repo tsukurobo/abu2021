@@ -1,0 +1,6 @@
+<launch>
+ 
+  <include file="$(find abu2021_gazebo)/launch/gazebo.launch"></include>
+  <include file="$(find abu2021_gazebo)/launch/rviz.launch"></include>
+
+</launch>
