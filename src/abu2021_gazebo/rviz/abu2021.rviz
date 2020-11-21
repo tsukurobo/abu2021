@@ -109,11 +109,31 @@ Visualization Manager:
       Transport Hint: raw
       Unreliable: false
       Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        camera_link:
+          Value: true
+        world:
+          Value: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        world:
+          camera_link:
+            {}
+      Update Interval: 0
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: camera_link
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
@@ -152,10 +172,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.28039830923080444
+      Pitch: 0.2953983545303345
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.8103987574577332
+      Yaw: 0.8403987288475037
     Saved:
       - Class: rviz/Orbit
         Distance: 10
