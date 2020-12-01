@@ -4,11 +4,11 @@ from gazebo_msgs.srv import GetModelState
 import tf2_msgs.msg
 import geometry_msgs.msg
 from sensor_msgs.msg import PointCloud2
-import sensor_msgs.point_cloud2 as pc2
+# import sensor_msgs.point_cloud2 as pc2
 import numpy as np
 import open3d as o3d
-import open3d_ros
 import roslib.packages
+import open3d_ros
 
 
 class ArrowDetector:
@@ -28,7 +28,8 @@ class ArrowDetector:
         abu2021_gazebo_path = roslib.packages.get_pkg_dir('abu2021_gazebo')
         mesh_arrow = o3d.io.read_triangle_mesh(
             abu2021_gazebo_path + '/meshes/arrow/arrow.obj')
-        self.pcd_arrow = mesh_arrow.sample_points_uniformly(number_of_points=500)
+        self.pcd_arrow = mesh_arrow.sample_points_uniformly(
+            number_of_points=500)
         # o3d.visualization.draw_geometries([mesh])
 
         rospy_rate = rospy.Rate(10)
@@ -52,6 +53,9 @@ class ArrowDetector:
         # output = open3d_ros.open3d2ros(downpcd, msg.header.frame_id)
         # self.pub_pc2.publish(output)
         rospy.loginfo(type(downpcd))
+        dists = downpcd.compute_point_cloud_distance(self.pcd_arrow)
+        dists = np.asarray(dists)
+        rospy.loginfo(dists)
 
     def main(self, pose):
         t = geometry_msgs.msg.TransformStamped()
