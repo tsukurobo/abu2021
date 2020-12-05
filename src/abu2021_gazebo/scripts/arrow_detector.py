@@ -4,11 +4,12 @@ from gazebo_msgs.srv import GetModelState
 import tf2_msgs.msg
 import geometry_msgs.msg
 from sensor_msgs.msg import PointCloud2
-# import sensor_msgs.point_cloud2 as pc2
-import numpy as np
 import open3d as o3d
 import roslib.packages
+# from abu2021_gazebo.scripts.open3d_ros import Open3dROS
+# from abu2021_gazebo.scripts.model_base_matching import ModelBaseMatching
 import open3d_ros
+import model_base_matching
 
 
 class ArrowDetector:
@@ -29,7 +30,7 @@ class ArrowDetector:
         mesh_arrow = o3d.io.read_triangle_mesh(
             abu2021_gazebo_path + '/meshes/arrow/arrow.obj')
         self.pcd_arrow = mesh_arrow.sample_points_uniformly(
-            number_of_points=500)
+            number_of_points=5000)
         # o3d.visualization.draw_geometries([mesh])
 
         rospy_rate = rospy.Rate(10)
@@ -48,14 +49,21 @@ class ArrowDetector:
             print('Service call failed: %s' % e)
 
     def sub_pc2_callback(self, msg):
-        self.pointcloud = open3d_ros.ros2open3d(msg)
-        downpcd = self.pointcloud.voxel_down_sample(voxel_size=0.05)
+        self.pcd_camera = open3d_ros.ros2open3d(msg)
+        print(self.pcd_camera)
+
+        # downpcd = self.pcd_camera.voxel_down_sample(voxel_size=0.05)
         # output = open3d_ros.open3d2ros(downpcd, msg.header.frame_id)
         # self.pub_pc2.publish(output)
-        rospy.loginfo(type(downpcd))
-        dists = downpcd.compute_point_cloud_distance(self.pcd_arrow)
-        dists = np.asarray(dists)
-        rospy.loginfo(dists)
+
+        # rospy.loginfo(type(downpcd))
+        # dists = downpcd.compute_point_cloud_distance(self.pcd_arrow)
+        # dists = np.asarray(dists)
+        # rospy.loginfo(dists)
+
+        mbm = model_base_matching.ModelBaseMatching()
+        result = mbm.calc(self.pcd_camera, self.pcd_arrow, voxel_size=0.1)
+        rospy.loginfo(result.transformation)
 
     def main(self, pose):
         t = geometry_msgs.msg.TransformStamped()
