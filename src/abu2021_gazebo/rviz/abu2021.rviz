@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /PointCloud21
-        - /PointCloud21/Status1
         - /Image1
         - /Image2
       Splitter Ratio: 0.5
@@ -79,7 +78,7 @@ Visualization Manager:
       Selectable: true
       Size (Pixels): 3
       Size (m): 0.009999999776482582
-      Style: Flat Squares
+      Style: Points
       Topic: /camera/depth/points
       Unreliable: false
       Use Fixed Frame: true
@@ -118,6 +117,7 @@ Visualization Manager:
           Value: true
         world:
           Value: true
+      Marker Alpha: 1
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -163,6 +163,7 @@ Visualization Manager:
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
+      Field of View: 0.7853981852531433
       Focal Point:
         X: -1.1029043197631836
         Y: 0.05948139727115631
@@ -174,7 +175,6 @@ Visualization Manager:
       Near Clip Distance: 0.009999999776482582
       Pitch: 0.2953983545303345
       Target Frame: <Fixed Frame>
-      Value: Orbit (rviz)
       Yaw: 0.8403987288475037
     Saved:
       - Class: rviz/Orbit
@@ -184,6 +184,7 @@ Visualization Manager:
           Stereo Focal Distance: 1
           Swap Stereo Eyes: false
           Value: false
+        Field of View: 0.7853981852531433
         Focal Point:
           X: 0
           Y: 0
@@ -195,7 +196,6 @@ Visualization Manager:
         Near Clip Distance: 0.009999999776482582
         Pitch: 0.785398006439209
         Target Frame: <Fixed Frame>
-        Value: Orbit (rviz)
         Yaw: 0.785398006439209
 Window Geometry:
   Displays:

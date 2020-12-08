@@ -10,18 +10,16 @@ class ModelBaseMatching():
         super().__init__()
 
     def preprocess_point_cloud(self, pcd, voxel_size):
-        print(":: Downsample with a voxel size %.3f." % voxel_size)
+        print(":: Downsample with a voxel size {:.3}.".format(voxel_size))
         pcd_down = pcd.voxel_down_sample(voxel_size)
 
         radius_normal = voxel_size * 2
-        print(":: Estimate normal with search radius %.3f." % radius_normal)
+        print(":: Estimate normal with search radius {:.3}.".format(radius_normal))
         pcd_down.estimate_normals(
             o3d.geometry.KDTreeSearchParamHybrid(radius=radius_normal, max_nn=30))
 
         radius_feature = voxel_size * 5
-        print(
-            ":: Compute FPFH feature with search radius %.3f." %
-            radius_feature)
+        print(":: Compute FPFH feature with search radius {:.3}.".format(radius_feature))
         pcd_fpfh = o3d.registration.compute_fpfh_feature(
             pcd_down,
             o3d.geometry.KDTreeSearchParamHybrid(radius=radius_feature, max_nn=100))
@@ -31,10 +29,8 @@ class ModelBaseMatching():
                                     target_fpfh, voxel_size):
         distance_threshold = voxel_size * 1.5
         print(":: RANSAC registration on downsampled point clouds.")
-        print("   Since the downsampling voxel size is %.3f," % voxel_size)
-        print(
-            "   we use a liberal distance threshold %.3f." %
-            distance_threshold)
+        print("   Since the downsampling voxel size is {:.3},".format(voxel_size))
+        print("   we use a liberal distance threshold {:.3}.".format(distance_threshold))
         result = o3d.registration.registration_ransac_based_on_feature_matching(
             source_down, target_down, source_fpfh, target_fpfh, distance_threshold,
             o3d.registration.TransformationEstimationPointToPoint(False), 4, [
@@ -48,7 +44,7 @@ class ModelBaseMatching():
         distance_threshold = voxel_size * 0.4
         print(":: Point-to-plane ICP registration is applied on original point")
         print("   clouds to refine the alignment. This time we use a strict")
-        print("   distance threshold %.3f." % distance_threshold)
+        print("   distance threshold {:.3}.".format(distance_threshold))
         result = o3d.registration.registration_icp(
             source, target, distance_threshold, result_ransac.transformation,
             o3d.registration.TransformationEstimationPointToPlane())
