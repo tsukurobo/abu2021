@@ -36,7 +36,7 @@
 
     <include>
       <uri>model://kinect</uri>
-      <pose>0.8 0 3 0 1.57 0</pose>
+      <pose>0.8 2.5 0.3 0 0 -1.57</pose>
       <static>true</static>
     </include>
 
@@ -44,14 +44,14 @@
       <model name="arrow">
         <include>
           <uri>model://arrow</uri>
-          <static>true</static>
+          <!-- <static>true</static> -->
         </include>
       </model>
-      <pose>0 0 0.2 0 0 0</pose>
+      <pose>1 0 0.1 0 0 0</pose>
       <box>
-        <size>3 3 0.01</size>
+        <size>2 3 0.01</size>
       </box>
-      <model_count>10</model_count>
+      <model_count>5</model_count>
       <distribution>
         <type>random</type>
       </distribution>

@@ -48,7 +48,8 @@ class FixedTFBroadcaster:
         euler = euler_from_quaternion(
             (quaternion.x, quaternion.y, quaternion.z, quaternion.w))
         quaternion = quaternion_from_euler(
-            euler[0] + np.pi, euler[2], euler[1] + np.pi)
+            # euler[0] + np.pi, euler[2], euler[1] + np.pi)
+            euler[0] - np.pi/2, euler[1], euler[2] - np.pi/2)
 
         t.transform.rotation.x = quaternion[0]
         t.transform.rotation.y = quaternion[1]
