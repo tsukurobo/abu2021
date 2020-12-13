@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  abu2021:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    environment:
+      # Display X Server GUI.
+      DISPLAY: ${DISPLAY}
+      QT_X11_NO_MITSHM: 1
+    volumes:
+      # Grant display access to X Server.
+      - /tmp/.X11-unix:/tmp/.X11-unix
