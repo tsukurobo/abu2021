@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 from math import frexp
+import time
 import rospy
 from gazebo_msgs.srv import GetModelState
 from rospy.core import rospyinfo
+import tf2_ros
 import tf2_msgs.msg
 import geometry_msgs.msg
 from sensor_msgs.msg import PointCloud2
@@ -22,6 +24,9 @@ class DatasetMaker:
         self.count = 0
         self.pub_tf = rospy.Publisher(
             '/tf', tf2_msgs.msg.TFMessage, queue_size=1)
+        # listener = tf.TransformListener()
+        self.tfBuffer = tf2_ros.Buffer()
+        listener = tf2_ros.TransformListener(self.tfBuffer)
         self.pub_pc2 = rospy.Publisher('/output', PointCloud2, queue_size=1)
         self.sub_image_color = rospy.Subscriber(
             '/camera/color/image_raw', Image, self.sub_image_color_callback)
@@ -37,7 +42,7 @@ class DatasetMaker:
 
         rospy_rate = rospy.Rate(1)
         while not rospy.is_shutdown():
-            self.main(pose)
+            self.main()
             rospy_rate.sleep()
 
     def get_model_state(self, model_name):
@@ -50,19 +55,17 @@ class DatasetMaker:
         except rospy.ServiceException as e:
             print('Service call failed: {}'.format(e))
 
-    def publish_tf(self, frame_id, child_frame_id,
+    def publish_tf(self, frame_id, child_frame_id, timestamp,
                    position=[0, 0, 0], quaternion=[0, 0, 0, 1]):
         t = geometry_msgs.msg.TransformStamped()
         t.header.frame_id = frame_id
-        t.header.stamp = rospy.Time.now()
+        # t.header.stamp = rospy.Time.now()
+        t.header.stamp = timestamp
         t.child_frame_id = child_frame_id
 
         t.transform.translation.x = position[0]
         t.transform.translation.y = position[1]
         t.transform.translation.z = position[2]
-
-        # quaternion = quaternion_from_euler(
-        #     orientation[0], orientation[1], orientation[2])
 
         t.transform.rotation.x = quaternion[0]
         t.transform.rotation.y = quaternion[1]
@@ -79,11 +82,15 @@ class DatasetMaker:
         self.image_depth = CvBridge().imgmsg_to_cv2(msg, 'passthrough')
         cv2.normalize(self.image_depth, self.image_depth, 0, 255, cv2.NORM_MINMAX)
 
-    def main(self, pose):
+    def main(self):
+        now = rospy.Time().now()
+
+        filestr = ''
         for i in range(5):
             model_name = 'arrow_clone_{}'.format(i)
             pose = self.get_model_state(model_name).pose
             self.publish_tf(frame_id='world', child_frame_id=model_name,
+                            timestamp=now,
                             position=[
                                 pose.position.x,
                                 pose.position.y,
@@ -93,11 +100,18 @@ class DatasetMaker:
                                 pose.orientation.y,
                                 pose.orientation.z,
                                 pose.orientation.w])
+            filestr += '{}'.format(pose.position.x)
+            try:
+                trans = self.tfBuffer.lookup_transform('camera_link', model_name, now, rospy.Duration(1.0))
+                rospy.loginfo(trans)
+                filestr += str(trans)
+            except:
+                print('lookup_transform error')
 
         abu2021_gazebo_path = roslib.packages.get_pkg_dir('abu2021_gazebo')
         path_w = abu2021_gazebo_path + '/data/answer/file{}.txt'.format(self.count)
         with open(path_w, mode='w') as f:
-            f.write('{}'.format(pose.position.x))
+            f.write(filestr)
         
         # save image
         cv2.imwrite(abu2021_gazebo_path + '/data/color/color{}.jpg'.format(self.count),
