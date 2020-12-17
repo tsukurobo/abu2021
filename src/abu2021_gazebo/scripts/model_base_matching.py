@@ -3,6 +3,7 @@ import numpy as np
 from numpy.lib.utils import source
 import open3d as o3d
 import roslib.packages
+import matplotlib.pyplot as plt
 
 
 class ModelBaseMatching():
@@ -14,12 +15,14 @@ class ModelBaseMatching():
         pcd_down = pcd.voxel_down_sample(voxel_size)
 
         radius_normal = voxel_size * 2
-        print(":: Estimate normal with search radius {:.3}.".format(radius_normal))
+        print(
+            ":: Estimate normal with search radius {:.3}.".format(radius_normal))
         pcd_down.estimate_normals(
             o3d.geometry.KDTreeSearchParamHybrid(radius=radius_normal, max_nn=30))
 
         radius_feature = voxel_size * 5
-        print(":: Compute FPFH feature with search radius {:.3}.".format(radius_feature))
+        print(
+            ":: Compute FPFH feature with search radius {:.3}.".format(radius_feature))
         pcd_fpfh = o3d.registration.compute_fpfh_feature(
             pcd_down,
             o3d.geometry.KDTreeSearchParamHybrid(radius=radius_feature, max_nn=100))
@@ -29,8 +32,10 @@ class ModelBaseMatching():
                                     target_fpfh, voxel_size):
         distance_threshold = voxel_size * 1.5
         print(":: RANSAC registration on downsampled point clouds.")
-        print("   Since the downsampling voxel size is {:.3},".format(voxel_size))
-        print("   we use a liberal distance threshold {:.3}.".format(distance_threshold))
+        print(
+            "   Since the downsampling voxel size is {:.3},".format(voxel_size))
+        print("   we use a liberal distance threshold {:.3}.".format(
+            distance_threshold))
         result = o3d.registration.registration_ransac_based_on_feature_matching(
             source_down, target_down, source_fpfh, target_fpfh, distance_threshold,
             o3d.registration.TransformationEstimationPointToPoint(False), 4, [
@@ -81,10 +86,28 @@ if __name__ == '__main__':
         abu2021_gazebo_path + '/meshes/arrow/arrow.obj')
     source = mesh_arrow.sample_points_uniformly(
         number_of_points=5000)
-    target = copy.deepcopy(source).translate((2, 0, 0))
-    trans_init = np.asarray([[0.0, 0.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0],
-                             [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0]])
-    source.transform(trans_init)
+
+    # target = copy.deepcopy(source).translate((2, 0, 0))
+    # trans_init = np.asarray([[0.0, 0.0, 1.0, 0.0], [1.0, 0.0, 0.0, 0.0],
+    #                          [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0]])
+    # target.transform(trans_init)
+
+    color_raw = o3d.io.read_image(
+        abu2021_gazebo_path +
+        '/data/color/color0.jpg')
+    depth_raw = o3d.io.read_image(
+        abu2021_gazebo_path +
+        '/data/depth/color0.jpg')
+    rgbd_image = o3d.geometry.RGBDImage.create_from_color_and_depth(
+        color_raw, depth_raw)
+    print(rgbd_image)
+
+    target = o3d.geometry.PointCloud.create_from_rgbd_image(
+        rgbd_image,
+        o3d.camera.PinholeCameraIntrinsic(
+            o3d.camera.PinholeCameraIntrinsicParameters.PrimeSenseDefault))
+    o3d.visualization.draw_geometries([target])
+
     mbm.draw_registration_result(source, target, np.eye(4))
 
     # model base matching

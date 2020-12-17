@@ -14,6 +14,7 @@ import roslib.packages
 from tf.transformations import *
 from cv_bridge import CvBridge
 import cv2
+import PyKDL
 
 
 class DatasetMaker:
@@ -80,7 +81,12 @@ class DatasetMaker:
 
     def sub_image_depth_callback(self, msg):
         self.image_depth = CvBridge().imgmsg_to_cv2(msg, 'passthrough')
-        cv2.normalize(self.image_depth, self.image_depth, 0, 255, cv2.NORM_MINMAX)
+        cv2.normalize(
+            self.image_depth,
+            self.image_depth,
+            0,
+            255,
+            cv2.NORM_MINMAX)
 
     def main(self):
         now = rospy.Time().now()
@@ -100,23 +106,30 @@ class DatasetMaker:
                                 pose.orientation.y,
                                 pose.orientation.z,
                                 pose.orientation.w])
-            filestr += '{}'.format(pose.position.x)
+            # filestr += '{}'.format(pose.position.x)
             try:
-                trans = self.tfBuffer.lookup_transform('camera_link', model_name, now, rospy.Duration(1.0))
+                trans = self.tfBuffer.lookup_transform(
+                    'camera_link', model_name, now, rospy.Duration(1.0)).transform
                 rospy.loginfo(trans)
-                filestr += str(trans)
-            except:
+                # filestr += str(trans) + '\n'
+                quaternion = pose.orientation
+                euler = PyKDL.Rotation.Quaternion(
+                    quaternion.x, quaternion.y, quaternion.z, quaternion.w).GetEulerZYX()
+                filestr += '{},{},{},{},{},{},{}\n'.format('arrow', trans.translation.x,
+                                                           trans.translation.y, trans.translation.z, euler[0], euler[1], euler[2])
+            except BaseException:
                 print('lookup_transform error')
 
         abu2021_gazebo_path = roslib.packages.get_pkg_dir('abu2021_gazebo')
-        path_w = abu2021_gazebo_path + '/data/answer/file{}.txt'.format(self.count)
+        path_w = abu2021_gazebo_path + \
+            '/data/answer/answer{}.csv'.format(self.count)
         with open(path_w, mode='w') as f:
             f.write(filestr)
-        
+
         # save image
         cv2.imwrite(abu2021_gazebo_path + '/data/color/color{}.jpg'.format(self.count),
                     self.image_color)
-        cv2.imwrite(abu2021_gazebo_path + '/data/depth/color{}.jpg'.format(self.count),
+        cv2.imwrite(abu2021_gazebo_path + '/data/depth/depth{}.jpg'.format(self.count),
                     self.image_depth)
 
         rospy.loginfo('step {} is finish!'.format(self.count))
