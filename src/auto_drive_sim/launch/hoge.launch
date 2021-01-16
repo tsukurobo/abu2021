@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="joy" name="joy_node" type="joy_node"/>
+	<node pkg="auto_drive_sim" name="get_joy" type="get_joy"/>
+	<node pkg="auto_drive_sim" name="omni_inv_kinem" type="omni_inv_kinem.py"/>
+</launch>
