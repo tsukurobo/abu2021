@@ -13,17 +13,20 @@ class Animation(PF):
 		self.FRAMES = frames # 最大フレーム数
 		self.INTERVAL = interval # インターバル [ms]
 
+		self.col = None
 		self.trace_x = []
 		self.trace_y = []
 
 	def set_robo(self, x, y, col, mkr):
-		self.robo, = self.ax.plot(x, y, col, marker=mkr, zorder=3)
+		self.col = col
+		self.robo, = self.ax.plot(x, y, col, marker=mkr, zorder=4)
 
 	def set_trace(self, x, y):
-		# self.trace_x.append(x)
-		# self.trace_y.append(y)
 		self.trace_x = x
 		self.trace_y = y
+
+	def set_frames(self, frames):
+		self.FRAMES = frames
 
 	def update(self, num):
 		# 現在地点表示
@@ -31,7 +34,7 @@ class Animation(PF):
 		# 軌跡表示
 		if num > 0:
 			self.make_line(self.trace_x[num], self.trace_y[num], 
-					self.trace_x[num-1], self.trace_y[num-1])
+					self.trace_x[num-1], self.trace_y[num-1], self.col)
 
 	def run_animation(self):
 		return FuncAnimation(self.fig, self.update, frames=self.FRAMES, interval=self.INTERVAL)
@@ -77,8 +80,8 @@ class State:
 		self.target_y = 0
 
 		# 軌跡
-		self.trace_x = [self.x]
-		self.trace_y = [self.y]
+		self.trace_x = [x]
+		self.trace_y = [y]
 
 		pf.set_robo(x, y, col, 'o')
 
@@ -97,7 +100,6 @@ class State:
 		# 軌跡追加
 		self.trace_x.append(self.x)
 		self.trace_y.append(self.y)
-		# pf.append_trace()
 
 	# 位置・フレーム描画
 	def plot(self):
@@ -129,7 +131,7 @@ class State:
 			ty = self.path.y[len(self.path.y)-1]
 
 		# 描画
-		pf.make_point(tx, ty, self.col, 'x', 3)
+		pf.make_point(tx, ty, 'g', 'x', 3)
 
 		self.target_x = tx
 		self.target_y = ty
@@ -153,90 +155,36 @@ class State:
 		pf.make_line(x+L*cos(yaw+pi*5/4), y+L*sin(yaw+pi*5/4),
 				x+L*cos(yaw+pi*7/4), y+L*sin(yaw+pi*7/4), self.col, zorder=odr)
 
+# 座標
+P_TR_START = (11.4, 0.5)
+P_DR_START = (0.5, 5.425)
+P_DR_RETRY = (5.425, 2.45)
+
 # パラメータ
+FRAMES = 100 # 最大フレーム数
 FRAME_PARAM = 1/2 # 機体フレームパラメータ
 AHEAD_NUM = 3 # 最近経路点から何個先の点を目標点にするか
 SPEED = 3 # 最大移動速度[m/s] ############機体の向きにかかわらず出せる速度は一定（今後直す予定）
-FINISH_RANGE = 0.01 # 終了判定範囲[m]
+FINISH_RANGE = 0.3 # 終了判定範囲[m]
 DT = 0.1 #周期[s]
 
-pf = Animation(10, DT*1000)
+pf = Animation(FRAMES, DT*1000)
 
 def main():
-	path1 = Target_path('pathes/hoge.csv', 'r')
+	path1 = Target_path('pathes/hoge2.csv', 'r')
 
-	robo_D = State(2, 4, pi/4, 'b', SPEED, FRAME_PARAM)
+	robo_D = State(*P_DR_START, -pi/2, 'b', SPEED, FRAME_PARAM, FINISH_RANGE)
 	robo_D.load_pursuit_data(path1, AHEAD_NUM)
 	
-	# while robo_D.finish_judge():
-	# 	robo_D.plot()
-	# 	robo_D.update()
+	while robo_D.finish_judge():
+		# robo_D.plot()
+		robo_D.update()
 
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-	print(robo_D.finish_judge())
-	robo_D.plot()
-	robo_D.update()
-
-	print(robo_D.trace_x)
+	
 
 	# アニメーション開始
-	pf.set_trace(path1.x, path1.y)
+	pf.set_trace(robo_D.trace_x, robo_D.trace_y)
+	pf.set_frames(len(robo_D.trace_x)-1)
 	ani = pf.run_animation()
 	# ani.save('gif/hoge.gif', writer='pillow')
 	pf.show()

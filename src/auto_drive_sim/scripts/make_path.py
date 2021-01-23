@@ -4,18 +4,10 @@ from math import *
 import csv
 from plot_fig import Plot_fig as PF
 
-# 座標
-P_TR_START = (11.4, 0.5)
-P_DR_START = (0.5, 5.425)
-P_DR_RETRY = (5.425, 2.45)
-
-
-pf = PF()
-
 
 class Path:
 	def __init__(self):
-		self.POINT_GAP = 1 # 直線上の経路点列の幅[m]
+		self.POINT_GAP = POINT_GAP # 直線上の経路点列の幅[m]
 
 		self.path_x = []
 		self.path_y = []
@@ -58,18 +50,27 @@ class Path:
 			for i in range(len(self.path_x) - 1):
 				writer.writerow([self.path_x[i], self.path_y[i]])
 
+# 直線上の経路点列の幅[m]
+POINT_GAP = 0.5
+
+# 座標
+P_TR_START = (11.4, 0.5)
+P_DR_START = (0.5, 5.425)
+P_DR_RETRY = (5.425, 2.45)
+
+pf = PF()
 
 def main():
 	pf.make_point(*P_TR_START,'r')
 
 	path1 = Path()
-	path1.add_line(*P_DR_START, *(1,1), 'b')
-	path1.add_line(*(1,1), *P_DR_RETRY, 'b')
+	path1.add_line(*P_DR_START, *(2, 2), 'b')
+	path1.add_line(*(2, 2), *(5.4, 1), 'b')
+	path1.add_line(*(5.4, 1), *P_DR_RETRY, 'b')
 	path1.add_point(*P_DR_RETRY, 'b')
 
-	path1.make_csv('pathes/hoge.csv')
+	path1.make_csv('pathes/hoge2.csv')
 
-	# ani = pf.make_animation()
 	pf.show()
 
 
