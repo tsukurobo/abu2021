@@ -13,7 +13,7 @@ P_DR_RETRY = (5.425, 2.45)
 pf = PF()
 
 
-class Path():
+class Path:
 	def __init__(self):
 		self.POINT_GAP = 1 # 直線上の経路点列の幅[m]
 
@@ -70,7 +70,7 @@ def main():
 	path1.make_csv('pathes/hoge.csv')
 
 	# ani = pf.make_animation()
-	pf.plot()
+	pf.show()
 
 
 
