@@ -4,8 +4,24 @@
 sudo apt install python-catkin-tools  
 sudo pip3 install rospkg catkin_pkg  
 
-## パッケージ説明
-abu2021_msgs：メッセージ用パッケージ
+## パッケージ・ノード説明
+
+### パッケージ名
+パッケージの説明
+```
+実行形式ファイル名
+　ノードの説明
+  param  
+  変数の型　変数名：　説明  
+  pub,sub  
+  [トピック名]（メッセージ型）：説明  
+```
+### auto_drive_sim
+自動走行用パッケージ．経路生成プログラム等含む．まだノード無し．
+
+### abu2021_msgs
+メッセージ用パッケージ．使うカスタムメッセージは全部ここに入れる．ノード無し
+
 
 ## システム関係図
 ![system_diagram.png](https://github.com/tsukurobo/abu2021/blob/main/README/system_diagram.png)
