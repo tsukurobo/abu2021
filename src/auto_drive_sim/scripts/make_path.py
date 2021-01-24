@@ -51,7 +51,7 @@ class Path:
 				writer.writerow([self.path_x[i], self.path_y[i]])
 
 # 直線上の経路点列の幅[m]
-POINT_GAP = 0.5
+POINT_GAP = 0.1
 
 # 座標
 P_TR_START = (11.4, 0.5)
@@ -67,9 +67,10 @@ def main():
 	path1.add_line(*P_DR_START, *(2, 2), 'b')
 	path1.add_line(*(2, 2), *(5.4, 1), 'b')
 	path1.add_line(*(5.4, 1), *P_DR_RETRY, 'b')
-	path1.add_point(*P_DR_RETRY, 'b')
+	path1.add_line(*P_DR_RETRY,*(5.425, 5.4), 'b')
+	path1.add_point(*(5.425, 5.4), 'b')
 
-	path1.make_csv('pathes/hoge2.csv')
+	path1.make_csv('pathes/hoge4.csv')
 
 	pf.show()
 

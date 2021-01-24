@@ -10,34 +10,80 @@ from plot_fig import Plot_fig as PF
 class Animation(PF):
 	def __init__(self, frames, interval):
 		super().__init__()
-		self.FRAMES = frames # 最大フレーム数
+		self.frames = frames # 最大フレーム数
 		self.INTERVAL = interval # インターバル [ms]
 
 		self.col = None
+		self.L = None
 		self.trace_x = []
 		self.trace_y = []
+		self.trace_yaw = []
+		self.trace_tx = []
+		self.trace_ty = []
+	
+	# アニメーション最大フレーム設定
+	def set_anime_frame(self, frames):
+		self.frames = frames
 
-	def set_robo(self, x, y, col, mkr):
+	# 軌跡時系列データセット
+	def set_anime_data(self, state):
+		self.trace_x = state.trace_x
+		self.trace_y = state.trace_y
+		self.trace_yaw = state.trace_yaw
+		self.trace_tx = state.trace_tx
+		self.trace_ty = state.trace_ty
+
+	# 描画するもの宣言
+	def set_robo(self, x, y, yaw, col, mkr, L):
 		self.col = col
-		self.robo, = self.ax.plot(x, y, col, marker=mkr, zorder=4)
+		self.L = L
+		# 現在地
+		self.robo, = self.make_point(x, y, col, mrk=mkr, zorder=4)
+		# 方向線
+		self.dir, = self.make_line(x, y, x+L/sqrt(2)*cos(yaw), y+L/sqrt(2)*sin(yaw), col, 4)
+		# 機体フレーム
+		self.frame_f, = self.make_line(x+L*cos(yaw+pi/4), y+L*sin(yaw+pi/4),
+				x+L*cos(yaw-pi/4), y+L*sin(yaw-pi/4), self.col, 4)
+		self.frame_l, = self.make_line(x+L*cos(yaw+pi/4), y+L*sin(yaw+pi/4),
+				x+L*cos(yaw+pi*3/4), y+L*sin(yaw-pi*3/4), self.col, 4)
+		self.frame_b, = self.make_line(x+L*cos(yaw+pi*3/4), y+L*sin(yaw+pi*3/4),
+				x+L*cos(yaw+pi*5/4), y+L*sin(yaw-pi*5/4), self.col, 4)
+		self.frame_r, = self.make_line(x+L*cos(yaw+pi*5/4), y+L*sin(yaw+pi*5/4),
+				x+L*cos(yaw+pi*7/4), y+L*sin(yaw-pi*7/4), self.col, 4)
+		# 目標点
+		self.target, = self.make_point(x, y, 'g', mrk='x', zorder=4)
 
-	def set_trace(self, x, y):
-		self.trace_x = x
-		self.trace_y = y
-
-	def set_frames(self, frames):
-		self.FRAMES = frames
-
+	# 描画
 	def update(self, num):
+		L = self.L
+		x = self.trace_x[num]
+		y = self.trace_y[num]
+		yaw = self.trace_yaw[num]
+		tx = self.trace_tx[num]
+		ty = self.trace_ty[num]
+		
 		# 現在地点表示
-		self.robo.set_data(self.trace_x[num], self.trace_y[num])
+		self.robo.set_data(x, y)
 		# 軌跡表示
 		if num > 0:
-			self.make_line(self.trace_x[num], self.trace_y[num], 
-					self.trace_x[num-1], self.trace_y[num-1], self.col)
+			self.make_line(x, y, self.trace_x[num-1], self.trace_y[num-1], self.col, zorder=4)
+		# 方向線表示
+		self.dir.set_data([x, x+L/sqrt(2)*cos(yaw)], [y, y+L/sqrt(2)*sin(yaw)])
+		# フレーム表示
+		self.frame_f.set_data([x+L*cos(yaw+pi/4), x+L*cos(yaw-pi/4)], 
+				[y+L*sin(yaw+pi/4), y+L*sin(yaw-pi/4)])
+		self.frame_l.set_data([x+L*cos(yaw+pi/4), x+L*cos(yaw+pi*3/4)], 
+				[y+L*sin(yaw+pi/4), y+L*sin(yaw+pi*3/4)])
+		self.frame_b.set_data([x+L*cos(yaw+pi*3/4), x+L*cos(yaw+pi*5/4)], 
+				[y+L*sin(yaw+pi*3/4), y+L*sin(yaw+pi*5/4)])
+		self.frame_r.set_data([x+L*cos(yaw+pi*5/4), x+L*cos(yaw+pi*7/4)], 
+				[y+L*sin(yaw+pi*5/4), y+L*sin(yaw+pi*7/4)])
+		# 目標点表示
+		self.target.set_data(tx, ty)
 
+	# アニメーション実行
 	def run_animation(self):
-		return FuncAnimation(self.fig, self.update, frames=self.FRAMES, interval=self.INTERVAL)
+		return FuncAnimation(self.fig, self.update, frames=self.frames, interval=self.INTERVAL)
 
 # 経路点列
 class Target_path:
@@ -73,17 +119,21 @@ class State:
 		self.frame_param = frame_param
 		self.fin = fin
 
-		# 追従データ
+		# pure pursuit用データ
 		self.path = None
 		self.ahead_n = 0
 		self.target_x = 0
 		self.target_y = 0
 
-		# 軌跡
+		# アニメーション用時系列データ
 		self.trace_x = [x]
 		self.trace_y = [y]
+		self.trace_yaw = [yaw]
+		self.trace_tx = []
+		self.trace_ty = []
 
-		pf.set_robo(x, y, col, 'o')
+		# アニメーション設定
+		pf.set_robo(x, y, yaw, col, 'o', frame_param)
 
 	# 経路設定
 	def load_pursuit_data(self, path, ahead_n):
@@ -100,11 +150,7 @@ class State:
 		# 軌跡追加
 		self.trace_x.append(self.x)
 		self.trace_y.append(self.y)
-
-	# 位置・フレーム描画
-	def plot(self):
-		pf.make_point(self.x, self.y, self.col, zorder=3)
-		self._plot_body()
+		self.trace_yaw.append(self.yaw)
 
 	# 終了判定
 	def finish_judge(self):
@@ -130,30 +176,11 @@ class State:
 			tx = self.path.x[len(self.path.x)-1]
 			ty = self.path.y[len(self.path.y)-1]
 
-		# 描画
-		pf.make_point(tx, ty, 'g', 'x', 3)
-
 		self.target_x = tx
 		self.target_y = ty
+		self.trace_tx.append(tx)
+		self.trace_ty.append(ty)
 
-	# 機体フレーム描画
-	def _plot_body(self):
-		L = self.frame_param
-		x = self.x
-		y = self.y
-		yaw = self.yaw
-		odr = 3 # zorder（プロットの前後）
-		# 方向線
-		pf.make_line(x, y, x+L/sqrt(2)*cos(yaw), y+L/sqrt(2)*sin(yaw), self.col, zorder=odr)
-		# フレーム
-		pf.make_line(x+L*cos(yaw+pi/4), y+L*sin(yaw+pi/4),
-				x+L*cos(yaw-pi/4), y+L*sin(yaw-pi/4), self.col, zorder=odr)
-		pf.make_line(x+L*cos(yaw+pi/4), y+L*sin(yaw+pi/4),
-				x+L*cos(yaw+pi*3/4), y+L*sin(yaw+pi*3/4), self.col, zorder=odr)
-		pf.make_line(x+L*cos(yaw+pi*3/4), y+L*sin(yaw+pi*3/4),
-				x+L*cos(yaw+pi*5/4), y+L*sin(yaw+pi*5/4), self.col, zorder=odr)
-		pf.make_line(x+L*cos(yaw+pi*5/4), y+L*sin(yaw+pi*5/4),
-				x+L*cos(yaw+pi*7/4), y+L*sin(yaw+pi*7/4), self.col, zorder=odr)
 
 # 座標
 P_TR_START = (11.4, 0.5)
@@ -163,15 +190,15 @@ P_DR_RETRY = (5.425, 2.45)
 # パラメータ
 FRAMES = 100 # 最大フレーム数
 FRAME_PARAM = 1/2 # 機体フレームパラメータ
-AHEAD_NUM = 3 # 最近経路点から何個先の点を目標点にするか
-SPEED = 3 # 最大移動速度[m/s] ############機体の向きにかかわらず出せる速度は一定（今後直す予定）
+AHEAD_NUM = 12 # 最近経路点から何個先の点を目標点にするか
+SPEED = 2.5 # 最大移動速度[m/s] ############機体の向きにかかわらず出せる速度は一定（今後直す予定）
 FINISH_RANGE = 0.3 # 終了判定範囲[m]
 DT = 0.1 #周期[s]
 
 pf = Animation(FRAMES, DT*1000)
 
 def main():
-	path1 = Target_path('pathes/hoge2.csv', 'r')
+	path1 = Target_path('pathes/hoge4.csv', 'r')
 
 	robo_D = State(*P_DR_START, -pi/2, 'b', SPEED, FRAME_PARAM, FINISH_RANGE)
 	robo_D.load_pursuit_data(path1, AHEAD_NUM)
@@ -180,13 +207,11 @@ def main():
 		# robo_D.plot()
 		robo_D.update()
 
-	
-
 	# アニメーション開始
-	pf.set_trace(robo_D.trace_x, robo_D.trace_y)
-	pf.set_frames(len(robo_D.trace_x)-1)
+	pf.set_anime_data(robo_D)
+	pf.set_anime_frame(len(robo_D.trace_x)-1)
 	ani = pf.run_animation()
-	# ani.save('gif/hoge.gif', writer='pillow')
+	ani.save('gif/hoge4.gif', writer='pillow')
 	pf.show()
 
 
