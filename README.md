@@ -25,6 +25,8 @@ task_manager_dr
 　DRのタスクマネージャ
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
+  pub
+  [cmd_dr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度
 ```
 ### auto_drive_sim
 自動走行用パッケージ．経路生成プログラム等含む．まだノード無し．

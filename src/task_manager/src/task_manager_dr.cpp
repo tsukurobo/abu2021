@@ -1,32 +1,31 @@
 #include <ros/ros.h>
-#include "std_msgs/String.h"
 #include <sensor_msgs/Joy.h>
-#include <std_msgs/String.h>
+#include <abu2021_msgs/cmd_vw.h>
 #include <sstream>
 
+ros::Publisher pub;
+
 void get_joy(const sensor_msgs::Joy& msg);
-void chatterCallback(const std_msgs::String::ConstPtr& msg);
 
 int main(int argc, char **argv){
 	ros::init(argc, argv, "task_manager_DR");
 
 	ros::NodeHandle nh;
 
-	/* ros::Publisher  pub = n.advertise<std_msgs::String>("chatter", 1); */
+	pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd_dr", 1);
 	ros::Subscriber sub = nh.subscribe("joy", 1, get_joy);
 
-	ros::Rate loop_rate(10);
-
-	while(ros::ok()){
-		ros::spinOnce();
-		loop_rate.sleep();
-	}
+	ros::spin()
 
 	return 0;
 }
 
 void get_joy(const sensor_msgs::Joy& msg){
-	ROS_FATAL("UD: [%f]", msg.axes[1]);
-	ROS_FATAL("RL: [%f]", msg.axes[0]);
-	ROS_FATAL("YAW: [%f]", msg.axes[2]);
+	abu2021_msgs::cmd_vw cmd;
+
+	cmd.vx = msg.axes[1];
+	cmd.vy = msg.axes[0];
+	cmd.w  = msg.axes[2];
+
+	pub.publish(cmd);
 }
