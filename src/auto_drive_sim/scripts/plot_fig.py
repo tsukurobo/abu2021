@@ -17,7 +17,7 @@ class Plot_fig:
 		self.ln_v = plt.axvline(0)
 		self.ln_h = plt.axhline(0)
 		# クリックプロット
-		self.ln, = plt.plot([],[],'o')
+		# self.ln, = plt.plot([],[],'o')
 
 		# self.DR, = self.ax.plot(0.5, 5.425, c='b', marker='o')
 
@@ -45,8 +45,8 @@ class Plot_fig:
 		self.ln_h.set_ydata(y)
 
 		# クリックプロット
-		if event.inaxes == self.ax:
-			self.ln.set_data(x,y)
+		# if event.inaxes == self.ax:
+			# self.ln.set_data(x,y)
 
 		plt.draw()
 

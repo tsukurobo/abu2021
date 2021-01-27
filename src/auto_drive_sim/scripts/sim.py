@@ -211,7 +211,7 @@ def main():
 	pf.set_anime_data(robo_D)
 	pf.set_anime_frame(len(robo_D.trace_x)-1)
 	ani = pf.run_animation()
-	ani.save('gif/hoge4.gif', writer='pillow')
+	# ani.save('gif/hoge4.gif', writer='pillow')
 	pf.show()
 
 
