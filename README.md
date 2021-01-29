@@ -3,8 +3,8 @@
 ## 必要パッケージ
 sudo apt-get install python-catkin-tools  
 sudo pip3 install rospkg catkin_pkg  
-sudo apt-get install ros-melodic-joy
-sudo apt-get install ros-melodic-joystick-drivers
+sudo apt-get install ros-melodic-joy  
+sudo apt-get install ros-melodic-joystick-drivers  
 
 ## パッケージ・ノード説明
 
@@ -27,6 +27,14 @@ task_manager_dr
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
   [cmd_dr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度
+```
+```
+task_manager_tr
+　TRのタスクマネージャ
+  sub  
+  [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
+  pub
+  [cmd_tr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度
 ```
 ### auto_drive_sim
 自動走行用パッケージ．経路生成プログラム等含む．まだノード無し．
