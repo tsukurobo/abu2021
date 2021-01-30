@@ -77,6 +77,7 @@ pf = PF()
 def main():
 	pf.make_point(*P_TR_START,'r')
 
+	# 直線
 	path1 = Path(POINT_GAP, POLAR_DR)
 	path1.add_line(*P_DR_START, *(2, 2), 'b')
 	path1.add_line(*(2, 2), *(5.425, 1), 'b')
@@ -84,6 +85,7 @@ def main():
 	path1.add_line(*P_DR_RETRY,*(5.425, 5.4), 'b')
 	path1.add_point(*(5.425, 5.4), 'b')
 
+	#　クロソイド
 	# x = 6
 	# y = 2
 	# yaw = 0
