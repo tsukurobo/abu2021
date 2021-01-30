@@ -26,7 +26,7 @@ task_manager_dr
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
-  [cmd_dr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度
+  [cmd_dr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系） 
 ```
 ```
 task_manager_tr
@@ -34,7 +34,7 @@ task_manager_tr
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
-  [cmd_tr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度
+  [cmd_tr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系）  
 ```
 ### auto_drive_sim
 自動走行用パッケージ．経路生成プログラム等含む．まだノード無し．
