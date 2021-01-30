@@ -9,9 +9,7 @@
 
 ros::NodeHandle nh;
 std_msgs::Float64 yaw;
-ros::Publisher pub("gyro", &yaw);
-
-int16_t axRaw, ayRaw, azRaw, gxRaw, gyRaw, gzRaw, tmp;
+ros::Publisher pub("gyro_raw",&yaw);
 
 void setup() {
   Wire.begin();
@@ -40,6 +38,7 @@ void loop() {
   Wire.endTransmission(false);
   Wire.requestFrom(MPU_ADDR, 14, true);
   while (Wire.available() < 14);
+  int16_t axRaw, ayRaw, azRaw, gxRaw, gyRaw, gzRaw, tmp;
 
   axRaw = Wire.read() << 8 | Wire.read();
   ayRaw = Wire.read() << 8 | Wire.read();
@@ -54,6 +53,6 @@ void loop() {
 
   yaw.data = gyro_z;
   pub.publish(&yaw);
-  /* nh.spinOnce(); */
+  nh.spinOnce();
   /* Serial.println(gyro_z); */
 }
