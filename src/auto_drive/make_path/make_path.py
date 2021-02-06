@@ -59,7 +59,7 @@ class Path:
 		with open(filename,'w') as csvfile:
 			writer = csv.writer(csvfile, lineterminator='\n')
 
-			for i in range(len(self.path_x) - 1):
+			for i in range(len(self.path_x)):
 				writer.writerow([self.path_x[i], self.path_y[i]])
 
 
@@ -93,7 +93,7 @@ def main():
 	# for i in range(1000):
 	# 	st = path1.add_clothoid(*st, 1/3, 'b')
 
-	# path1.make_csv('pathes/hoge4.csv')
+	# path1.make_csv('../pathes/hoge4.csv')
 
 	pf.show()
 

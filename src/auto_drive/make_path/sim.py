@@ -198,7 +198,7 @@ DT = 0.1 #周期[s]
 pf = Animation(FRAMES, DT*1000)
 
 def main():
-	path1 = Target_path('pathes/hoge4.csv', 'r')
+	path1 = Target_path('../pathes/hoge4.csv', 'r')
 
 	robo_D = State(*P_DR_START, -pi/2, 'b', SPEED, FRAME_PARAM, FINISH_RANGE)
 	robo_D.load_pursuit_data(path1, AHEAD_NUM)

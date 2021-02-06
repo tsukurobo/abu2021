@@ -21,7 +21,7 @@ Encoder::Encoder(int p_a, int p_b){
   else if(p_b == 20) interrupt_num_b = 3;
   else if(p_b == 21) interrupt_num_b = 2;
 
-  //attachInterrupt(interrupt_num_a, enc_read, CHANGE);
+  //attachInterrupt(interrupt_num_a, Encoder::enc_read, CHANGE);
   //attachInterrupt(interrupt_num_b, enc_read, CHANGE);
 }
 
