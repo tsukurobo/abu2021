@@ -12,6 +12,8 @@ int main(int argc, char **argv){
 	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("target", 1);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
 
+	printf("hogehoge\n");
+
 	ros::spin();
 
 	return 0;

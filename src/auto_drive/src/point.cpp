@@ -1,6 +1,4 @@
 #include "point.h"
-#include <stdio.h>
-#include <math.h>
 
 //コンストラクタ
 Point::Point(double x, double y){
@@ -8,15 +6,24 @@ Point::Point(double x, double y){
 	this->y = y;
 }
 
-//コピーコンストラクタ（vector用）
+//コピーコンストラクタ（vector<Point>用）
 Point::Point(const Point& point){
 	this->x = point.x;
 	this->y = point.y;
 }
 
+//座標変化
+double Point::change_to(double x, double y){
+	this->x = x;
+	this->y = y;
+}
+
 //2点間距離
 double Point::dist(double x, double y){
 	return sqrt(pow(x - this->x, 2) + pow(y - this->y, 2));
+}
+double Point::dist(Point point){
+	return sqrt(pow(point.x - this->x, 2) + pow(point.y - this->y, 2));
 }
 
 //表示

@@ -1,27 +1,36 @@
-#include <fstream>
-#include <vector>
-#include <string>
-#include "point.h"
+#include "pure_pursuit.h"
 
-//global variable
-const double MAX_SPEED = 2.5;
+//コンストラクタ
+Pure_pursuit::Pure_pursuit(std::string file_name, int ahead_num){
+	this->file_name = file_name;
+	this->ahead_num = ahead_num;
 
-//function prototype
-int load_csv(std::vector<Point> *vct, std::string file_name);
-
-//main
-int main(int argc, char const* argv[]){
-	std::vector<Point> path;
-	load_csv(&path, "../pathes/hoge4.csv");
-
-
-	for(int i=0; i<path.size(); i++){
-		path.at(i).print();
-	}
-	return 0;
+	load_csv();
 }
 
-int load_csv(std::vector<Point> *vct, std::string file_name){
+//目標点
+Point Pure_pursuit::target_point(Point state){
+	std::vector<double> dist;
+
+	//距離計算
+	for(int i=0; i<path.size(); i++){
+		/* dist.push_back(path->at(i).dist(state)); */
+		dist.push_back(state.dist(path.at(i)));
+	}
+	//最近経路点
+	std::vector<double>::iterator itr = std::min_element(dist.begin(), dist.end());
+	int min_index = std::distance(dist.begin(), itr);
+	//最近経路点からahead_num個先の点を目標点とする
+	return path.at(min_index + ahead_num);
+}
+
+//経路点列表示
+int Pure_pursuit::print_path(){
+	for(int i=0; i<path.size(); i++) path.at(i).print();
+}
+
+//CSVファイル読み込み
+int Pure_pursuit::load_csv(){
 	std::ifstream file(file_name);
 
 	// check file open
@@ -44,7 +53,7 @@ int load_csv(std::vector<Point> *vct, std::string file_name){
 
 		//pathに追加
 		Point tmp(stod(line_x), stod(line_y));
-		vct->push_back(tmp);
+		path.push_back(tmp);
 	}
 
 	file.close();
