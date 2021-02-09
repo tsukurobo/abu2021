@@ -18,11 +18,16 @@ class Pure_pursuit{
 
 		//関数
 		Pure_pursuit(std::string file_name, int ahead_num); //コンストラクタ
+		void reset_path(std::string file_name, int ahead_num); //経路再設定
 		void set_state(Point pos, double yaw);          //ロボ状態設定
 		void set_state(double x, double y, double yaw); //ロボ状態設定
+		void set_position(Point pos);          //ロボ位置設定
+		void set_position(double x, double y); //ロボ位置設定
+		void set_posture(double yaw); //ロボ姿勢設定
 		void cmd_angular_v(double p, double i, double d); //角速度司令[rad/s]
 		void cmd_velocity(double speed, double fin, double dcl); //速度司令[m/s]
 		int print_path(); //経路点列表示
+
 	
 	private:
 		//パラメータ

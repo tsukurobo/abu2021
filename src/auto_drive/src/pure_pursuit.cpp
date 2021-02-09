@@ -1,8 +1,15 @@
 #include "pure_pursuit.h"
 
-/******* 設定 *******/
 //コンストラクタ
 Pure_pursuit::Pure_pursuit(std::string file_name, int ahead_num){
+	this->file_name = file_name;
+	this->ahead_num = ahead_num;
+
+	load_csv();
+}
+
+//経路再設定
+void Pure_pursuit::reset_path(std::string file_name, int ahead_num){
 	this->file_name = file_name;
 	this->ahead_num = ahead_num;
 
@@ -17,6 +24,20 @@ void Pure_pursuit::set_state(Point pos, double yaw){
 void Pure_pursuit::set_state(double x, double y, double yaw){
 	this->state_p.x = x;
 	this->state_p.y = y;
+	this->state_yaw = yaw;
+}
+
+//ロボ位置設定
+void Pure_pursuit::set_position(Point pos){
+	this->state_p = pos;
+}
+void Pure_pursuit::set_position(double x, double y){
+	this->state_p.x = x;
+	this->state_p.y = y;
+}
+
+//ロボ姿勢設定
+void Pure_pursuit::set_posture(double yaw){
 	this->state_yaw = yaw;
 }
 

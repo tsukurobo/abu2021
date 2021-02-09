@@ -11,6 +11,7 @@
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
 #include "abu2021_msgs/cmd_vw.h"
+#include "abu2021_msgs/odom_rad.h"
 
 class Point{
 	public:
@@ -33,9 +34,13 @@ class Pure_pursuit{
 		double cmd_w;
 
 		//関数
-		Pure_pursuit(std::string file_name, int ahead_num); //コンストラクタ
+		/* Pure_pursuit(std::string file_name, int ahead_num); //コンストラクタ */
+		void reset_path(std::string file_name, int ahead_num); //経路再設定
 		void set_state(Point pos, double yaw);          //ロボ状態設定
 		void set_state(double x, double y, double yaw); //ロボ状態設定
+		void set_position(Point pos);          //ロボ位置設定
+		void set_position(double x, double y); //ロボ位置設定
+		void set_posture(double yaw); //ロボ姿勢設定
 		void cmd_angular_v(double p, double i, double d); //角速度司令[rad/s]
 		void cmd_velocity(double speed, double fin, double dcl); //速度司令[m/s]
 		int print_path(); //経路点列表示
@@ -74,6 +79,12 @@ const double YAW_GAIN_I = 0; //yaw軸PID制御Iゲイン
 const double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
 
 void get_gyro(const std_msgs::Float64::ConstPtr& yaw);
+void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm);
+
+//Pure pursuit
+Pure_pursuit pp;
+
+abu2021_msgs::cmd_vw cmd;
 
 int main(int argc, char **argv){
 	ros::init(argc, argv, "auto_drive");
@@ -82,25 +93,33 @@ int main(int argc, char **argv){
 	ros::NodeHandle nh;
 	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("target", 1);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
+	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
 
-	//Pure pursuit
-	Pure_pursuit pp("../pathes/hoge4.csv", AHEAD_NUM);
 
-	pp.set_state(0,0,0); //現在ロボ状態
-
-	pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL);
-	pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
+	pp.reset_path("../pathes/hoge4.csv", AHEAD_NUM);
+	pp.set_state(0.5, 5.425, -M_PI/2);
 
 	while(ros::ok()){
 		ros::spinOnce();
 
+		pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL);
+		pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
+		
+		cmd.vx = pp.cmd_vx;
+		cmd.vy = pp.cmd_vy;
+		cmd.w  = pp.cmd_w;
+		pub.publish(cmd);
 	}
 
 	return 0;
 }
 
 void get_gyro(const std_msgs::Float64::ConstPtr& yaw){
+	pp.set_posture(yaw->data*M_PI/180);
+}
 
+void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
+	pp.set_position(odm->x, odm->y);
 }
 
 
@@ -152,7 +171,15 @@ double Point::print(){
 
 /******* 設定 *******/
 //コンストラクタ
-Pure_pursuit::Pure_pursuit(std::string file_name, int ahead_num){
+/* Pure_pursuit::Pure_pursuit(std::string file_name, int ahead_num){ */
+/* 	this->file_name = file_name; */
+/* 	this->ahead_num = ahead_num; */
+
+/* 	load_csv(); */
+/* } */
+
+//経路再設定
+void Pure_pursuit::reset_path(std::string file_name, int ahead_num){
 	this->file_name = file_name;
 	this->ahead_num = ahead_num;
 
@@ -167,6 +194,20 @@ void Pure_pursuit::set_state(Point pos, double yaw){
 void Pure_pursuit::set_state(double x, double y, double yaw){
 	this->state_p.x = x;
 	this->state_p.y = y;
+	this->state_yaw = yaw;
+}
+
+//ロボ位置設定
+void Pure_pursuit::set_position(Point pos){
+	this->state_p = pos;
+}
+void Pure_pursuit::set_position(double x, double y){
+	this->state_p.x = x;
+	this->state_p.y = y;
+}
+
+//ロボ姿勢設定
+void Pure_pursuit::set_posture(double yaw){
 	this->state_yaw = yaw;
 }
 

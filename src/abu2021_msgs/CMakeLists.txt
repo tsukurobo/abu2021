@@ -53,6 +53,7 @@ add_message_files(
   # Message1.msg
   # Message2.msg
   cmd_vw.msg
+  odom_rad.msg
 )
 
 ## Generate services in the 'srv' folder
