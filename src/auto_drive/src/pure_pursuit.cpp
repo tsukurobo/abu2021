@@ -26,10 +26,11 @@ void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 	double trgt_dir = target_dir_local(); //目標角
 	static double sum_yaw = 0;
 	static double pre_yaw = 0;
-	printf("%f\n", trgt_dir);
+
 	sum_yaw += trgt_dir - state_yaw;
 	pre_yaw = state_yaw;
 
+	//PID制御
 	cmd_w = p*(trgt_dir - state_yaw) + i*sum_yaw - d*(state_yaw - pre_yaw);
 }
 
@@ -37,6 +38,7 @@ void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 void Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
 	double speed; //速さ（スカラー）
 
+	//終端点との距離に応じ速さ変更
 	if(dist_fin() < fin)      speed = 0; //終了判定
 	else if(dist_fin() < dcl) speed = max_speed * (dist_fin() - fin) / (dcl - fin); //台形制御
 	else                      speed = max_speed;

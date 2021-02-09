@@ -1,5 +1,3 @@
-#include <vector>
-#include "point.h"
 #include "pure_pursuit.h"
 
 //global variable
@@ -24,14 +22,5 @@ int main(int argc, char const* argv[]){
 	printf("cmd vx:%f\tcmd vy:%f\n", pp.cmd_vx, pp.cmd_vy);
 	printf("cmd w:%f\n", pp.cmd_w);
 
-	//目標点の方向に指定速度で移動
-	//目標店の方向にPIDで角速度司令
-	//指定速度は台形制御(止まる時)(終了判定も)
-	//デバッグ用に移動中か終了したかを記録
-	//
-	//現在の位置・姿勢を得る
-	//目標方向を得る（ローカル）
-	//速度司令を決定（台形）
-	//角速度司令を決定（PID）
 	return 0;
 }
