@@ -96,7 +96,7 @@ int main(int argc, char **argv){
 	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
 
 
-	pp.reset_path("../pathes/hoge4.csv", AHEAD_NUM);
+	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/hoge4.csv", AHEAD_NUM);
 	pp.set_state(0.5, 5.425, -M_PI/2);
 
 	while(ros::ok()){
