@@ -11,11 +11,13 @@ class Encoder{
     int interrupt_num_a;
     int interrupt_num_b;
     //encoder
-    volatile byte stt = 0;
+    volatile byte stt_a = 0;
+    volatile byte stt_b = 0;
     volatile long step_cnt = 0;
     
-    Encoder(int pin_a, int pin_b);
-    void enc_read();
+    Encoder(int p_a, int p_b);
+    void enc_read_a();
+    void enc_read_b();
 };
 
 #endif
