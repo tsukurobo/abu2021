@@ -1,11 +1,10 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
 #include <abu2021_msgs/cmd_vw.h>
-#include <sstream>
 
 ros::Publisher pub;
 
-void get_joy(const sensor_msgs::Joy& msg);
+void get_joy(const sensor_msgs::Joy::ConstPtr& msg);
 
 int main(int argc, char **argv){
 	ros::init(argc, argv, "task_manager_TR");
@@ -20,7 +19,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-void get_joy(const sensor_msgs::Joy& msg){
+void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	abu2021_msgs::cmd_vw cmd;
 
 	cmd.vx = -msg.axes[0];
@@ -29,3 +28,4 @@ void get_joy(const sensor_msgs::Joy& msg){
 
 	pub.publish(cmd);
 }
+
