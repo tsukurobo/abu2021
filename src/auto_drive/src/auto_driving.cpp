@@ -42,7 +42,7 @@ class Pure_pursuit{
 		void set_position(double x, double y); //ロボ位置設定
 		void set_posture(double yaw); //ロボ姿勢設定
 		void cmd_angular_v(double p, double i, double d); //角速度司令[rad/s]
-		void cmd_velocity(double speed, double fin, double dcl); //速度司令[m/s]
+		double cmd_velocity(double speed, double fin, double dcl); //速度司令[m/s]
 		int print_path(); //経路点列表示
 	
 	private:
@@ -121,7 +121,6 @@ void get_gyro(const std_msgs::Float64::ConstPtr& yaw){
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
 	pp.set_position(odm->x, odm->y);
 }
-
 
 
 
@@ -226,7 +225,7 @@ void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 }
 
 //速度司令[m/s]
-void Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
+double Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
 	double speed; //速さ（スカラー）
 
 	//終端点との距離に応じ速さ変更
@@ -236,6 +235,8 @@ void Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
 
 	cmd_vx = speed * cos(target_dir_local());
 	cmd_vy = speed * sin(target_dir_local());
+
+	return speed;
 }
 
 //経路点列終端との距離

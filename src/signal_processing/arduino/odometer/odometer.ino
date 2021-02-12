@@ -17,16 +17,16 @@ volatile byte stt_1_a = 0;
 volatile byte stt_1_b = 0;
 volatile byte stt_2_a = 0;
 volatile byte stt_2_b = 0;
-volatile long step_cnt_1 = 0;
-volatile long step_cnt_2 = 0;
+volatile long step_1 = 0;
+volatile long step_2 = 0;
+long step_1_pre = 0;
+long step_2_pre = 0;
 
 ros::NodeHandle nh;
 abu2021_msgs::odom_rad odom;
 ros::Publisher pub("odometer", &odom);
 
 void setup(){
-  //Serial.begin(115200);
-  
   pinMode(PIN_ENC_1_A, INPUT);
   pinMode(PIN_ENC_1_B, INPUT);
   pinMode(PIN_ENC_2_A, INPUT);
@@ -42,49 +42,52 @@ void setup(){
 }
 
 void loop(){
-  //Serial.print(step_cnt_1*M_PI/(RESOLUTION*2));
-  //Serial.print('\t');
-  //Serial.println(step_cnt_2*M_PI/(RESOLUTION*2));
   nh.spinOnce();
-  odom.x = step_cnt_1*M_PI/(RESOLUTION*2);
-  odom.y = step_cnt_2*M_PI/(RESOLUTION*2);
-  pub.publish(&odom);
+
+  if((step_1 != step_1_pre) || (step_2 != step_2_pre)){
+    odom.x = step_1*M_PI/(RESOLUTION*2);
+    odom.y = step_2*M_PI/(RESOLUTION*2);
+    pub.publish(&odom);
+    
+    step_1_pre = step_1;
+    step_2_pre = step_2;
+  }
 }
 
 void enc_read_1_a(){
   stt_1_a = digitalRead(PIN_ENC_1_A);
   
-  if     (stt_1_a == 0 && stt_1_b == 0) step_cnt_1++;
-  else if(stt_1_a == 0 && stt_1_b == 1) step_cnt_1--; 
-  else if(stt_1_a == 1 && stt_1_b == 0) step_cnt_1--;
-  else if(stt_1_a == 1 && stt_1_b == 1) step_cnt_1++;
+  if     (stt_1_a == 0 && stt_1_b == 0) step_1++;
+  else if(stt_1_a == 0 && stt_1_b == 1) step_1--; 
+  else if(stt_1_a == 1 && stt_1_b == 0) step_1--;
+  else if(stt_1_a == 1 && stt_1_b == 1) step_1++;
 }
 
 void enc_read_1_b(){
   stt_1_b = digitalRead(PIN_ENC_1_B);
   
-  if     (stt_1_a == 0 && stt_1_b == 0) step_cnt_1--;
-  else if(stt_1_a == 0 && stt_1_b == 1) step_cnt_1++; 
-  else if(stt_1_a == 1 && stt_1_b == 0) step_cnt_1++;
-  else if(stt_1_a == 1 && stt_1_b == 1) step_cnt_1--;
+  if     (stt_1_a == 0 && stt_1_b == 0) step_1--;
+  else if(stt_1_a == 0 && stt_1_b == 1) step_1++; 
+  else if(stt_1_a == 1 && stt_1_b == 0) step_1++;
+  else if(stt_1_a == 1 && stt_1_b == 1) step_1--;
 }
 
 void enc_read_2_a(){
   stt_2_a = digitalRead(PIN_ENC_2_A);
   
-  if     (stt_2_a == 0 && stt_2_b == 0) step_cnt_2++;
-  else if(stt_2_a == 0 && stt_2_b == 1) step_cnt_2--; 
-  else if(stt_2_a == 1 && stt_2_b == 0) step_cnt_2--;
-  else if(stt_2_a == 1 && stt_2_b == 1) step_cnt_2++;
+  if     (stt_2_a == 0 && stt_2_b == 0) step_2++;
+  else if(stt_2_a == 0 && stt_2_b == 1) step_2--; 
+  else if(stt_2_a == 1 && stt_2_b == 0) step_2--;
+  else if(stt_2_a == 1 && stt_2_b == 1) step_2++;
 }
 
 void enc_read_2_b(){
   stt_2_b = digitalRead(PIN_ENC_2_B);
   
-  if     (stt_2_a == 0 && stt_2_b == 0) step_cnt_2--;
-  else if(stt_2_a == 0 && stt_2_b == 1) step_cnt_2++; 
-  else if(stt_2_a == 1 && stt_2_b == 0) step_cnt_2++;
-  else if(stt_2_a == 1 && stt_2_b == 1) step_cnt_2--;
+  if     (stt_2_a == 0 && stt_2_b == 0) step_2--;
+  else if(stt_2_a == 0 && stt_2_b == 1) step_2++; 
+  else if(stt_2_a == 1 && stt_2_b == 0) step_2++;
+  else if(stt_2_a == 1 && stt_2_b == 1) step_2--;
 }
 //00
 //01

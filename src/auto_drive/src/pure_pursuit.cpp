@@ -56,7 +56,7 @@ void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 }
 
 //速度司令[m/s]
-void Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
+double Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
 	double speed; //速さ（スカラー）
 
 	//終端点との距離に応じ速さ変更
@@ -66,6 +66,8 @@ void Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
 
 	cmd_vx = speed * cos(target_dir_local());
 	cmd_vy = speed * sin(target_dir_local());
+
+	return speed;
 }
 
 //経路点列終端との距離
