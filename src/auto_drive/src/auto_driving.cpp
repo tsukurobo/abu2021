@@ -28,6 +28,11 @@ class Point{
 
 class Pure_pursuit{
 	public:
+		//状態
+		std::vector<Point> path; //経路点列
+		Point state_p; //ロボ位置([m],[m])
+		double state_yaw; //ロボ姿勢[rad]
+
 		//司令変数
 		double cmd_vx;
 		double cmd_vy;
@@ -50,11 +55,6 @@ class Pure_pursuit{
 		std::string file_name; //読み込むCSVファイル名
 		int ahead_num; //最近経路点からahead_num個先の点を目標点とする
 		
-		//状態
-		std::vector<Point> path; //経路点列
-		Point state_p; //ロボ位置([m],[m])
-		double state_yaw; //ロボ姿勢[rad]
-
 		//関数
 		double dist_fin(); //経路点列終端との距離[m]
 		double target_dir_local(); //目標角度[rad](ローカル角度)
@@ -78,6 +78,16 @@ const double YAW_GAIN_P = 1; //yaw軸PID制御Pゲイン
 const double YAW_GAIN_I = 0; //yaw軸PID制御Iゲイン
 const double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
 
+//自己位置推定パラメータ
+//初期状態[m][m][rad]
+double INIT_X = 0.5;
+double INIT_Y = 5.425;
+double INIT_YAW = -M_PI/2;
+double WHEEL = 0.02; //オドメータ車輪半径[m]
+
+//パラメータ
+const int LOOP_RATE = 100; //loop rate [Hz]
+
 void get_gyro(const std_msgs::Float64::ConstPtr& yaw);
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm);
 
@@ -94,10 +104,10 @@ int main(int argc, char **argv){
 	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("target", 1);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
 	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
-
+	ros::Rate rate(LOOP_RATE);
 
 	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/hoge4.csv", AHEAD_NUM);
-	pp.set_state(0.5, 5.425, -M_PI/2);
+	pp.set_state(INIT_X, INIT_Y, INIT_YAW);
 
 	while(ros::ok()){
 		ros::spinOnce();
@@ -107,19 +117,26 @@ int main(int argc, char **argv){
 		
 		cmd.vx = pp.cmd_vx;
 		cmd.vy = pp.cmd_vy;
-		cmd.w  = pp.cmd_w;
+		/* cmd.w  = pp.cmd_w; */
+		cmd.w  = pp.cmd_w/M_PI*180;
+		ROS_FATAL("x: %f\ty: %f yaw: %f", pp.state_p.x, pp.state_p.y, pp.state_yaw/M_PI*180);
 		pub.publish(cmd);
+
+		rate.sleep();
 	}
 
 	return 0;
 }
 
 void get_gyro(const std_msgs::Float64::ConstPtr& yaw){
-	pp.set_posture(yaw->data*M_PI/180);
+	pp.set_posture(yaw->data*M_PI/180 + INIT_YAW);
 }
 
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
-	pp.set_position(odm->x, odm->y);
+	double x = odm->x*WHEEL*cos(pp.state_yaw) - odm->y*WHEEL*sin(pp.state_yaw);
+	double y = odm->x*WHEEL*sin(pp.state_yaw) + odm->y*WHEEL*cos(pp.state_yaw);
+
+	pp.set_position(INIT_X + x, INIT_Y + y);
 }
 
 
@@ -213,7 +230,7 @@ void Pure_pursuit::set_posture(double yaw){
 /******* 司令 *******/
 //角速度司令[rad/s]
 void Pure_pursuit::cmd_angular_v(double p, double i, double d){
-	double trgt_dir = target_dir_local(); //目標角
+	double trgt_dir = target_dir_global(); //目標角
 	static double sum_yaw = 0;
 	static double pre_yaw = 0;
 

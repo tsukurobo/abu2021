@@ -11,6 +11,11 @@
 
 class Pure_pursuit{
 	public:
+		//状態
+		std::vector<Point> path; //経路点列
+		Point state_p; //ロボ位置([m],[m])
+		double state_yaw; //ロボ姿勢[rad]
+
 		//司令変数
 		double cmd_vx;
 		double cmd_vy;
@@ -34,11 +39,6 @@ class Pure_pursuit{
 		std::string file_name; //読み込むCSVファイル名
 		int ahead_num; //最近経路点からahead_num個先の点を目標点とする
 		
-		//状態
-		std::vector<Point> path; //経路点列
-		Point state_p; //ロボ位置([m],[m])
-		double state_yaw; //ロボ姿勢[rad]
-
 		//関数
 		double dist_fin(); //経路点列終端との距離[m]
 		double target_dir_local(); //目標角度[rad](ローカル角度)

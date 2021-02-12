@@ -44,7 +44,7 @@ void Pure_pursuit::set_posture(double yaw){
 /******* 司令 *******/
 //角速度司令[rad/s]
 void Pure_pursuit::cmd_angular_v(double p, double i, double d){
-	double trgt_dir = target_dir_local(); //目標角
+	double trgt_dir = target_dir_global(); //目標角
 	static double sum_yaw = 0;
 	static double pre_yaw = 0;
 
