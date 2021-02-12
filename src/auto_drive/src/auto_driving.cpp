@@ -10,6 +10,7 @@
 //body
 #include "ros/ros.h"
 #include "std_msgs/Float64.h"
+#include "std_msgs/Int16.h"
 #include "abu2021_msgs/cmd_vw.h"
 #include "abu2021_msgs/odom_rad.h"
 
@@ -90,11 +91,15 @@ const int LOOP_RATE = 100; //loop rate [Hz]
 
 void get_gyro(const std_msgs::Float64::ConstPtr& yaw);
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm);
+void get_path(const std_msgs::Int16::ConstPtr& path);
 
 //Pure pursuit
 Pure_pursuit pp;
 
 abu2021_msgs::cmd_vw cmd;
+int order_path = 0;
+int mode_path = 0;
+
 
 int main(int argc, char **argv){
 	ros::init(argc, argv, "auto_drive");
@@ -104,6 +109,7 @@ int main(int argc, char **argv){
 	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("target", 1);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
 	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
+	ros::Subscriber sub_path = nh.subscribe("ad_path", 1, get_path);
 	ros::Rate rate(LOOP_RATE);
 
 	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/hoge4.csv", AHEAD_NUM);
@@ -112,15 +118,19 @@ int main(int argc, char **argv){
 	while(ros::ok()){
 		ros::spinOnce();
 
-		pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL);
-		pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
-		
-		cmd.vx = pp.cmd_vx;
-		cmd.vy = pp.cmd_vy;
-		/* cmd.w  = pp.cmd_w; */
-		cmd.w  = pp.cmd_w/M_PI*180;
+		if(order_path ==  1 || mode_path == 1){
+			mode_path = 1;
+
+			if(pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL) == 0) mode_path = 0;
+			pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
+			
+			cmd.vx = pp.cmd_vx;
+			cmd.vy = pp.cmd_vy;
+			/* cmd.w  = pp.cmd_w; */
+			cmd.w  = pp.cmd_w/M_PI*180;
+			pub.publish(cmd);
+		}
 		ROS_FATAL("x: %f\ty: %f yaw: %f", pp.state_p.x, pp.state_p.y, pp.state_yaw/M_PI*180);
-		pub.publish(cmd);
 
 		rate.sleep();
 	}
@@ -139,6 +149,9 @@ void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
 	pp.set_position(INIT_X + x, INIT_Y + y);
 }
 
+void get_path(const std_msgs::Int16::ConstPtr& path){
+	order_path = path->data;
+}
 
 
 
