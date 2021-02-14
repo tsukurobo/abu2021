@@ -41,7 +41,7 @@ int main(int argc,char **argv){
 	ros::NodeHandle nh;
 
 	sub_raw = nh.subscribe("gyro_raw",1,get_gyro_raw);
-	sub_pst = nh.subscribe("cmd_dr",1,get_target_posture);
+	sub_pst = nh.subscribe("cmd",1,get_target_posture);
 	/* sub_pst = nh.subscribe("cmd_tr",10,get_target_posture); */
 	pub     = nh.advertise <std_msgs::Float64>("gyro_yaw",1);
 	

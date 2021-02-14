@@ -109,7 +109,7 @@ int main(int argc, char **argv){
 
 	//ROS
 	ros::NodeHandle nh;
-	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd_dr", 1);
+	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd", 1);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
 	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
 	ros::Subscriber sub_path = nh.subscribe("ad_path", 1, get_path);
