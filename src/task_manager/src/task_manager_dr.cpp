@@ -15,7 +15,7 @@ int main(int argc, char **argv){
 	ros::NodeHandle nh;
 
 	ros::Subscriber sub = nh.subscribe("joy", 1, get_joy);
-	pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd_dr", 1);
+	pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd", 1);
 	pub_path = nh.advertise<std_msgs::Int16>("ad_path", 1);
 
 	ros::spin();
