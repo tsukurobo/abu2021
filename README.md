@@ -26,7 +26,7 @@ task_manager_dr
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
-  [cmd_dr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系） 
+  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系） 
 ```
 ```
 task_manager_tr
@@ -34,14 +34,14 @@ task_manager_tr
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
-  [cmd_tr] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系）  
+  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系）  
 ```
 ### kinematics_model
 メカナム・オムニの動力学モデルを利用して各モータの指令値を計算
 ```
 kinematics_model
   sub
-  [cmd_tr/cmd_dr] (abu2021_msgs::cmmd_vw): 説明略
+  [cmd] (abu2021_msgs::cmmd_vw): 説明略
   pub
   [motor_vel] (abu2021_msgs::motor_pw): 各モーターの速度指令
 ※補足: cmd_trをサブスクライブする場合、パッケージ内のconstant_tr.yamlをパラメータサーバーに送ってノードを起動する必要がある

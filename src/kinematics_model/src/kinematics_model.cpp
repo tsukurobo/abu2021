@@ -63,8 +63,7 @@ int main(int argc, char **argv){
 
     //パブリッシャとサブスクライバをつくる
     ros::Publisher vpub = nh.advertise<abu2021_msgs::motor_pw>("motor_vel", 100);
-    ros::Subscriber vsub = (mode == "DR") ? nh.subscribe("cmd_dr", 100, velcallback)
-    : nh.subscribe("cmd_tr", 100, velcallback);
+    ros::Subscriber vsub = nh.subscribe("cmd", 100, velcallback);
 
     //メインループ
     while(ros::ok()){
