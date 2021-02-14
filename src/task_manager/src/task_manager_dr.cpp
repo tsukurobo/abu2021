@@ -38,4 +38,3 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	pub_path.publish(path);
 }
 
-

@@ -20,24 +20,24 @@ void velcallback(const abu2021_msgs::cmd_vw& vc){
     }
     if(mode == "DR"){
         //4輪オムニ
-        v_raw[0] = max_lin_v*(-0.5*SQRT2*vx + 0.5*SQRT2*vy) + max_ang_v*dtoc*vc.w;
-        v_raw[1] = max_lin_v*(-0.5*SQRT2*vx - 0.5*SQRT2*vy) + max_ang_v*dtoc*vc.w;
-        v_raw[2] = max_lin_v*(0.5*SQRT2*vx - 0.5*SQRT2*vy) + max_ang_v*dtoc*vc.w;
-        v_raw[3] = max_lin_v*(0.5*SQRT2*vx + 0.5*SQRT2*vy) + max_ang_v*dtoc*vc.w;
+        v_raw[0] = max_lin_v*(0.5*SQRT2*vy + 0.5*SQRT2*vx) + max_ang_v*dtoc*vc.w;
+        v_raw[1] = max_lin_v*(0.5*SQRT2*vy - 0.5*SQRT2*vx) + max_ang_v*dtoc*vc.w;
+        v_raw[2] = max_lin_v*(-0.5*SQRT2*vy - 0.5*SQRT2*vx) + max_ang_v*dtoc*vc.w;
+        v_raw[3] = max_lin_v*(-0.5*SQRT2*vy + 0.5*SQRT2*vx) + max_ang_v*dtoc*vc.w;
     }
     else if(mode == "TR"){
         //メカナム
-        v_raw[0] = max_lin_v*(-vx + vy) + max_ang_v*0.5*(vc.w)*(w+h);
-        v_raw[1] = max_lin_v*(-vx - vy) + max_ang_v*0.5*(vc.w)*(w+h);
-        v_raw[2] = max_lin_v*(vx - vy) + max_ang_v*0.5*(vc.w)*(w+h);
-        v_raw[3] = max_lin_v*(vx + vy) + max_ang_v*0.5*(vc.w)*(w+h);
+        v_raw[0] = max_lin_v*(vy + vx) + max_ang_v*0.5*(vc.w)*(w+h);
+        v_raw[1] = max_lin_v*(vy - vx) + max_ang_v*0.5*(vc.w)*(w+h);
+        v_raw[2] = max_lin_v*(-vy - vx) + max_ang_v*0.5*(vc.w)*(w+h);
+        v_raw[3] = max_lin_v*(-vy + vx) + max_ang_v*0.5*(vc.w)*(w+h);
     }
 }
 
 int main(int argc, char **argv){
     //ROSの初期化
     ros::init(argc, argv, "kinematics_model");
-    
+
     //変数定義
     ros::NodeHandle nh;
     //ros::NodeHandle nhp("~"); //パラメータ読み込み用ノードハンドラ
@@ -53,7 +53,7 @@ int main(int argc, char **argv){
     else if(mode == "DR"){
         nh.getParam("model/distance_to_center", dtoc);
     }
-    
+
     nh.getParam("model/LPF_const_go", k_go);
     nh.getParam("model/LPF_const_stop", k_stop);
     nh.getParam("model/max_lin_v", max_lin_v);
