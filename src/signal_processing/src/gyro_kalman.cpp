@@ -5,12 +5,12 @@
 #include "abu2021_msgs/cmd_vw.h"
 
 //constant (main)
-#define WAIT_LOOP 300 //初期センサー値無視回数(最少でも25？)
+#define WAIT_LOOP 400 //初期センサー値無視回数(最少でも25？)
 #define SAMPLE_NUM 500 //センサ特性計算用サンプル数
 #define MAIN_FREQUENCY 100 //メインループ周波数[Hz]
 //constant (kalman filter)
 #define TARGET_POSTURE_NOISE 0.1 //目標角速度の誤差分散
-#define INIT_ANGLE_ERROR 2 //初期角度の誤差分散
+#define INIT_ANGLE_ERROR 4 //初期角度の誤差分散
 #define INIT_ANGLE 0            //初期角度[rad]
 #define INIT_ANGLAR_VELOCITY 0 //初期角速度[rad/sec]
 

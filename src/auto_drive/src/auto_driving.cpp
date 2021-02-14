@@ -81,9 +81,12 @@ const double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
 
 //自己位置推定パラメータ
 //初期状態[m][m][rad]
-double INIT_X = 0.5;
-double INIT_Y = 5.425;
-double INIT_YAW = -M_PI/2;
+/* double INIT_X = 0.5; */
+/* double INIT_Y = 5.425; */
+/* double INIT_YAW = -M_PI/2; */
+double INIT_X = 0;
+double INIT_Y = 0;
+double INIT_YAW = 0;
 double WHEEL = 0.02; //オドメータ車輪半径[m]
 
 //パラメータ
@@ -106,7 +109,7 @@ int main(int argc, char **argv){
 
 	//ROS
 	ros::NodeHandle nh;
-	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("target", 1);
+	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd_dr", 1);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
 	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
 	ros::Subscriber sub_path = nh.subscribe("ad_path", 1, get_path);
@@ -126,11 +129,12 @@ int main(int argc, char **argv){
 			
 			cmd.vx = pp.cmd_vx;
 			cmd.vy = pp.cmd_vy;
-			/* cmd.w  = pp.cmd_w; */
-			cmd.w  = pp.cmd_w/M_PI*180;
+			cmd.w  = pp.cmd_w;
+			/* cmd.w  = pp.cmd_w/M_PI*180; */
 			pub.publish(cmd);
 		}
-		ROS_FATAL("x: %f\ty: %f yaw: %f", pp.state_p.x, pp.state_p.y, pp.state_yaw/M_PI*180);
+		ROS_FATAL("\nstate_x: %f\tstate_y: %f\tstate_yaw: %f\ncmd_vx: %f\tcmd_vy: %f\tcmd_w: %f\n"
+				, pp.state_p.x, pp.state_p.y, pp.state_yaw/M_PI*180, pp.cmd_vx, pp.cmd_vy, pp.cmd_w/M_PI*180);
 
 		rate.sleep();
 	}
@@ -143,10 +147,16 @@ void get_gyro(const std_msgs::Float64::ConstPtr& yaw){
 }
 
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
-	double x = odm->x*WHEEL*cos(pp.state_yaw) - odm->y*WHEEL*sin(pp.state_yaw);
-	double y = odm->x*WHEEL*sin(pp.state_yaw) + odm->y*WHEEL*cos(pp.state_yaw);
+	static double pre_x = INIT_X;
+	static double pre_y = INIT_Y;
 
-	pp.set_position(INIT_X + x, INIT_Y + y);
+	double dx = (odm->x - pre_x)*WHEEL*cos(pp.state_yaw) - (odm->y - pre_y)*WHEEL*sin(pp.state_yaw);
+	double dy = (odm->x - pre_x)*WHEEL*sin(pp.state_yaw) + (odm->y - pre_y)*WHEEL*cos(pp.state_yaw);
+
+	pp.set_position(pp.state_p.x + dx, pp.state_p.y + dy);
+
+	pre_x = odm->x;
+	pre_y = odm->y;
 }
 
 void get_path(const std_msgs::Int16::ConstPtr& path){
