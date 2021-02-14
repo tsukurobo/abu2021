@@ -2,7 +2,8 @@ model: {
   mode: "DR",
   distance_to_center: 0.33,
   freq: 50,
-  LPF_const: 0.3,
+  LPF_const_go: 0.3,
+  LPF_const_stop: 0.7,
   max_ang_v: 3.14,
   max_lin_v: 2.0
 }

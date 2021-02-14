@@ -28,9 +28,9 @@ int main(int argc, char **argv){
 void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	abu2021_msgs::cmd_vw cmd;
 
-	cmd.vx = -msg.axes[0];
-	cmd.vy = msg.axes[1];
-	cmd.w  = msg.axes[3];
+	cmd.vx = -msg.axes[1];
+	cmd.vy = msg.axes[0];
+	cmd.w  = msg.axes[2];
 
 	pub.publish(cmd);
 }
@@ -39,6 +39,6 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 /* void mot_over_correct(double vx, double vy, double w){ */
 /* 	double mot_max = fabs(vx/sqrt(2)) + fabs(vy/sqrt(2)) + FRAME_PARAM*w; */
 /* 	if(mot_max > MOT_MAX){ */
-		
+
 /* 	} */
 /* } */
