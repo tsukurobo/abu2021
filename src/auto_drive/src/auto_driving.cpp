@@ -87,7 +87,7 @@ const double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
 double INIT_X = 0;
 double INIT_Y = 0;
 double INIT_YAW = 0;
-double WHEEL = 0.02; //オドメータ車輪半径[m]
+double WHEEL = 0.0292; //オドメータ車輪半径[m]
 
 //パラメータ
 const int LOOP_RATE = 100; //loop rate [Hz]

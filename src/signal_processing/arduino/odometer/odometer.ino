@@ -45,7 +45,7 @@ void loop(){
   nh.spinOnce();
 
   if((step_1 != step_1_pre) || (step_2 != step_2_pre)){
-    odom.x = step_1*M_PI/(RESOLUTION*2);
+    odom.x = -step_1*M_PI/(RESOLUTION*2);
     odom.y = step_2*M_PI/(RESOLUTION*2);
     pub.publish(&odom);
     
