@@ -72,10 +72,10 @@ class Pure_pursuit{
 /*****************************************************/
 
 //pure pursuit parameter
-const double MAX_SPEED = 0.3; //最大移動速度[m/s]
-const int AHEAD_NUM = 10; //何個先の経路点列を目指すか[･]
-const double RANGE_FIN = 0.01; //終了範囲[m]
-const double RANGE_DCL = 1; //減速開始範囲[m]
+double MAX_SPEED = 0.3; //最大移動速度[m/s]
+int AHEAD_NUM = 10; //何個先の経路点列を目指すか[･]
+double RANGE_FIN = 0.01; //終了範囲[m]
+double RANGE_DCL = 1; //減速開始範囲[m]
 double YAW_GAIN_P = 1; //yaw軸PID制御Pゲイン
 double YAW_GAIN_I = 0; //yaw軸PID制御Iゲイン
 double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
@@ -107,9 +107,8 @@ int mode_path1 = 0;
 
 
 int main(int argc, char **argv){
-	ros::init(argc, argv, "auto_drive");
-
 	//ROS
+	ros::init(argc, argv, "auto_drive");
 	ros::NodeHandle nh;
 	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd", 1);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
@@ -118,13 +117,19 @@ int main(int argc, char **argv){
 	//parameter
 	nh.getParam("state/init_x", INIT_X);
 	nh.getParam("state/init_y", INIT_Y);
+	nh.getParam("state/init_yaw", INIT_YAW);
 	nh.getParam("yaw_pid/p", YAW_GAIN_P);
 	nh.getParam("yaw_pid/i", YAW_GAIN_I);
 	nh.getParam("yaw_pid/d", YAW_GAIN_D);
+	nh.getParam("pure_pursuit/max_speed", MAX_SPEED);
+	nh.getParam("pure_pursuit/ahead_num", AHEAD_NUM);
+	nh.getParam("pure_pursuit/range_fin", RANGE_FIN);
+	nh.getParam("pure_pursuit/range_dcl", RANGE_DCL);
 
 	ros::Rate rate(LOOP_RATE);
 
-	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/square_3m.csv", AHEAD_NUM);
+	/* pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/square_3m.csv", AHEAD_NUM); */
+	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/dr_st_rt.csv", AHEAD_NUM);
 	pp.set_state(INIT_X, INIT_Y, INIT_YAW);
 
 	while(ros::ok()){
@@ -156,7 +161,7 @@ int main(int argc, char **argv){
 			pub.publish(cmd);
 		}
 
-		ROS_FATAL("\nstate_x: %f\tstate_y: %f\tstate_yaw: %f\ncmd_vx: %f\tcmd_vy: %f\tcmd_w: %f\n"
+		ROS_FATAL("\nstate_x: %f\tstate_y: %f\tstate_yaw: %f\ncmd_vx: %f\tcmd_vy: %f\tcmd_w: %f"
 				, pp.state_p.x, pp.state_p.y, pp.state_yaw/M_PI*180, cmd.vx, cmd.vy, cmd.w/M_PI*180);
 
 		rate.sleep();
@@ -277,15 +282,20 @@ void Pure_pursuit::set_posture(double yaw){
 /******* 司令 *******/
 //角速度司令[rad/s]
 void Pure_pursuit::cmd_angular_v(double p, double i, double d){
-	double trgt_dir = target_dir_global(); //目標角
+	double angle = target_dir_global() - state_yaw; //姿勢角と目標角との偏角
 	static double sum_yaw = 0;
 	static double pre_yaw = 0;
 
-	sum_yaw += trgt_dir - state_yaw;
+	//偏角定義域修正
+	if(angle > M_PI)       while(angle >  M_PI) angle -= 2*M_PI;	
+	else if(angle < -M_PI) while(angle < -M_PI) angle += 2*M_PI;
+
+	sum_yaw += angle;
 	pre_yaw = state_yaw;
+	/* ROS_FATAL("\nstate_yaw: %f\ttrgt: %f\tangle: %f", state_yaw/M_PI*180, target_dir_global()/M_PI*180, angle/M_PI*180); */
 
 	//PID制御
-	cmd_w = p*(trgt_dir - state_yaw) + i*sum_yaw - d*(state_yaw - pre_yaw);
+	cmd_w = p*angle + i*sum_yaw - d*(state_yaw - pre_yaw);
 }
 
 //速度司令[m/s]

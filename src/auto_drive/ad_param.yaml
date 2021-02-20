@@ -1,10 +1,18 @@
 state: {
-  init_x: 0,
-  init_y: 0
+  init_x: 0.5,
+  init_y: 5.425,
+  init_yaw: -1.570796326
 }
 
 yaw_pid: {
   p: 1,
   i: 0,
   d: 0.01
+}
+
+pure_pursuit: {
+  max_speed: 0.3,
+  ahead_num: 100,
+  range_fin: 0.05,
+  range_dcl: 1
 }
