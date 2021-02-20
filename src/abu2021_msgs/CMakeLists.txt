@@ -56,6 +56,7 @@ add_message_files(
   odom_rad.msg
   motor_pw.msg
   motor_enc.msg
+  auto_drive_order.msg
 )
 
 ## Generate services in the 'srv' folder

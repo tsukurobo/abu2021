@@ -13,6 +13,7 @@
 #include "std_msgs/Int16.h"
 #include "abu2021_msgs/cmd_vw.h"
 #include "abu2021_msgs/odom_rad.h"
+#include "abu2021_msgs/auto_drive_order.h"
 
 class Point{
 	public:
@@ -94,14 +95,15 @@ const int LOOP_RATE = 100; //loop rate [Hz]
 
 void get_gyro(const std_msgs::Float64::ConstPtr& yaw);
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm);
-void get_path(const std_msgs::Int16::ConstPtr& path);
+void get_order(const abu2021_msgs::auto_drive_order::ConstPtr& order);
 
 //Pure pursuit
 Pure_pursuit pp;
 
 abu2021_msgs::cmd_vw cmd;
-int order_path = 0;
-int mode_path = 0;
+int emg_stop = 0;
+int order_path1 = 0;
+int mode_path1 = 0;
 
 
 int main(int argc, char **argv){
@@ -112,7 +114,7 @@ int main(int argc, char **argv){
 	ros::Publisher  pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd", 1);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
 	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
-	ros::Subscriber sub_path = nh.subscribe("ad_path", 1, get_path);
+	ros::Subscriber sub_order = nh.subscribe("ad_order", 1, get_order);
 	//parameter
 	nh.getParam("state/init_x", INIT_X);
 	nh.getParam("state/init_y", INIT_Y);
@@ -122,15 +124,21 @@ int main(int argc, char **argv){
 
 	ros::Rate rate(LOOP_RATE);
 
-	/* pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/straight_3m.csv", AHEAD_NUM); */
 	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/square_3m.csv", AHEAD_NUM);
 	pp.set_state(INIT_X, INIT_Y, INIT_YAW);
 
 	while(ros::ok()){
 		ros::spinOnce();
 
-		if(order_path ==  1 || mode_path == 1){
-			mode_path = 1;
+		if(emg_stop == 1){
+			mode_path1 = 0;
+
+			cmd.vx = 0;
+			cmd.vy = 0;
+			cmd.w  = 0;
+			pub.publish(cmd);
+		}else if(order_path1 ==  1 || mode_path1 == 1){
+			mode_path1 = 1;
 
 			if(pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL) != 0){
 				pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
@@ -142,13 +150,14 @@ int main(int argc, char **argv){
 				cmd.vy = 0;
 				cmd.w  = 0;
 
-				mode_path = 0;
+				mode_path1 = 0;
 			}
 			
 			pub.publish(cmd);
 		}
+
 		ROS_FATAL("\nstate_x: %f\tstate_y: %f\tstate_yaw: %f\ncmd_vx: %f\tcmd_vy: %f\tcmd_w: %f\n"
-				, pp.state_p.x, pp.state_p.y, pp.state_yaw/M_PI*180, pp.cmd_vx, pp.cmd_vy, pp.cmd_w/M_PI*180);
+				, pp.state_p.x, pp.state_p.y, pp.state_yaw/M_PI*180, cmd.vx, cmd.vy, cmd.w/M_PI*180);
 
 		rate.sleep();
 	}
@@ -173,8 +182,9 @@ void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
 	pre_y = odm->y;
 }
 
-void get_path(const std_msgs::Int16::ConstPtr& path){
-	order_path = path->data;
+void get_order(const abu2021_msgs::auto_drive_order::ConstPtr& order){
+	emg_stop = order->emg_stop;
+	order_path1 = order->path1;
 }
 
 
