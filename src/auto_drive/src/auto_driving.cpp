@@ -71,13 +71,13 @@ class Pure_pursuit{
 /*****************************************************/
 
 //pure pursuit parameter
-const double MAX_SPEED = 10; //最大移動速度[m/s]
+const double MAX_SPEED = 0.3; //最大移動速度[m/s]
 const int AHEAD_NUM = 10; //何個先の経路点列を目指すか[･]
-const double RANGE_FIN = 0.1; //終了範囲[m]
+const double RANGE_FIN = 0.01; //終了範囲[m]
 const double RANGE_DCL = 1; //減速開始範囲[m]
-const double YAW_GAIN_P = 1; //yaw軸PID制御Pゲイン
-const double YAW_GAIN_I = 0; //yaw軸PID制御Iゲイン
-const double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
+double YAW_GAIN_P = 1; //yaw軸PID制御Pゲイン
+double YAW_GAIN_I = 0; //yaw軸PID制御Iゲイン
+double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
 
 //自己位置推定パラメータ
 //初期状態[m][m][rad]
@@ -113,9 +113,17 @@ int main(int argc, char **argv){
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
 	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
 	ros::Subscriber sub_path = nh.subscribe("ad_path", 1, get_path);
+	//parameter
+	nh.getParam("state/init_x", INIT_X);
+	nh.getParam("state/init_y", INIT_Y);
+	nh.getParam("yaw_pid/p", YAW_GAIN_P);
+	nh.getParam("yaw_pid/i", YAW_GAIN_I);
+	nh.getParam("yaw_pid/d", YAW_GAIN_D);
+
 	ros::Rate rate(LOOP_RATE);
 
-	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/hoge4.csv", AHEAD_NUM);
+	/* pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/straight_3m.csv", AHEAD_NUM); */
+	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/square_3m.csv", AHEAD_NUM);
 	pp.set_state(INIT_X, INIT_Y, INIT_YAW);
 
 	while(ros::ok()){
@@ -124,13 +132,19 @@ int main(int argc, char **argv){
 		if(order_path ==  1 || mode_path == 1){
 			mode_path = 1;
 
-			if(pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL) == 0) mode_path = 0;
-			pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
+			if(pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL) != 0){
+				pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
+				cmd.vx = pp.cmd_vx;
+				cmd.vy = pp.cmd_vy;
+				cmd.w  = pp.cmd_w;
+			}else{
+				cmd.vx = 0;
+				cmd.vy = 0;
+				cmd.w  = 0;
+
+				mode_path = 0;
+			}
 			
-			cmd.vx = pp.cmd_vx;
-			cmd.vy = pp.cmd_vy;
-			cmd.w  = pp.cmd_w;
-			/* cmd.w  = pp.cmd_w/M_PI*180; */
 			pub.publish(cmd);
 		}
 		ROS_FATAL("\nstate_x: %f\tstate_y: %f\tstate_yaw: %f\ncmd_vx: %f\tcmd_vy: %f\tcmd_w: %f\n"

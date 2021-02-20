@@ -1,12 +1,12 @@
  <launch>
 	<rosparam command="load" file="$(find auto_drive)/ad_param.yaml" />
 
-	<node pkg="joy" type="joy_node" name="joy_node">
+<!--	<node pkg="joy" type="joy_node" name="joy_node">
 		<param name="dev" type="string" value="/dev/input/js0"/>
 	</node>
-
-	<node pkg="task_manager" name="task_manager_dr" type="task_manager_dr"/>
+-->
 <!--
+	<node pkg="task_manager" name="task_manager_dr" type="task_manager_dr"/>
     <rosparam command="load" file="$(find kinematics_model)/constant_dr.yaml" />
 	<node pkg="kinematics_model" name="kinematics_model" type="kinematics_model"/>
 -->
@@ -15,7 +15,6 @@
 	<node pkg="auto_drive" name="auto_driving" type="auto_driving"/>
 
 	
-<!--
 	<node pkg="rosserial_python" type="serial_node.py" name="serial_node1">
 		<param name="port" value="/dev/ttyACM1"/>
 	</node>
@@ -23,5 +22,5 @@
 	<node pkg="rosserial_python" type="serial_node.py" name="serial_node2">
 		<param name="port" value="/dev/ttyACM2"/>
 	</node>
--->
+
 </launch>

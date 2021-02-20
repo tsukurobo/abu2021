@@ -79,11 +79,16 @@ def main():
 
 	# 直線
 	path1 = Path(POINT_GAP, POLAR_DR)
-	path1.add_line(*P_DR_START, *(2, 2), 'b')
-	path1.add_line(*(2, 2), *(5.425, 1), 'b')
-	path1.add_line(*(5.425, 1), *P_DR_RETRY, 'b')
-	path1.add_line(*P_DR_RETRY,*(5.425, 5.4), 'b')
-	path1.add_point(*(5.425, 5.4), 'b')
+	# path1.add_line(*P_DR_START, *(2, 2), 'b')
+	# path1.add_line(*(2, 2), *(5.425, 1), 'b')
+	# path1.add_line(*(5.425, 1), *P_DR_RETRY, 'b')
+	# path1.add_line(*P_DR_RETRY,*(5.425, 5.4), 'b')
+	# path1.add_point(*(5.425, 5.4), 'b')
+	path1.add_line(*(0,0),*(3,0), 'b')
+	path1.add_line(*(3,0),*(3,3), 'b')
+	path1.add_line(*(3,3),*(0,3), 'b')
+	# path1.add_line(*(0,3),*(0,0), 'b')
+	path1.add_point(*(0, 3), 'b')
 
 	#　クロソイド
 	# x = 6
@@ -93,7 +98,7 @@ def main():
 	# for i in range(1000):
 	# 	st = path1.add_clothoid(*st, 1/3, 'b')
 
-	# path1.make_csv('../pathes/hoge4.csv')
+	path1.make_csv('../pathes/square_3m.csv')
 
 	pf.show()
 
