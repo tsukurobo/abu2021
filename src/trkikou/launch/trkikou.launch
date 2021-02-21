@@ -1,0 +1,20 @@
+<launch>
+	<group ns="touteki">
+		<node name="new_touteki_talker" pkg="trkikou" type="new_touteki_talker">
+			<param name="deg_pick" value="-75"/>
+			<param name="deg_lift" value="-90"/>
+			<param name="time_lift" value="30"/>
+			<param name="deg_launch" value="470"/>
+			<param name="deg_stop1" value="720"/>
+			<param name="deg_slow" value="260"/>
+			<param name="deg_stop2" value="60"/>
+			<param name="pw_launch" value="120"/>
+			<param name="pw_return" value="90"/>
+		</node>
+
+		<node name="serial_node" pkg="rosserial_python" type="serial_node.py">
+			<param name="port" value="/dev/ttyACM0"/>
+			<param name="baud" value="115200" />
+		</node>
+	</group>
+</launch>
