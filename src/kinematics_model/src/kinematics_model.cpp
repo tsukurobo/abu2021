@@ -2,35 +2,34 @@
 #include <abu2021_msgs/cmd_vw.h>
 #include <abu2021_msgs/motor_pw.h>
 #include <string>
-#include <math.h>
 
 #define SQRT2 1.41421356
 #define MOTOR_NUM 4
 
 std::string mode = "DR"; //デフォルトはDRモード
-double h=1.0, w=1.0, dtoc=1.0, max_lin_v=1.0, max_ang_v=1.0;
+double h=1.0, w=1.0, dtoc=1.0;//max_lin_v=1.0, max_ang_v=1.0;
 double v_raw[MOTOR_NUM]={0};
 
 void velcallback(const abu2021_msgs::cmd_vw& vc){
     //並進速度司令ベクトルの最大値を制限
-    double vx = vc.vx, vy = vc.vy, norm_v = sqrt(vx*vx+vy*vy);
+    /*double vx = vc.vx, vy = vc.vy, norm_v = sqrt(vx*vx+vy*vy);
     if(norm_v > max_lin_v){
         vx = vx/norm_v;
         vy = vy/norm_v;
-    }
+    }*/
     if(mode == "DR"){
         //4輪オムニ
-        v_raw[0] = max_lin_v*(0.5*SQRT2*vy + 0.5*SQRT2*vx) + max_ang_v*dtoc*vc.w;
-        v_raw[1] = max_lin_v*(0.5*SQRT2*vy - 0.5*SQRT2*vx) + max_ang_v*dtoc*vc.w;
-        v_raw[2] = max_lin_v*(-0.5*SQRT2*vy - 0.5*SQRT2*vx) + max_ang_v*dtoc*vc.w;
-        v_raw[3] = max_lin_v*(-0.5*SQRT2*vy + 0.5*SQRT2*vx) + max_ang_v*dtoc*vc.w;
+        v_raw[0] = 0.5*SQRT2*vy + 0.5*SQRT2*vx + dtoc*vc.w;
+        v_raw[1] = 0.5*SQRT2*vy - 0.5*SQRT2*vx + dtoc*vc.w;
+        v_raw[2] = -0.5*SQRT2*vy - 0.5*SQRT2*vx + dtoc*vc.w;
+        v_raw[3] = -0.5*SQRT2*vy + 0.5*SQRT2*vx + dtoc*vc.w;
     }
     else if(mode == "TR"){
         //メカナム
-        v_raw[0] = max_lin_v*(vy + vx) + max_ang_v*0.5*(vc.w)*(w+h);
-        v_raw[1] = max_lin_v*(vy - vx) + max_ang_v*0.5*(vc.w)*(w+h);
-        v_raw[2] = max_lin_v*(-vy - vx) + max_ang_v*0.5*(vc.w)*(w+h);
-        v_raw[3] = max_lin_v*(-vy + vx) + max_ang_v*0.5*(vc.w)*(w+h);
+        v_raw[0] = vy + vx + 0.5*(vc.w)*(w+h);
+        v_raw[1] = vy - vx + 0.5*(vc.w)*(w+h);
+        v_raw[2] = -vy - vx + 0.5*(vc.w)*(w+h);
+        v_raw[3] = -vy + vx + 0.5*(vc.w)*(w+h);
     }
 }
 
@@ -56,8 +55,6 @@ int main(int argc, char **argv){
 
     nh.getParam("model/LPF_const_go", k_go);
     nh.getParam("model/LPF_const_stop", k_stop);
-    nh.getParam("model/max_lin_v", max_lin_v);
-    nh.getParam("model/max_ang_v", max_ang_v);
     nh.getParam("model/freq", freq);
     ros::Rate loop_rate(freq);
 

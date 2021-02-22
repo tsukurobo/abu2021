@@ -4,9 +4,7 @@ model: {
   height: 0.5,
   freq: 50,
   LPF_const_go: 0.3,
-  LPF_const_stop: 0.7,
-  max_lin_v: 3.0,
-  max_ang_v: 3.14
+  LPF_const_stop: 0.7
 }
 
 arduino_PID: {
