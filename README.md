@@ -1,10 +1,10 @@
 # abu2021
 
 ## 必要パッケージ
-sudo apt-get install python-catkin-tools  
+sudo apt install python-catkin-tools  
 sudo pip3 install rospkg catkin_pkg  
-sudo apt-get install ros-melodic-joy  
-sudo apt-get install ros-melodic-joystick-drivers  
+sudo apt install ros-melodic-joy  
+sudo apt install ros-melodic-joystick-drivers  
 
 ## パッケージ・ノード説明
 
