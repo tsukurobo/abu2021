@@ -31,10 +31,14 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 
 	cmd.vx = msg->axes[1];
 	cmd.vy = msg->axes[0];
-	cmd.w  = msg->axes[2];
+	cmd.w  = msg->axes[3];
 
 	ad_order.emg_stop = msg->buttons[5];
-	ad_order.path1 = msg->buttons[4];
+	ad_order.go = msg->buttons[4];
+	ad_order.path1 = msg->buttons[2];
+	ad_order.path2 = msg->buttons[3];
+	ad_order.path3 = msg->buttons[0];
+	ad_order.path4 = msg->buttons[1];
 
 	pub.publish(cmd);
 	pub_ad.publish(ad_order);

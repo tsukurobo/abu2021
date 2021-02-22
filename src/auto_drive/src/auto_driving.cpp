@@ -79,12 +79,14 @@ double RANGE_DCL = 1; //減速開始範囲[m]
 double YAW_GAIN_P = 1; //yaw軸PID制御Pゲイン
 double YAW_GAIN_I = 0; //yaw軸PID制御Iゲイン
 double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
+std::string PATH1_PATH;
+std::string PATH2_PATH;
+std::string PATH3_PATH;
+std::string PATH4_PATH;
+/* std::string PATH1_PATH("/home/koki/abu2021/src/auto_drive/pathes/dr_st_rt.csv"); */
 
 //自己位置推定パラメータ
 //初期状態[m][m][rad]
-/* double INIT_X = 0.5; */
-/* double INIT_Y = 5.425; */
-/* double INIT_YAW = -M_PI/2; */
 double INIT_X = 0;
 double INIT_Y = 0;
 double INIT_YAW = 0;
@@ -102,8 +104,12 @@ Pure_pursuit pp;
 
 abu2021_msgs::cmd_vw cmd;
 int emg_stop = 0;
+int order_go = 0;
 int order_path1 = 0;
-int mode_path1 = 0;
+int order_path2 = 0;
+int order_path3 = 0;
+int order_path4 = 0;
+int mode_go = 0;
 
 
 int main(int argc, char **argv){
@@ -118,6 +124,7 @@ int main(int argc, char **argv){
 	nh.getParam("state/init_x", INIT_X);
 	nh.getParam("state/init_y", INIT_Y);
 	nh.getParam("state/init_yaw", INIT_YAW);
+	nh.getParam("state/wheel", WHEEL);
 	nh.getParam("yaw_pid/p", YAW_GAIN_P);
 	nh.getParam("yaw_pid/i", YAW_GAIN_I);
 	nh.getParam("yaw_pid/d", YAW_GAIN_D);
@@ -125,25 +132,29 @@ int main(int argc, char **argv){
 	nh.getParam("pure_pursuit/ahead_num", AHEAD_NUM);
 	nh.getParam("pure_pursuit/range_fin", RANGE_FIN);
 	nh.getParam("pure_pursuit/range_dcl", RANGE_DCL);
+	nh.getParam("pure_pursuit/path1", PATH1_PATH);
+	nh.getParam("pure_pursuit/path2", PATH2_PATH);
+	nh.getParam("pure_pursuit/path3", PATH3_PATH);
+	nh.getParam("pure_pursuit/path4", PATH4_PATH);
 
 	ros::Rate rate(LOOP_RATE);
 
 	/* pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/square_3m.csv", AHEAD_NUM); */
-	pp.reset_path("/home/koki/abu2021/src/auto_drive/pathes/dr_st_rt.csv", AHEAD_NUM);
+	pp.reset_path(PATH3_PATH, AHEAD_NUM);
 	pp.set_state(INIT_X, INIT_Y, INIT_YAW);
 
 	while(ros::ok()){
 		ros::spinOnce();
 
 		if(emg_stop == 1){
-			mode_path1 = 0;
+			mode_go = 0;
 
 			cmd.vx = 0;
 			cmd.vy = 0;
 			cmd.w  = 0;
 			pub.publish(cmd);
-		}else if(order_path1 ==  1 || mode_path1 == 1){
-			mode_path1 = 1;
+		}else if(order_go ==  1 || mode_go == 1){
+			mode_go = 1;
 
 			if(pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL) != 0){
 				pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
@@ -155,11 +166,15 @@ int main(int argc, char **argv){
 				cmd.vy = 0;
 				cmd.w  = 0;
 
-				mode_path1 = 0;
+				mode_go = 0;
 			}
 			
 			pub.publish(cmd);
-		}
+		}else if(order_path1 == 1) pp.reset_path(PATH1_PATH, AHEAD_NUM);
+		else if(order_path2 == 1) pp.reset_path(PATH2_PATH, AHEAD_NUM);
+		else if(order_path3 == 1) pp.reset_path(PATH3_PATH, AHEAD_NUM);
+		else if(order_path4 == 1) pp.reset_path(PATH4_PATH, AHEAD_NUM);
+
 
 		ROS_FATAL("\nstate_x: %f\tstate_y: %f\tstate_yaw: %f\ncmd_vx: %f\tcmd_vy: %f\tcmd_w: %f"
 				, pp.state_p.x, pp.state_p.y, pp.state_yaw/M_PI*180, cmd.vx, cmd.vy, cmd.w/M_PI*180);
@@ -189,7 +204,11 @@ void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
 
 void get_order(const abu2021_msgs::auto_drive_order::ConstPtr& order){
 	emg_stop = order->emg_stop;
+	order_go    = order->go;
 	order_path1 = order->path1;
+	order_path2 = order->path2;
+	order_path3 = order->path3;
+	order_path4 = order->path4;
 }
 
 
@@ -364,11 +383,13 @@ int Pure_pursuit::load_csv(){
 
 	// check file open
 	if(file.fail()){
-		printf("Failed to open file\n");
+		ROS_FATAL("Failed to open file\n");
 		return -1;
 	}
 
 	// get file
+	path.clear();
+
 	while(1){
 		std::string line_x;
 		std::string line_y;

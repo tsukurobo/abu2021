@@ -86,7 +86,7 @@ def main():
 	# path1.add_line(*P_DR_RETRY,*(5.425, 5.4), 'b')
 	# path1.add_point(*(5.425, 5.4), 'b')
 	path1.add_point(*P_DR_RETRY, 'b')
-	# path1.add_line(*(0,0),*(3,0), 'b')
+	# path1.add_line(*(0,0),*(0,3), 'b')
 	# path1.add_line(*(3,0),*(3,3), 'b')
 	# path1.add_line(*(3,3),*(0,3), 'b')
 	# path1.add_line(*(0,3),*(0,0), 'b')
