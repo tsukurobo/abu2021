@@ -28,9 +28,9 @@ int main(int argc, char **argv){
 void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	abu2021_msgs::cmd_vw cmd;
 
-	cmd.vx = msg->axes[1];
-	cmd.vy = msg->axes[0];
-	cmd.w  = msg->axes[2];
+	cmd.vx = 2.0*msg->axes[1];
+	cmd.vy = 2.0*msg->axes[0];
+	cmd.w  = 3.0*msg->axes[2];
 
 	pub.publish(cmd);
 }
