@@ -1,0 +1,19 @@
+model: {
+  mode: "TR",
+  width: 0.57,
+  height: 0.5,
+  freq: 50,
+  LPF_const_go: 0.3,
+  LPF_const_stop: 0.7
+}
+
+arduino_PID: {
+  kp: [ 30.0, 30.0, 30.0, 30.0 ],
+  ki: [ 0.0, 0.0, 0.0, 0.0 ],
+  kd: [ 0.0, 0.0, 0.0, 0.0 ],
+  tdel: [0.014, 0.014, 0.014, 0.014 ]
+}
+
+motor_driver: {
+  addrs: [ 0x33, 0x77, 0x20, 0x14 ]
+}
