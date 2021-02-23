@@ -51,14 +51,16 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   cmd_vw.msg
+  motor_pw.msg
+  motor_enc.msg
+  odom_rad.msg
+  auto_drive_order.msg
   number.msg
   guru.msg
   from_three.msg
   syasyutu.msg
   mode_hassya.msg
   for_ardiuno.msg
-  motor_pw.msg
-  motor_enc.msg
 )
 
 ## Generate services in the 'srv' folder
