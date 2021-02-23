@@ -1,4 +1,5 @@
 //"joy"をサブスクライブ
+//pub_enc2もサブスクライブ
 //"topic"にパブリッシュ
 //奇数回押してオン、偶数回押してオフ
 //
@@ -12,6 +13,7 @@
 ros::Publisher  pub;
 ros::Subscriber sub;
 int subed_enc = 2;
+int count=0;
 
 void chatterCallback(const sensor_msgs::Joy::ConstPtr& msg){
 	//メッセージのオブジェクト
@@ -19,8 +21,10 @@ void chatterCallback(const sensor_msgs::Joy::ConstPtr& msg){
 	
 	//hogeがパブリッシュするhogeの中に購読したデータそのまま入れる
 	if(msg->axes[5]==1){
-		hoge.data =100;
-		pub.publish(hoge);
+		count=count+1;
+		if((count%2)==0){
+			hoge.data =0;
+			pub.publish(hoge);
 	}
 	if(msg->axes[5]==-1){
 		hoge.data=-100;

@@ -2,7 +2,7 @@
 //"pub_enc"もサブスクライブ
 //"topic"にパブリッシュ mode_hassya.msg使う　pom/aizu,なんかだめだから配列にした
 //4段階調整、横流し
-//
+//たぶん修正できた
 
 #include <ros/ros.h>
 #include <std_msgs/Int32MultiArray.h>
@@ -19,7 +19,7 @@ int subed_enc = 2;
 //ここでしきい値を先にきめて５箇所で止められうように設定する
 long sikii1=40000;
 long sikii2=60000;
-long sikii3=70000;
+long sikii3=73000;
 long sikii4=80000;
 int pw=-200;
 long e=0;
@@ -41,14 +41,33 @@ void chatterCallback1(const sensor_msgs::Joy::ConstPtr& msg1){
 	if(msg1->axes[4]==-1){
 		mode=2;
 	}
-	if(msg1->buttons[4]==1 && msg1->buttons[5]==1){
+	if(msg1->buttons[6]==1 ){
+<<<<<<< HEAD
+		//ソレノイドの合図
 		pub_msg.data[1]=1;
 		pub.publish(pub_msg);
 	}
-	if(msg1->buttons[4]==0 || msg1->buttons[5]==0){
+	if(msg1->buttons[7]==1 ){
+		//ソレノイドの合図
+		pub_msg.data[1]=2;
+		pub.publish(pub_msg);
+	}
+	if(msg1->buttons[6]==0 || msg1->buttons[7]==0 ){
+		//ソレノイドの合図
+=======
+		pub_msg.data[1]=1;
+		pub.publish(pub_msg);
+	}
+	if(msg1->buttons[7]==1){
+		pub_msg.data[1]=2;
+		pub.publish(pub_msg);
+	}
+	if(msg1->buttons[7]==0 && msg1->buttons[6]==0){
+>>>>>>> drkikou
 		pub_msg.data[1]=0;
 		pub.publish(pub_msg);
 	}
+	
 	if(msg1->buttons[10]==1){
 		mode=10;
 	}
@@ -73,10 +92,9 @@ void chatterCallback2(const std_msgs::Int32::ConstPtr& msg2){
 int main(int argc, char **argv){
 	ros::init(argc, argv, "joy_kakudo_hassya");
 	ros::NodeHandle nh;
-	pub_msg.data.resize(3);
+	pub_msg.data.resize(2);
 	pub_msg.data[0]=0;
 	pub_msg.data[1]=0;
-	pub_msg.data[2]=0;
 	pub = nh.advertise<std_msgs::Int32MultiArray>("topic", 1);
 	//topicっていうトピックにパブリッシュするよ1はどれくらい貯めるかの数字
 	sub1 = nh.subscribe("joy", 1, chatterCallback1);
