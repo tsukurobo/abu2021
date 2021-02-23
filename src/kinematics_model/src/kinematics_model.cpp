@@ -12,8 +12,8 @@ double v_raw[MOTOR_NUM]={0};
 
 void velcallback(const abu2021_msgs::cmd_vw& vc){
     //並進速度司令ベクトルの最大値を制限
-    /*double vx = vc.vx, vy = vc.vy, norm_v = sqrt(vx*vx+vy*vy);
-    if(norm_v > max_lin_v){
+    double vx = vc.vx, vy = vc.vy;// norm_v = sqrt(vx*vx+vy*vy);
+    /*if(norm_v > max_lin_v){
         vx = vx/norm_v;
         vy = vy/norm_v;
     }*/

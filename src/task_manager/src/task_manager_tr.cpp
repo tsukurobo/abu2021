@@ -28,9 +28,9 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	abu2021_msgs::cmd_vw cmd;
 	std_msgs::Int32 int_order;
 
-	cmd.vx = msg->axes[1];
-	cmd.vy = msg->axes[0];
-	cmd.w  = msg->axes[2];
+	cmd.vx = 2.0*msg->axes[1];
+	cmd.vy = 2.0*msg->axes[0];
+	cmd.w  = 3.0*msg->axes[2];
 	
 	if ((msg->buttons[0] == 1) || (msg->buttons[3] == 1)) order = 0;
 	else if (msg->buttons[2] == 1) order = 1;

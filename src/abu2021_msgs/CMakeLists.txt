@@ -50,9 +50,13 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  # Message1.msg
-  # Message2.msg
   cmd_vw.msg
+  number.msg
+  guru.msg
+  from_three.msg
+  syasyutu.msg
+  mode_hassya.msg
+  for_ardiuno.msg
   motor_pw.msg
   motor_enc.msg
 )
