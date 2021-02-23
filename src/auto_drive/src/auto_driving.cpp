@@ -109,6 +109,9 @@ int order_path1 = 0;
 int order_path2 = 0;
 int order_path3 = 0;
 int order_path4 = 0;
+int order_set1 = 0;
+int order_set2 = 0;
+int order_set3 = 0;
 int mode_go = 0;
 
 
@@ -170,10 +173,16 @@ int main(int argc, char **argv){
 			}
 			
 			pub.publish(cmd);
-		}else if(order_path1 == 1) pp.reset_path(PATH1_PATH, AHEAD_NUM);
+		}
+		
+		if(order_path1 == 1) pp.reset_path(PATH1_PATH, AHEAD_NUM);
 		else if(order_path2 == 1) pp.reset_path(PATH2_PATH, AHEAD_NUM);
 		else if(order_path3 == 1) pp.reset_path(PATH3_PATH, AHEAD_NUM);
 		else if(order_path4 == 1) pp.reset_path(PATH4_PATH, AHEAD_NUM);
+		
+		if(order_set1 == 1) pp.set_state(0.5, 5.425, -M_PI/2);
+		else if(order_set2 == 1) pp.set_state(5.425, 2.45, M_PI/2);
+		else if(order_set3 == 1) pp.set_state(11.4, 0.5, M_PI);
 
 
 		ROS_FATAL("\nstate_x: %f\tstate_y: %f\tstate_yaw: %f\ncmd_vx: %f\tcmd_vy: %f\tcmd_w: %f"
@@ -209,6 +218,9 @@ void get_order(const abu2021_msgs::auto_drive_order::ConstPtr& order){
 	order_path2 = order->path2;
 	order_path3 = order->path3;
 	order_path4 = order->path4;
+	order_set1 = order->set1;
+	order_set2 = order->set2;
+	order_set3 = order->set3;
 }
 
 
