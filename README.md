@@ -35,6 +35,7 @@ task_manager_tr
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
   [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系）  
+  [/touteki/tr_order] (std_msgs::Int32)：投擲機構へ送る動作指示. □ボタン又は×ボタンで緊急停止，△ボタンで装填，○ボタンで射出．
 ```
 ### kinematics_model
 メカナム・オムニの動力学モデルを利用して各モータの指令値を計算
