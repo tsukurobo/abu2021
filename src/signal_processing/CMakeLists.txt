@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(auto_drive)
+project(signal_processing)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -105,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES auto_drive
+#  LIBRARIES signal_processing
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
@@ -123,7 +123,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/auto_drive.cpp
+#   src/${PROJECT_NAME}/signal_processing.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -134,8 +134,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/auto_drive_node.cpp)
-add_executable(auto_driving src/auto_driving.cpp)
+# add_executable(${PROJECT_NAME}_node src/signal_processing_node.cpp)
+add_executable(gyro_kalman src/gyro_kalman.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,13 +146,13 @@ add_executable(auto_driving src/auto_driving.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(auto_driving ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(gyro_kalman ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(auto_driving ${catkin_LIBRARIES})
+target_link_libraries(gyro_kalman ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -201,7 +201,7 @@ target_link_libraries(auto_driving ${catkin_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_auto_drive.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_signal_processing.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

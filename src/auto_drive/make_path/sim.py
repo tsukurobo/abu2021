@@ -190,7 +190,7 @@ P_DR_RETRY = (5.425, 2.45)
 # パラメータ
 FRAMES = 100 # 最大フレーム数
 FRAME_PARAM = 1/2 # 機体フレームパラメータ
-AHEAD_NUM = 12 # 最近経路点から何個先の点を目標点にするか
+AHEAD_NUM = 100 # 最近経路点から何個先の点を目標点にするか
 SPEED = 2.5 # 最大移動速度[m/s] ############機体の向きにかかわらず出せる速度は一定（今後直す予定）
 FINISH_RANGE = 0.3 # 終了判定範囲[m]
 DT = 0.1 #周期[s]
@@ -198,7 +198,7 @@ DT = 0.1 #周期[s]
 pf = Animation(FRAMES, DT*1000)
 
 def main():
-	path1 = Target_path('pathes/hoge4.csv', 'r')
+	path1 = Target_path('../pathes/dr_st_rt.csv', 'r')
 
 	robo_D = State(*P_DR_START, -pi/2, 'b', SPEED, FRAME_PARAM, FINISH_RANGE)
 	robo_D.load_pursuit_data(path1, AHEAD_NUM)
