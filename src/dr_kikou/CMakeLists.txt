@@ -210,9 +210,6 @@ target_link_libraries(int_talker ${catkin_LIBRARIES})
 add_executable(pub_enc src/pub_enc.cpp)
 target_link_libraries(pub_enc ${catkin_LIBRARIES})
 
-#add_executable(pub_motor_only src/pub_motor_only.cpp)
-#target_link_libraries(pub_motor_only ${catkin_LIBRARIES})
-
 add_executable(joy_test src/joy_test.cpp)
 target_link_libraries(joy_test ${catkin_LIBRARIES})
 
@@ -224,5 +221,13 @@ target_link_libraries(joy_kakudo ${catkin_LIBRARIES})
 
 add_executable(joy_syasyutu src/joy_syasyutu.cpp)
 target_link_libraries(joy_syasyutu ${catkin_LIBRARIES})
+
+add_executable(kaisyu_joy src/kaisyu_joy.cpp)
+target_link_libraries(kaisyu_joy ${catkin_LIBRARIES})
+
+add_executable(joy_syasyutu2 src/joy_syasyutu2.cpp)
+target_link_libraries(joy_syasyutu2 ${catkin_LIBRARIES})
+
+
 
 

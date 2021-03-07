@@ -12,6 +12,9 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   abu2021_msgs
+  tf
+  tf2
+  tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -136,6 +139,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/signal_processing_node.cpp)
 add_executable(gyro_kalman src/gyro_kalman.cpp)
+add_executable(dead_reckoning src/dead_reckoning.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -147,12 +151,14 @@ add_executable(gyro_kalman src/gyro_kalman.cpp)
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(gyro_kalman ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(dead_reckoning ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(gyro_kalman ${catkin_LIBRARIES})
+target_link_libraries(dead_reckoning ${catkin_LIBRARIES})
 
 #############
 ## Install ##
