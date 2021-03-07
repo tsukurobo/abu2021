@@ -35,7 +35,7 @@ task_manager_tr
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
   [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系）  
-  [/touteki/tr_order] (std_msgs::Int32)：投擲機構へ送る動作指示. □ボタン又は×ボタンで緊急停止，△ボタンで装填，○ボタンで射出．
+  [tr_order] (std_msgs::Int32)：TRへ送る動作指示. □ボタン又は×ボタンで投擲動作の緊急停止，△ボタンで装填，○ボタンで射出．
 ```
 ### kinematics_model
 メカナム・オムニの動力学モデルを利用して各モータの指令値を計算
@@ -47,6 +47,17 @@ kinematics_model
   [motor_vel] (abu2021_msgs::motor_pw): 各モーターの速度指令
 ※補足: cmd_trをサブスクライブする場合、パッケージ内のconstant_tr.yamlをパラメータサーバーに送ってノードを起動する必要がある
 同様に、cmd_drをサブスクライブする場合、constant_dr.yamlをパラメータサーバーに送ってノードを起動する必要がある
+```
+### trkikou
+TRのタスクマネージャからの司令をArduinoへの司令に変換する
+```
+new_touteki_talker
+  sub
+  [touteki_enc](std_msgs::Int64)：エンコーダから得た角度をArduinoから受け取る．
+  [tr_order](std_msgs::Int32)：TRのタスクマネージャからの司令を受け取る.
+  pub
+  [touteki_sizi](trkikou::sizi)：Arduinoへの司令．mode(0:pwを読む,1:PID)，deg(mode=1での目標角度)，pw(mode=0でのモータ出力)，solenoid(0:緩める,1:開ける,2:閉める)
+  [touteki_node_debug](std_msgs::Int64MultiArray)：デバッグ用. [step_pick,step_launch,count_pick]
 ```
 ### auto_drive_sim
 自動走行用パッケージ．経路生成プログラム等含む．まだノード無し．
