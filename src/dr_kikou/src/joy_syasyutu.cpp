@@ -42,19 +42,6 @@ void chatterCallback1(const sensor_msgs::Joy::ConstPtr& msg1){
 		mode=2;
 	}
 	if(msg1->buttons[6]==1 ){
-<<<<<<< HEAD
-		//ソレノイドの合図
-		pub_msg.data[1]=1;
-		pub.publish(pub_msg);
-	}
-	if(msg1->buttons[7]==1 ){
-		//ソレノイドの合図
-		pub_msg.data[1]=2;
-		pub.publish(pub_msg);
-	}
-	if(msg1->buttons[6]==0 || msg1->buttons[7]==0 ){
-		//ソレノイドの合図
-=======
 		pub_msg.data[1]=1;
 		pub.publish(pub_msg);
 	}
@@ -63,7 +50,6 @@ void chatterCallback1(const sensor_msgs::Joy::ConstPtr& msg1){
 		pub.publish(pub_msg);
 	}
 	if(msg1->buttons[7]==0 && msg1->buttons[6]==0){
->>>>>>> drkikou
 		pub_msg.data[1]=0;
 		pub.publish(pub_msg);
 	}
