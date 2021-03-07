@@ -44,11 +44,13 @@ int kakudo = 0;
 int step_pick = 0;
 int step_launch = 0;
 int count_pick = 0;
+int count_stop = 0;
 
 // プロトタイプ宣言
 void all_stop();
 void pick();
 void launch();
+void setting();
 void publish_sizi();
 void publish_debug();
 void get_enc(const std_msgs::Int64& int_enc);
@@ -78,7 +80,7 @@ int main(int argc, char **argv) {
 	pnh.getParam("pw_launch", pw_launch);
 	pnh.getParam("pw_return", pw_return);
 	
-  	ros::Rate loop_rate(10);
+  	ros::Rate loop_rate(100);
 	
 	while (ros::ok()) {
 		ros::spinOnce();
@@ -101,7 +103,7 @@ int main(int argc, char **argv) {
 
 		publish_sizi();
 		publish_debug();
-		
+
     		loop_rate.sleep();
 	
 	}
@@ -122,11 +124,63 @@ void get_order (const std_msgs::Int32& int_order) {
 void pick () {
 	if (step_pick == 0) {
 
+		mode = 0;
+		pw = -55;
+		if (kakudo <= -10) step_pick = 1;
+
+	} else if (step_pick == 1) {
+
 		mode = 1; //PID
 		deg = deg_pick; //矢を掴む位置
-		solenoid = 1; //アームを開ける
+		solenoid = 1; //アームを開ける		
 
-		if (kakudo <= deg_pick) {
+		if (kakudo <= deg_pick+1) {
+			solenoid = 0; //アームを緩める
+			step_pick = 2;
+		}
+
+	} else if (step_pick == 2) {
+
+		solenoid = 2; //アームを閉める
+		sleep(1);
+		step_pick = 3;
+		
+
+	} else if (step_pick == 3) {
+
+		mode = 1; //PID
+		deg = deg_lift; //少し持ち上げる 値は要検証。
+		count_pick += 1;
+
+		if (count_pick >= time_lift) {
+			count_pick = 0;
+			step_pick = 4;
+		}
+
+	} else if (step_pick == 4) {
+		//setting();
+		//all_stop();
+		
+		mode = 0;
+		pw = kakudo*2/deg_pick;
+		//if (pw < 40) pw = 40;
+
+		if (kakudo >= 0) step_pick = 5;
+		
+	} else if (step_pick == 5) {
+		setting();
+		//all_stop();
+		
+	}
+
+	/*
+	if (step_pick == 0) {
+
+		mode = 1; //PID
+		deg = deg_pick; //矢を掴む位置
+		solenoid = 1; //アームを開ける		
+
+		if (kakudo <= deg_pick+1) {
 			solenoid = 0; //アームを緩める
 			step_pick = 1;
 		}
@@ -134,7 +188,7 @@ void pick () {
 	} else if (step_pick == 1) {
 
 		solenoid = 2; //アームを閉める
-		sleep(2);
+		sleep(1);
 		step_pick = 2;
 		
 
@@ -150,9 +204,21 @@ void pick () {
 		}
 
 	} else if (step_pick == 3) {
+		//setting();
+		//all_stop();
+		
+		mode = 0;
+		pw = kakudo*2/deg_pick;
+		//if (pw < 40) pw = 40;
+
+		if (kakudo >= 0) step_pick = 4;
+		
+	} else if (step_pick == 4) {
 
 		all_stop();
+		
 	}
+	*/
 }
 
 void launch() {
@@ -163,14 +229,14 @@ void launch() {
 
 		if (kakudo >= deg_launch) {
 			solenoid = 0; //アームを緩める
-			sleep(0.01);
+			sleep(0.0001);
 			solenoid = 1; //射出
 			step_launch = 1;
 		}
 
 	} else if (step_launch == 1) {
 
-		pw = (kakudo-deg_stop1)*pw_launch/(deg_launch-deg_stop1); //台形制御で角度deg_stopで止める
+		pw = (kakudo-deg_stop1)*pw_return/(deg_launch-deg_stop1); //台形制御で角度deg_stopで止める
 
 		if (kakudo >= deg_stop1) {
 			solenoid = 0; //アームを緩める
@@ -184,14 +250,24 @@ void launch() {
 
 	} else if (step_launch == 3) {
 
-		pw = -(kakudo-deg_stop2)*pw_launch/(deg_slow-deg_stop2); //台形制御で角度0で止める
+		pw = -(kakudo-deg_stop2)*pw_return/(deg_slow-deg_stop2); //台形制御で角度0で止める
 		if (kakudo <= deg_stop2) step_launch = 4;
 
 	} else if (step_launch == 4) {
 
-		all_stop();
+		setting();
 
 	}
+}
+
+void setting() {
+	mode = 1; //PID
+	deg = 0;
+
+	if ((kakudo>-1)&(kakudo<1)) count_stop += 1; 
+	else count_stop = 0;
+	
+	if (count_stop >= 5) all_stop();
 }
 
 void publish_sizi() {
@@ -223,4 +299,5 @@ void all_stop() {
 	step_launch = 0;
 
 	count_pick = 0;
+	count_stop = 0;
 }

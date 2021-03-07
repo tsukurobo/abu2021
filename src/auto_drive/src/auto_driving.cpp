@@ -87,8 +87,8 @@ std::string PATH4_PATH;
 
 //自己位置推定パラメータ
 //初期状態[m][m][rad]
-double INIT_X = 0;
-double INIT_Y = 0;
+double INIT_X = 3;
+double INIT_Y = 3;
 double INIT_YAW = 0;
 double WHEEL = 0.0292; //オドメータ車輪半径[m]
 
@@ -199,8 +199,8 @@ void get_gyro(const std_msgs::Float64::ConstPtr& yaw){
 }
 
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
-	static double pre_x = INIT_X;
-	static double pre_y = INIT_Y;
+	static double pre_x = 0;
+	static double pre_y = 0;
 
 	double dx = (odm->x - pre_x)*WHEEL*cos(pp.state_yaw) - (odm->y - pre_y)*WHEEL*sin(pp.state_yaw);
 	double dy = (odm->x - pre_x)*WHEEL*sin(pp.state_yaw) + (odm->y - pre_y)*WHEEL*cos(pp.state_yaw);

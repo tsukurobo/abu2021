@@ -31,7 +31,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 
 	cmd.vx = 2.0*msg->axes[1];
 	cmd.vy = 2.0*msg->axes[0];
-	cmd.w  = 3.0*msg->axes[2];
+	cmd.w  = 3.0*msg->axes[3];
 
 	ad_order.go = msg->buttons[4];
 	ad_order.emg_stop = msg->buttons[5];

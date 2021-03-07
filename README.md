@@ -5,6 +5,11 @@ sudo apt install python-catkin-tools
 sudo pip3 install rospkg catkin_pkg  
 sudo apt install ros-melodic-joy  
 sudo apt install ros-melodic-joystick-drivers  
+sudo apt install ros-melodic-rosserial-arduino  
+sudo apt install ros-melodic-rosserial   
+
+## 注意
+$ git clone 後$ catkin build できない場合，$ catkin build trkikou と$ catkin build abu2021_msgs を先にやってから$ catkin build するといける．
 
 ## パッケージ・ノード説明
 
@@ -65,6 +70,13 @@ new_touteki_talker
 ### abu2021_msgs
 メッセージ用パッケージ．使うカスタムメッセージは全部ここに入れる．ノード無し
 
+## UTM-30LX-EWの使用方法
+1. URGの電源を入れる. 茶色のケーブルを12V、青色のケーブルをGNDに接続する.
+2. URGから伸びているLANケーブルをPCと接続する.
+3. ターミナルにifconfigと入力し、イーサネットのインターフェース名を調べ、メモする.
+4. (有線接続できませんでしたなどとメッセージが表示された後に)sudo ifconfig (イーサネットのインターフェース名) (ipアドレス)とターミナルに入力し、PCのipアドレスを変更する.  
+   **注意: ipアドレスには、URGに設定されているipアドレスをもとに適当なものを指定する. 例えば、URGのipアドレスが192.168.0.10なら、192.168.0.xxx(xxxは10以外の値)を指定する. ちなみに、デフォルトで設定されているURGのipアドレスは192.168.0.10である. また、172.16.0.10に設定したものもあるので注意.**  
+5. rosrun urg_node urg_node _ip_address:=(URGのipアドレス)をターミナルに打って実行し、streaming dataと表示されれば正常に接続されている.
 
 ## システム関係図
 ![system_diagram.png](https://github.com/tsukurobo/abu2021/blob/main/README/system_diagram.png)
