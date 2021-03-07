@@ -5,6 +5,11 @@ sudo apt install python-catkin-tools
 sudo pip3 install rospkg catkin_pkg  
 sudo apt install ros-melodic-joy  
 sudo apt install ros-melodic-joystick-drivers  
+sudo apt install ros-melodic-rosserial-arduino  
+sudo apt install ros-melodic-rosserial   
+
+## 注意
+$ git clone 後$ catkin build できない場合，$ catkin build trkikou と$ catkin build abu2021_msgs を先にやってから$ catkin build するといける．
 
 ## パッケージ・ノード説明
 
