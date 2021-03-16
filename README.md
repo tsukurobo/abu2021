@@ -96,7 +96,7 @@ dead_reckoning
   [gyro_yaw] (std_msgs::Float64)：カルマンフィルタをかけた後の機体角[deg]
   [odometer] (std_msgs::odom_rad)：オドメータの各車輪の変化角度[rad,rad]
   tf broadcast
-  base_link->odom：機体の相対座標[m,m,rad]
+  odom->base_link：機体の相対座標[m,m,rad]
 ```
 
 ### abu2021_msgs
