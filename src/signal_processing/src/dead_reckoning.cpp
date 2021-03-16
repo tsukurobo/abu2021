@@ -6,9 +6,6 @@
 #include "abu2021_msgs/odom_rad.h"
 
 //初期状態[m][m][rad]
-double INIT_X = 0;
-double INIT_Y = 0;
-double INIT_YAW = 0;
 double WHEEL = 0.0292; //オドメータ車輪半径[m]
 
 double st_x = 0;
@@ -32,16 +29,7 @@ int main(int argc, char **argv){
 	ros::Subscriber sub_odm = nh.subscribe("odometer", 1, get_odom);
 	ros::Subscriber sub_yaw = nh.subscribe("gyro_yaw", 1, get_gyro);
 
-	nh.getParam("state/init_x", INIT_X);
-	nh.getParam("state/init_y", INIT_Y);
-	nh.getParam("state/init_yaw", INIT_YAW);
-	nh.getParam("state/wheel", WHEEL);
-
 	ros::Rate rate(LOOP_RATE);
-
-	st_x = INIT_X;
-	st_y = INIT_Y;
-	st_yaw = INIT_YAW;
 
 	while(ros::ok()){
 		ros::spinOnce();
@@ -86,5 +74,5 @@ void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
 }
 
 void get_gyro(const std_msgs::Float64::ConstPtr& yaw){
-	st_yaw = yaw->data*M_PI/180 + INIT_YAW;
+	st_yaw = yaw->data*M_PI/180;
 }

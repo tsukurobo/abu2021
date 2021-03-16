@@ -31,7 +31,7 @@ task_manager_dr
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
-  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系） 
+  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直上zの右手系） 
   [ad_order] (abu2021_msgs::auto_drive_order)：自動走行の指令．緊急停止，目標経路の決定，自己位置の再設定等を行う（ボタン未確定）
 ```
 ```
@@ -40,7 +40,7 @@ task_manager_tr
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
-  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系）  
+  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直上zの右手系）  
   [tr_order] (std_msgs::Int32)：TRへ送る動作指示. □ボタン又は×ボタンで投擲動作の緊急停止，△ボタンで装填，○ボタンで射出．
 ```
 ### kinematics_model
@@ -72,10 +72,10 @@ auto_driving
   自動走行の目標経路から，目標速度・角速度を出す（pure pursuit）
   sub
   [ad_order] (abu2021_msgs::auto_drive_order)：ジョイコンからの自動走行の指令．緊急停止，目標経路の決定，自己位置の再設定等を行う（ボタン未確定）
-  [gyro_yaw] (std_msgs::Float64)：カルマンフィルタをかけた後のジャイロセンサの値[rad]
+  [gyro_yaw] (std_msgs::Float64)：カルマンフィルタをかけた後のジャイロセンサの値[deg]
   [odometer] (std_msgs::odom_rad)：オドメータの各車輪の変化角度[rad,rad]
   pub
-  [cmd](trkikou::sizi)：足回りモデルへ送る目標速度・角速度[m/s,m/s,rad/s]
+  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度[m/s, m/s, rad/s]
 ```
 
 ### signal_processiong
@@ -84,20 +84,21 @@ auto_driving
 gyro_kalman
   ジャイロセンサの生値と目標角速度から，カルマンフィルタをかけた機体角度を出力
   sub
-  [gyro_raw] (std_msgs::Float64)：IMUセンサからの角速度の生値[deg/s]
-  [odometer] (std_msgs::odom_rad)：オドメータの各車輪の変化角度[rad,rad]
+  [gyro_raw] (std_msgs::Float64)：IMUからの角速度の生値[deg/s]
+  [cmd] (abu2021_msgs::cmd_vw)：機体の目標速度・角速度[m/s, m/s, rad/s]
   pub
-  [gyro_yaw](std_msgs::Float64)：カルマンフィルタをかけた後のジャイロセンサの値[rad]
+  [gyro_yaw](std_msgs::Float64)：カルマンフィルタをかけた後の機体角[deg]
 ```
 ```
 dead_reckoning
-  ジャイロセンサの生値とオドメータの値から相対座標を出力
+  ジャイロセンサによる機体角とオドメータの値から相対座標を出力
   sub
-  [gyro_raw] (std_msgs::Float64)：IMUセンサからの角速度の生値[deg/s]
-  [odometer] (abu2021_msgs::odom_rad)：機体の目標角速度[rad/s]
+  [gyro_yaw] (std_msgs::Float64)：カルマンフィルタをかけた後の機体角[deg]
+  [odometer] (std_msgs::odom_rad)：オドメータの各車輪の変化角度[rad,rad]
   tf broadcast
   base_link->odom：機体の相対座標[m,m,rad]
 ```
+
 ### abu2021_msgs
 メッセージ用パッケージ．使うカスタムメッセージは全部ここに入れる．ノード無し
 
