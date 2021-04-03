@@ -31,7 +31,8 @@ task_manager_dr
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
-  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系） 
+  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直上zの右手系） 
+  [ad_order] (abu2021_msgs::auto_drive_order)：自動走行の指令．緊急停止，目標経路の決定，自己位置の再設定等を行う（ボタン未確定）
 ```
 ```
 task_manager_tr
@@ -39,7 +40,7 @@ task_manager_tr
   sub  
   [joy] (sensor_msgs::Joy)：コントローラの入力．左スティックでxy速度，右スティックでyaw角速度  
   pub
-  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直zの右手系）  
+  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度（正面x，鉛直上zの右手系）  
   [tr_order] (std_msgs::Int32)：TRへ送る動作指示. □ボタン又は×ボタンで投擲動作の緊急停止，△ボタンで装填，○ボタンで射出．
 ```
 ### kinematics_model
@@ -64,8 +65,39 @@ new_touteki_talker
   [touteki_sizi](trkikou::sizi)：Arduinoへの司令．mode(0:pwを読む,1:PID)，deg(mode=1での目標角度)，pw(mode=0でのモータ出力)，solenoid(0:緩める,1:開ける,2:閉める)
   [touteki_node_debug](std_msgs::Int64MultiArray)：デバッグ用. [step_pick,step_launch,count_pick]
 ```
-### auto_drive_sim
-自動走行用パッケージ．経路生成プログラム等含む．まだノード無し．
+### auto_drive
+自動走行用パッケージ．経路生成プログラム等含む．
+```
+auto_driving
+  自動走行の目標経路から，目標速度・角速度を出す（pure pursuit）
+  sub
+  [ad_order] (abu2021_msgs::auto_drive_order)：ジョイコンからの自動走行の指令．緊急停止，目標経路の決定，自己位置の再設定等を行う（ボタン未確定）
+  [gyro_yaw] (std_msgs::Float64)：カルマンフィルタをかけた後のジャイロセンサの値[deg]
+  [odometer] (std_msgs::odom_rad)：オドメータの各車輪の変化角度[rad,rad]
+  pub
+  [cmd] (abu2021_msgs::cmd_vw)：足回りモデルへ送る目標速度・角速度[m/s, m/s, rad/s]
+```
+
+### signal_processiong
+自己位置推定等の信号処理を行う
+```
+gyro_kalman
+  ジャイロセンサの生値と目標角速度から，カルマンフィルタをかけた機体角度を出力
+  sub
+  [gyro_raw] (std_msgs::Float64)：IMUからの角速度の生値[deg/s]
+  [cmd] (abu2021_msgs::cmd_vw)：機体の目標速度・角速度[m/s, m/s, rad/s]
+  pub
+  [gyro_yaw](std_msgs::Float64)：カルマンフィルタをかけた後の機体角[deg]
+```
+```
+dead_reckoning
+  ジャイロセンサによる機体角とオドメータの値から相対座標を出力
+  sub
+  [gyro_yaw] (std_msgs::Float64)：カルマンフィルタをかけた後の機体角[deg]
+  [odometer] (std_msgs::odom_rad)：オドメータの各車輪の変化角度[rad,rad]
+  tf broadcast
+  odom->base_link：機体の相対座標[m,m,rad]
+```
 
 ### abu2021_msgs
 メッセージ用パッケージ．使うカスタムメッセージは全部ここに入れる．ノード無し
