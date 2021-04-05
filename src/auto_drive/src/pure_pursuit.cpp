@@ -56,18 +56,20 @@ void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 }
 
 //速度司令[m/s]
-double Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
-	double speed; //速さ（スカラー）
+void Pure_pursuit::cmd_angular_v(double p, double i, double d){
+	double angle = target_dir_global() - state_yaw; //姿勢角と目標角との偏角
+	static double sum_yaw = 0;
+	static double pre_yaw = 0;
 
-	//終端点との距離に応じ速さ変更
-	if(dist_fin() < fin)      speed = 0; //終了判定
-	else if(dist_fin() < dcl) speed = max_speed * (dist_fin() - fin) / (dcl - fin); //台形制御
-	else                      speed = max_speed;
+	//偏角定義域修正
+	if(angle > M_PI)       while(angle >  M_PI) angle -= 2*M_PI;	
+	else if(angle < -M_PI) while(angle < -M_PI) angle += 2*M_PI;
 
-	cmd_vx = speed * cos(target_dir_local());
-	cmd_vy = speed * sin(target_dir_local());
+	sum_yaw += angle;
+	pre_yaw = state_yaw;
 
-	return speed;
+	//PID制御
+	cmd_w = p*angle + i*sum_yaw - d*(state_yaw - pre_yaw);
 }
 
 //経路点列終端との距離
