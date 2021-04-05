@@ -1,4 +1,4 @@
-#include "pure_pursuit.h"
+#include "../include/pure_pursuit.h"
 
 //コンストラクタ
 Pure_pursuit::Pure_pursuit(std::string file_name, int ahead_num){
@@ -44,19 +44,6 @@ void Pure_pursuit::set_posture(double yaw){
 /******* 司令 *******/
 //角速度司令[rad/s]
 void Pure_pursuit::cmd_angular_v(double p, double i, double d){
-	double trgt_dir = target_dir_global(); //目標角
-	static double sum_yaw = 0;
-	static double pre_yaw = 0;
-
-	sum_yaw += trgt_dir - state_yaw;
-	pre_yaw = state_yaw;
-
-	//PID制御
-	cmd_w = p*(trgt_dir - state_yaw) + i*sum_yaw - d*(state_yaw - pre_yaw);
-}
-
-//速度司令[m/s]
-void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 	double angle = target_dir_global() - state_yaw; //姿勢角と目標角との偏角
 	static double sum_yaw = 0;
 	static double pre_yaw = 0;
@@ -72,6 +59,20 @@ void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 	cmd_w = p*angle + i*sum_yaw - d*(state_yaw - pre_yaw);
 }
 
+//速度司令[m/s]
+double Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
+	double speed; //速さ（スカラー）
+
+	//終端点との距離に応じ速さ変更
+	if(dist_fin() < fin)      speed = 0; //終了判定
+	else if(dist_fin() < dcl) speed = max_speed * (dist_fin() - fin) / (dcl - fin); //台形制御
+	else                      speed = max_speed;
+
+	cmd_vx = speed * cos(target_dir_local());
+	cmd_vy = speed * sin(target_dir_local());
+
+	return speed;
+}
 //経路点列終端との距離
 double Pure_pursuit::dist_fin(){
 	return state_p.dist(path.back());
