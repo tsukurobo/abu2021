@@ -45,19 +45,19 @@ void Pure_pursuit::set_posture(double yaw){
 //角速度司令[rad/s]
 void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 	double angle = target_dir_global() - state_yaw; //姿勢角と目標角との偏角
-	static double sum_yaw = 0;
-	static double pre_yaw = 0;
+	static double sum_angle = 0;
+	static double pre_angle = 0;
 
 	//偏角定義域修正
 	if(angle > M_PI)       while(angle >  M_PI) angle -= 2*M_PI;	
 	else if(angle < -M_PI) while(angle < -M_PI) angle += 2*M_PI;
 
-	sum_yaw += angle;
+	sum_angle += angle;
 
 	//PID制御
-	cmd_w = p*angle + i*sum_yaw - d*(state_yaw - pre_yaw);
+	cmd_w = p*angle + i*sum_angle - d*(angle - pre_angle);
 
-	pre_yaw = state_yaw;
+	pre_angle = angle;
 }
 
 //速度司令[m/s]
