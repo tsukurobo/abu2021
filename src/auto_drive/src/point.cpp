@@ -1,4 +1,4 @@
-#include "point.h"
+#include "../include/point.h"
 
 //コンストラクタ
 Point::Point(double x, double y){
