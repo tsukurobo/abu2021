@@ -53,10 +53,11 @@ void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 	else if(angle < -M_PI) while(angle < -M_PI) angle += 2*M_PI;
 
 	sum_yaw += angle;
-	pre_yaw = state_yaw;
 
 	//PID制御
 	cmd_w = p*angle + i*sum_yaw - d*(state_yaw - pre_yaw);
+
+	pre_yaw = state_yaw;
 }
 
 //速度司令[m/s]
