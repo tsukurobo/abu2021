@@ -6,7 +6,6 @@
 ros::Publisher pub;
 ros::Publisher pub_touteki;
 
-int order = 0;
 
 void get_joy(const sensor_msgs::Joy::ConstPtr& msg);
 
@@ -16,7 +15,7 @@ int main(int argc, char **argv){
 	ros::NodeHandle nh;
 
 	pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd", 1);
-	pub_touteki = nh.advertise<std_msgs::Int32>("/touteki/tr_order", 1);
+	pub_touteki = nh.advertise<std_msgs::Int32>("tr_order", 1);
 	ros::Subscriber sub = nh.subscribe("joy", 1, get_joy);
 
 	ros::spin();
@@ -30,14 +29,25 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 
 	cmd.vx = 2.0*msg->axes[1];
 	cmd.vy = 2.0*msg->axes[0];
-	cmd.w  = 3.0*msg->axes[2];
+	cmd.w  = 3.0*msg->axes[3];
 	
-	if ((msg->buttons[0] == 1) || (msg->buttons[3] == 1)) order = 0;
-	else if (msg->buttons[2] == 1) order = 1;
-	else if (msg->buttons[1] == 1) order = 2;
+	if ((msg->buttons[0] == 1) || (msg->buttons[3] == 1)) {
 
-	int_order.data = order;
+		int_order.data = 0;
+		pub_touteki.publish(int_order);
+
+	} else if (msg->buttons[2] == 1) {
+
+		int_order.data = 1;
+		pub_touteki.publish(int_order);
+
+	} else if (msg->buttons[1] == 1) {
+
+		int_order.data = 2;
+		pub_touteki.publish(int_order);
+
+	}
+
 
 	pub.publish(cmd);
-	pub_touteki.publish(int_order);
 }

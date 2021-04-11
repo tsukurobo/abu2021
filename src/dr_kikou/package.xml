@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>drkikou</name>
+  <name>dr_kikou</name>
   <version>0.0.0</version>
-  <description>The drkikou package</description>
+  <description>The dr_kikou package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/drkikou</url> -->
+  <!-- <url type="website">http://wiki.ros.org/dr_kikou</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
