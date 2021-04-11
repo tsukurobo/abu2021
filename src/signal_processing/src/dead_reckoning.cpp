@@ -69,8 +69,8 @@ void broadcast_tf(){
 }
 
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
-	odom_x = odm->x;
-	odom_y = odm->y;
+	odom_x = -odm->x;
+	odom_y = -odm->y;
 }
 
 void get_gyro(const std_msgs::Float64::ConstPtr& yaw){
