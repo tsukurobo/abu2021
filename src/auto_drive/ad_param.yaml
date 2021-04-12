@@ -9,13 +9,14 @@ state: {
 }
 
 yaw_pid: {
-  p: 1,
-  i: 0,
-  d: 0.01
+  p: 1.0,
+  i: 0.0,
+  d: 0.01,
+  max_speed_w: 1
 }
 
 pure_pursuit: {
-  max_speed: 1.2,
+  max_speed_v: 1.2,
   ahead_num: 100,
   range_fin: 0.05,
   range_dcl: 0.5,

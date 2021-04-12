@@ -43,7 +43,7 @@ void Pure_pursuit::set_posture(double yaw){
 
 /******* 司令 *******/
 //角速度司令[rad/s]
-void Pure_pursuit::cmd_angular_v(double p, double i, double d){
+void Pure_pursuit::cmd_angular_v(double max, double p, double i, double d){
 	double angle = target_dir_global() - state_yaw; //姿勢角と目標角との偏角
 	static double sum_angle = 0;
 	static double pre_angle = 0;
@@ -56,6 +56,10 @@ void Pure_pursuit::cmd_angular_v(double p, double i, double d){
 
 	//PID制御
 	cmd_w = p*angle + i*sum_angle - d*(angle - pre_angle);
+
+	//最大角速度制限
+	if(cmd_w > max)       cmd_w =  max;
+	else if(cmd_w < -max) cmd_w = -max;
 
 	pre_angle = angle;
 }
@@ -74,6 +78,7 @@ double Pure_pursuit::cmd_velocity(double max_speed, double fin, double dcl){
 
 	return speed;
 }
+
 //経路点列終端との距離
 double Pure_pursuit::dist_fin(){
 	return state_p.dist(path.back());

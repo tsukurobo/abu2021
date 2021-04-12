@@ -12,13 +12,14 @@
 /*****************************************************/
 
 //pure pursuit parameter
-double MAX_SPEED = 0.3; //最大移動速度[m/s]
+double MAX_SPEED_V = 0.3; //最大移動速度[m/s]
 int AHEAD_NUM = 10; //何個先の経路点列を目指すか[･]
 double RANGE_FIN = 0.01; //終了範囲[m]
 double RANGE_DCL = 1; //減速開始範囲[m]
 double YAW_GAIN_P = 1; //yaw軸PID制御Pゲイン
 double YAW_GAIN_I = 0; //yaw軸PID制御Iゲイン
 double YAW_GAIN_D = 0; //yaw軸PID制御Dゲイン
+double MAX_SPEED_W = 0.3; //最大角速度[rad/s]
 std::string PATH1_PATH;
 std::string PATH2_PATH;
 std::string PATH3_PATH;
@@ -71,7 +72,8 @@ int main(int argc, char **argv){
 	nh.getParam("yaw_pid/p", YAW_GAIN_P);
 	nh.getParam("yaw_pid/i", YAW_GAIN_I);
 	nh.getParam("yaw_pid/d", YAW_GAIN_D);
-	nh.getParam("pure_pursuit/max_speed", MAX_SPEED);
+	nh.getParam("yaw_pid/max_speed_w", MAX_SPEED_W);
+	nh.getParam("pure_pursuit/max_speed_v", MAX_SPEED_V);
 	nh.getParam("pure_pursuit/ahead_num", AHEAD_NUM);
 	nh.getParam("pure_pursuit/range_fin", RANGE_FIN);
 	nh.getParam("pure_pursuit/range_dcl", RANGE_DCL);
@@ -99,8 +101,8 @@ int main(int argc, char **argv){
 		}else if(order_go ==  1 || mode_go == 1){
 			mode_go = 1;
 
-			if(pp.cmd_velocity(MAX_SPEED, RANGE_FIN, RANGE_DCL) != 0){
-				pp.cmd_angular_v(YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
+			if(pp.cmd_velocity(MAX_SPEED_V, RANGE_FIN, RANGE_DCL) != 0){
+				pp.cmd_angular_v(MAX_SPEED_W, YAW_GAIN_P, YAW_GAIN_I, YAW_GAIN_D);
 				cmd.vx = pp.cmd_vx;
 				cmd.vy = pp.cmd_vy;
 				cmd.w  = pp.cmd_w;

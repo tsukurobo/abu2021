@@ -29,7 +29,7 @@ class Pure_pursuit{
 		void set_position(Point pos);          //ロボ位置設定
 		void set_position(double x, double y); //ロボ位置設定
 		void set_posture(double yaw); //ロボ姿勢設定
-		void cmd_angular_v(double p, double i, double d); //角速度司令[rad/s]
+		void cmd_angular_v(double max, double p, double i, double d); //角速度司令[rad/s]
 		double cmd_velocity(double speed, double fin, double dcl); //速度司令[m/s]
 		int print_path(); //経路点列表示
 
