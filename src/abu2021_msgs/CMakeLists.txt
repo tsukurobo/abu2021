@@ -55,12 +55,7 @@ add_message_files(
   motor_enc.msg
   odom_rad.msg
   auto_drive_order.msg
-  number.msg
-  guru.msg
-  from_three.msg
-  syasyutu.msg
-  mode_hassya.msg
-  for_ardiuno.msg
+  air_launch_to_arduino.msg
 )
 
 ## Generate services in the 'srv' folder
