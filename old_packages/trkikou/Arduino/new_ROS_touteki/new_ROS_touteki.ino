@@ -5,7 +5,10 @@
 
 #include "ise_motor_driver_v3.h"
 
+<<<<<<< HEAD
+=======
 #define PI 3.141592653589793
+>>>>>>> 3efad891a56545346569196e91afb6ef7fda1b77
 #define PIN_SOLENOID_1 2 //ピン番号
 #define PIN_SOLENOID_2 6 //ピン番号
 
@@ -27,8 +30,12 @@ int solenoid;
 long enc=0;
 float kakudo = 0;
 
+<<<<<<< HEAD
+float Kp = 0.6, Ki = 0.027, Kd = 0.5; //比例、積分、微分ゲイン
+=======
 float Kp = 3, Ki = 0.025, Kd = 0.8; //比例、積分、微分ゲイン
 //float Kp = 0.55, Ki = 0.018, Kd = 0.8; //比例、積分、微分ゲイン
+>>>>>>> 3efad891a56545346569196e91afb6ef7fda1b77
 float P = 0, I = 0, D = 0; //比例項、積分項、微分項
 float kakudo_p = 0;
 
@@ -58,10 +65,17 @@ void PID() {
     I += Ki*(deg - kakudo);
     D = -Kd*(kakudo - kakudo_p);
 
+<<<<<<< HEAD
+    pw = P + I + D;
+
+    if (pw > 255) pw = 255;
+    if (pw < -255) pw = -255;
+=======
     pw = (P + I + D)*abs(sin(kakudo*PI/180));
 
     if (pw > 150) pw = 150;
     if (pw < -150) pw = -150;
+>>>>>>> 3efad891a56545346569196e91afb6ef7fda1b77
 
     md << pw;
 
@@ -121,6 +135,15 @@ void loop() {
         
     } else if (solenoid == 1) {
         
+<<<<<<< HEAD
+        digitalWrite(PIN_SOLENOID_1, LOW); //　開ける
+        digitalWrite(PIN_SOLENOID_2, HIGH);
+        
+    } else if (solenoid == 2) {
+        
+        digitalWrite(PIN_SOLENOID_1, HIGH); // 閉める
+        digitalWrite(PIN_SOLENOID_2, LOW);
+=======
         digitalWrite(PIN_SOLENOID_1, HIGH); //　開ける
         digitalWrite(PIN_SOLENOID_2, LOW);
         
@@ -128,6 +151,7 @@ void loop() {
         
         digitalWrite(PIN_SOLENOID_1, LOW); // 閉める
         digitalWrite(PIN_SOLENOID_2, HIGH);
+>>>>>>> 3efad891a56545346569196e91afb6ef7fda1b77
         
     }
     
@@ -135,5 +159,9 @@ void loop() {
     chatter_debug.publish(&int_debug);
     chatter_enc.publish(&int_msg);
   
+<<<<<<< HEAD
+    delay(10);
+=======
     delay(1);
+>>>>>>> 3efad891a56545346569196e91afb6ef7fda1b77
 }

@@ -20,8 +20,8 @@
  * is_data_recieved: 0なら受け取ってない、1なら受け取っている
  * enc_pre, enc_now: エンコーダカウンタを格納
  */
-const float dist = 0.5;
-const uint16_t enc_resol = 4096, motor_spd = 200, loop_period = 10;
+const float dist = 0.3, dist2 = 1.0, dist3 = 1.5;
+const int enc_resol = 4096, motor_spd = 250, loop_period = 10;
 uint8_t state = 0, received_data = 0, is_data_received = 0;
 long enc_pre = 0, enc_now = 0;
 IseMotorDriver md(MD_ADDR);
@@ -62,7 +62,7 @@ void loop() {
     /*発射台がロックされていない&受信したデータが1の時、モータを回転*/
     if(state == 0 && received_data == 1){
       nh.loginfo("rotate motor");
-      md << -(int)motor_spd;
+      md << -motor_spd;
       /*発射台がロックされるまでモータを回転*/
       while(1){
         /*発射台がロックされると、モータを逆回転させる。決められた分だけ回転させたらモータを停止。*/
@@ -71,7 +71,7 @@ void loop() {
           delay(200);
           md << 0;
           delay(50);
-          md << (int)motor_spd;
+          md << motor_spd;
 
           md >> enc_pre;
           do{
@@ -111,6 +111,38 @@ void loop() {
       delay(200);
       digitalWrite(SOLENOID, LOW);
       state = 0;
+    
+    }else if(state == 1 && (received_data == 1 || received_data == 3 || received_data == 4)){
+      float goal_d = 0, d_now = 0, delta = 0, delta_pre = 0; 
+      if(received_data == 1) goal_d = dist;
+      else if(received_data == 3) goal_d = dist2;
+      else if(received_data == 4) goal_d = dist3;
+
+      md >> enc_now;
+      d_now = (float)abs(enc_now-enc_pre)/enc_resol;
+      
+      if(fabs(d_now-goal_d)>0.01){
+        if(d_now > goal_d) md << -motor_spd;
+        else if(d_now < goal_d) md << motor_spd;
+        
+        while(1){
+          md >> enc_now;
+          d_now = (float)abs(enc_now-enc_pre)/enc_resol;
+          delta = d_now - goal_d;
+          if(delta*delta_pre<0) break;
+          delta_pre = delta;
+          
+          nh.spinOnce();
+          if(is_data_received == 1 && received_data == 0){
+            is_data_received = 0;
+            break;
+          }
+          
+          delay(loop_period);
+        }
+        
+        md << 0;
+      }
     }
   
   }else{
