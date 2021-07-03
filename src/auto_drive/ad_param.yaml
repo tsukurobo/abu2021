@@ -1,0 +1,28 @@
+state: {
+  init_x: 0.5,
+  init_y: 5.425,
+  init_yaw: -1.570796326,
+  # init_x: 0,
+  # init_y: 0,
+  # init_yaw: 0,
+  wheel: 0.0292
+}
+
+yaw_pid: {
+  p: 1.0,
+  i: 0.0,
+  d: 0.01,
+  max_speed_w: 1
+}
+
+pure_pursuit: {
+  max_speed_v: 1.2,
+  ahead_num: 100,
+  range_fin: 0.05,
+  range_dcl: 0.5,
+  path1: /home/koki/abu2021/src/auto_drive/pathes/straight_3m.csv,
+  path2: /home/koki/abu2021/src/auto_drive/pathes/square_3m.csv,
+  path3: /home/koki/abu2021/src/auto_drive/pathes/dr_st_rt.csv,
+  path4: /home/koki/abu2021/src/auto_drive/pathes/up.csv
+  # path1: /home/koki/abu2021/src/auto_drive/pathes/dr_st_rt.csv
+}

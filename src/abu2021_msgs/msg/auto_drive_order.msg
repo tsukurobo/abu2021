@@ -1,0 +1,9 @@
+int16 emg_stop
+int16 go
+int16 path1
+int16 path2
+int16 path3
+int16 path4
+int16 set1
+int16 set2
+int16 set3
