@@ -1,0 +1,12 @@
+<launch>
+	<node name="connection" pkg="turntable" type="turntable">
+		<param name="pw_dist" value="90"/>
+	</node>
+	<node name="joy" pkg="joy" type="joy_node" >
+		<param name="dev" type="string" value="/dev/input/js1"/>
+	</node>
+	<node name="serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
+		<param name="port" type="string" value="/dev/ttyACM0"/>
+		<param name="baud" value="115200"/>
+	</node>
+</launch>
