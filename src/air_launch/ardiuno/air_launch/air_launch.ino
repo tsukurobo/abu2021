@@ -102,7 +102,14 @@ void loop(){
   md << pw;
   //0ならばlowlow
   if(sol_mode==0) lowlow();
-  if(sol_mode==1) highlow();
-  if(sol_mode==2) lowhigh();
+  if(sol_mode==1) {
+    highlow();
+    lowlow();
+  }
+  if(sol_mode==2) {
+    lowhigh();
+    lowlow();
+  }
+  
   
 }

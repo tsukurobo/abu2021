@@ -26,16 +26,16 @@ ros::Subscriber sub2;
 //上げるモードある角度に行く
 void mode1(){
 	hassya=0;
-	if(kakudo >= up_position+200 ){
+	if(kakudo >= up_position+300 ){
 		pw=speed;
 		//下がっていく
 	}
-	if(kakudo<= up_position-200 ){
+	if(kakudo<= up_position-300 ){
 		pw=-speed;
 		//上がっていく
 	}
 
-	if(kakudo<up_position+200 && kakudo>up_position-200){
+	if(kakudo<up_position+300 && kakudo>up_position-300){
 		pw=0;
 	}
 }
@@ -43,16 +43,16 @@ void mode1(){
 //さげるモードある角度に行く
 void mode2(){
 	hassya=0;
-	if(kakudo >= low_position+200 ){
+	if(kakudo >= low_position+300 ){
 		pw=speed;
 		//下がっていく
 	}
-	if(kakudo<= low_position-200 ){
+	if(kakudo<= low_position-300 ){
 		pw=-speed;
 		//上がっていく
 	}
 
-	if(kakudo<low_position+200 && kakudo>low_position-200){
+	if(kakudo<low_position+300 && kakudo>low_position-300){
 		pw=0;
 	}
 
@@ -66,6 +66,7 @@ void mode0(){
 
 
 void mode3(){
+	//発射するモード
 	hassya=2;
 	pub_msg.data[1] = hassya;
 	pub.publish(pub_msg);
@@ -77,7 +78,9 @@ void mode3(){
 	pub.publish(pub_msg);
 	hassya=0;
 	pub_msg.data[1] = hassya;
+	ROS_FATAL("hassya!!");
 	pub.publish(pub_msg);
+	order=0;
 
 
 }
