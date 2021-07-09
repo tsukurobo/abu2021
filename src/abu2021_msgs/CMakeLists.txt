@@ -56,6 +56,7 @@ add_message_files(
   odom_rad.msg
   auto_drive_order.msg
   air_launch_to_arduino.msg
+  turn_and_dist.msg
 )
 
 ## Generate services in the 'srv' folder
