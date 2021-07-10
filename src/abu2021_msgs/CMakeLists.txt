@@ -55,7 +55,7 @@ add_message_files(
   motor_enc.msg
   odom_rad.msg
   auto_drive_order.msg
-  air_launch_to_arduino.msg
+  air_launch_order.msg
   turn_and_dist.msg
 )
 
@@ -77,6 +77,7 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
+  
 )
 
 ################################################

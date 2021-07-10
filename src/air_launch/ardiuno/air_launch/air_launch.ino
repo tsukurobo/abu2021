@@ -70,18 +70,18 @@ void setup(){
 void lowlow(){    
     digitalWrite(ben1,LOW);
     digitalWrite(ben2,LOW);
-    delay(500);
+    delay(1000);
 }
 void  highlow(){
     digitalWrite(ben1, HIGH);
     digitalWrite(ben2, LOW);
-    delay(500);
+    delay(1000);
 }
 
 void lowhigh(){  
     digitalWrite(ben1,LOW);
     digitalWrite(ben2,HIGH);
-    delay(500);
+    delay(1000);
 }
 
 
@@ -108,6 +108,8 @@ void loop(){
   }
   if(sol_mode==2) {
     lowhigh();
+    lowlow();
+    highlow();
     lowlow();
   }
   
