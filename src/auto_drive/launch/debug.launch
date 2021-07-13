@@ -1,15 +1,15 @@
  <launch>
 	<rosparam command="load" file="$(find auto_drive)/ad_param.yaml" />
 
-	<node pkg="joy" type="joy_node" name="joy_node">
-		<param name="dev" type="string" value="/dev/input/js0"/>
-	</node>
+	<!-- <node pkg="joy" type="joy_node" name="joy_node"> -->
+	<!-- 	<param name="dev" type="string" value="/dev/input/js0"/> -->
+	<!-- </node> -->
 
-	<node pkg="task_manager" name="task_manager_dr" type="task_manager_dr"/>
-    <rosparam command="load" file="$(find kinematics_model)/constant_dr.yaml" />
-	<node pkg="kinematics_model" name="kinematics_model" type="kinematics_model"/>
+	<!-- <node pkg="task_manager" name="task_manager_dr" type="task_manager_dr"/> -->
+    <!-- <rosparam command="load" file="$(find kinematics_model)/constant_dr.yaml" /> -->
+	<!-- <node pkg="kinematics_model" name="kinematics_model" type="kinematics_model"/> -->
 
-	<node pkg="signal_processing" name="gyro_kalman" type="gyro_kalman"/>
+	<!-- <node pkg="signal_processing" name="gyro_kalman" type="gyro_kalman"/> -->
 
 	<node pkg="auto_drive" name="auto_driving" type="auto_driving"/>
 <!--

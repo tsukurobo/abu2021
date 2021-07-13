@@ -16,16 +16,24 @@ set:1のときその角度を基準角度に
 #include <std_msgs/Int32MultiArray.h>
 #include <std_msgs/Float64.h>
 
-int position3=4000;
-int position4=7000;
-double kakudo=0;
-double std_kakudo=0;
+//parameter
+const int FREQ = 100; //[Hz]
+int position3=4000; //[deg]
+int position4=7000; //[deg]
+int pos3_range = 300; //[deg]
+int pos4_range = 500; //[deg]
+double delay_hassya = 1000; //[msec] 発射時シリンダ発射状態の維持時間
+int speed=150;//指定の角度に行くときのスピード
+
 int pw=0;
 int order_pow=0;
 int order_set=0;
-int speed=150;//指定の角度に行くときのスピード
 int order_mode=0;
 int hassya=0;
+int pre_pw=-1;
+int pre_hassya=-1;
+double kakudo=0;
+double std_kakudo=0;
 
 std_msgs::Int32MultiArray pub_msg;
 ros::Publisher  pub;
@@ -37,9 +45,6 @@ ros::Subscriber sub2;
 void mode0(){
 	hassya=0;
 	pw=0;
-	pub_msg.data[0] = pw;
-	pub_msg.data[1] = hassya;
-	pub.publish(pub_msg);
 }
 
 //手動角度調整モード
@@ -49,52 +54,50 @@ void mode1(){
 
 //発射するモード
 void mode2(){
-	hassya=2;
-	pub_msg.data[1] = hassya;
-	pub.publish(pub_msg);
-	ROS_FATAL("hassya!!");
-	/*
-	hassya=0;
-	pub_msg.data[1] = hassya;
-	pub.publish(pub_msg);
-	hassya=1;
-	pub_msg.data[1] = hassya;
-	pub.publish(pub_msg);
-	hassya=0;
-	pub_msg.data[1] = hassya;
-	ROS_FATAL("hassya!!");
-	pub.publish(pub_msg);
-	*/
-	//ここにdelay的なものを入れてすぐにorder0にならないようにしないとどうやら射出できないぽい、かといってmodeを変えないと永遠に射出が動く
-	//order_mode=0;
+	static int cnt=0;
+	
+	/* ROS_FATAL("cnt: %d", cnt); */
+	if(cnt > (delay_hassya+100)*FREQ/1000){
+		hassya=0;
+		cnt=0;
+		order_mode=0;
+	}else if(cnt > delay_hassya*FREQ/1000){
+		hassya=1;
+	}else if(cnt > 100*FREQ/1000){ //100msec
+		hassya=0;
+	}else if(cnt >= 0){
+		hassya=2;
+		/* ROS_FATAL("hassya!!"); */
+	}
 
+	cnt++;
 }
 
 //指定の角度3に行く
 void mode3(){
-	hassya=0;
-	if(kakudo-std_kakudo >= position3+300 ){
+	if(kakudo-std_kakudo >= position3+pos3_range ){
 		pw=speed;//下がっていく
 	}
-	if(kakudo-std_kakudo <= position3-300 ){
+	if(kakudo-std_kakudo <= position3-pos3_range ){
 		pw=-speed;//上がっていく
 	}
-	if(kakudo-std_kakudo < position3+300 && kakudo-std_kakudo > position3-300){
+	if(kakudo-std_kakudo < position3+pos3_range && kakudo-std_kakudo > position3-pos3_range){
 		pw=0;
+		order_mode=0;
 	}
 }
 
 //指定の角度4に行く
 void mode4(){
-	hassya=0;
-	if(kakudo-std_kakudo >= position4+500 ){
+	if(kakudo-std_kakudo >= position4+pos4_range ){
 		pw=speed;//下がっていく
 	}
-	if(kakudo-std_kakudo <= position4-500 ){
+	if(kakudo-std_kakudo <= position4-pos4_range ){
 		pw=-speed;//上がっていく
 	}
-	if(kakudo-std_kakudo < position4+500 && kakudo-std_kakudo > position4-500){
+	if(kakudo-std_kakudo < position4+pos4_range && kakudo-std_kakudo > position4-pos4_range){
 		pw=0;
+		order_mode=0;
 	}
 }
 
@@ -112,7 +115,7 @@ void chatterCallback(const std_msgs::Float64::ConstPtr & sub_msg){
 	kakudo=sub_msg->data;
 }
 void chatterCallback2(const abu2021_msgs::air_launch_order::ConstPtr & sub_msg2){
-	ROS_FATAL("I herd order %d  %d  %f",sub_msg2->mode,sub_msg2->pow , std_kakudo);
+	/* ROS_FATAL("I herd order %d  %d  %f",sub_msg2->mode,sub_msg2->pow , std_kakudo); */
 	order_mode=sub_msg2->mode;
 	order_pow=sub_msg2->pow;
 	order_set=sub_msg2->set;
@@ -122,11 +125,19 @@ void chatterCallback2(const abu2021_msgs::air_launch_order::ConstPtr & sub_msg2)
 int main(int argc, char** argv){
 	ros::init(argc, argv, "air_launch_node");
 	ros::NodeHandle nh;
+	ros::NodeHandle nhp("~");
 	pub = nh.advertise<std_msgs::Int32MultiArray>("air_launch_tpc", 1);
 	//ros::Subscriber sub = nh.subscribe("air_launch_enc", 1, chatterCallback);
 	sub = nh.subscribe("air_launch_enc", 1, chatterCallback);
 	sub2 = nh.subscribe("air_launch_order", 1, chatterCallback2);
-	ros::Rate loop_rate(10);
+	nhp.getParam("position3", position3);
+	nhp.getParam("position4", position4);
+	nhp.getParam("pos3_range", pos3_range);
+	nhp.getParam("pos4_range", pos4_range);
+	nhp.getParam("delay_hassya", delay_hassya);
+	nhp.getParam("speed", speed);
+	ros::Rate loop_rate(FREQ);
+
 	while (ros::ok()){
 		ros::spinOnce();
 		//std_msgs::Int32MultiArray pub_msg;
@@ -139,11 +150,17 @@ int main(int argc, char** argv){
 		if(order_mode==3) mode3();
 		if(order_mode==4) mode4();
 		if(order_mode==1 && order_set==1) set();
-		hassya=0;
 
-		pub_msg.data[0] = pw;
-		pub_msg.data[1] = hassya;
-		pub.publish(pub_msg);
+		/* ROS_FATAL("%d, %d, %d, %d", pw, pre_pw, hassya, pre_hassya); */
+		//publish
+		if(pw != pre_pw || hassya != pre_hassya){
+			pub_msg.data[0] = pw;
+			pub_msg.data[1] = hassya;
+			pub.publish(pub_msg);
+		}
+		pre_pw = pw;
+		pre_hassya = hassya;
+
 		loop_rate.sleep();
 	}
 }

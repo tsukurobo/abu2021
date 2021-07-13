@@ -6,9 +6,8 @@ from plot_fig import Plot_fig as PF
 
 
 class Path:
-	def __init__(self, point_gap, polar_dr):
+	def __init__(self, point_gap):
 		self.POINT_GAP = point_gap # 経路点列の幅[m]
-		self.POLAR_DR = polar_dr   # クロソイド極座標dr[m]
 
 		self.path_x = []
 		self.path_y = []
@@ -44,16 +43,6 @@ class Path:
 			# 点列表示
 			pf.make_point(x[i],y[i],col) 
 
-	# クロソイド
-	def add_clothoid(self, x, y, yaw, kappa, col='r'):
-		r = self.POLAR_DR
-		phi = 2 * asin(r*kappa/2)
-
-		# 2点間の線分表示
-		pf.make_line(x, y, x+r*cos(yaw+phi), y+r*sin(yaw+phi), col)
-
-		return x+r*cos(yaw+phi), y+r*sin(yaw+phi), yaw+phi
-
 	# CSVファイル出力
 	def make_csv(self, filename):
 		with open(filename,'w') as csvfile:
@@ -65,7 +54,6 @@ class Path:
 
 # 直線上の経路点列の幅[m]
 POINT_GAP = 0.01 # 経路点列の点の幅[m]
-POLAR_DR = 0.01  # クロソイド用の極座標dr[m]
 
 # 座標
 P_TR_START = (11.4, 0.5)
@@ -78,29 +66,33 @@ def main():
 	pf.make_point(*P_TR_START,'r')
 
 	# 直線
-	path1 = Path(POINT_GAP, POLAR_DR)
-	path1.add_line(*P_DR_START, *(2, 2), 'b')
-	path1.add_line(*(2, 2), *(4, 1), 'b')
-	path1.add_line(*(4, 1), *(5.425, 1), 'b')
-	path1.add_line(*(5.425, 1), *P_DR_RETRY, 'b')
+	path1 = Path(POINT_GAP)
+	# path1.add_line(*P_DR_START, *(2, 2), 'b')
+	# path1.add_line(*(2, 2), *(4, 0.75), 'b')
+	# path1.add_line(*(4, 0.75), *(5.425, 0.75), 'b')
+	# path1.add_line(*(5.425, 0.75), *P_DR_RETRY, 'b')
+	# path1.add_point(*P_DR_RETRY, 'b')
+	# path1.make_csv('../pathes/dr_st_rt.csv')
+
 	# path1.add_line(*P_DR_RETRY,*(5.425, 5.4), 'b')
 	# path1.add_point(*(5.425, 5.4), 'b')
-	path1.add_point(*P_DR_RETRY, 'b')
 	# path1.add_line(*(0,0),*(0,3), 'b')
 	# path1.add_line(*(3,0),*(3,3), 'b')
 	# path1.add_line(*(3,3),*(0,3), 'b')
 	# path1.add_line(*(0,3),*(0,0), 'b')
 	# path1.add_point(*(0, 3), 'b')
 
-	#　クロソイド
-	# x = 6
-	# y = 2
-	# yaw = 0
-	# st = (x,y,yaw)
-	# for i in range(1000):
-	# 	st = path1.add_clothoid(*st, 1/3, 'b')
+	# path1.add_line(*P_DR_RETRY, *(4.75, 5.95), 'b')
+	# path1.add_line(*(4.75, 5.95), *(5.25, 5.95), 'b')
+	# path1.make_csv('../pathes/dr_rt_type3.csv')
 
-	path1.make_csv('../pathes/dr_st_rt.csv')
+	# path1.add_line(*P_DR_RETRY, *(4.75, 8.45), 'b')
+	# path1.add_line(*(4.75, 8.45), *(5.25, 8.45), 'b')
+	# path1.make_csv('../pathes/dr_rt_type2_oku.csv')
+
+	# path1.add_line(*P_DR_RETRY, *(4.75, 3.45), 'b')
+	# path1.add_line(*(4.75, 3.45), *(5.25, 3.45), 'b')
+	# path1.make_csv('../pathes/dr_rt_type2_temae.csv')
 
 	pf.show()
 

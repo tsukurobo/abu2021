@@ -70,23 +70,23 @@ void setup(){
 void lowlow(){    
     digitalWrite(ben1,LOW);
     digitalWrite(ben2,LOW);
-    delay(1000);
+    //delay(1000);
 }
 void  highlow(){
     digitalWrite(ben1, HIGH);
     digitalWrite(ben2, LOW);
-    delay(1000);
+    //delay(1000);
 }
 
 void lowhigh(){  
     digitalWrite(ben1,LOW);
     digitalWrite(ben2,HIGH);
-    delay(1000);
+    //delay(1000);
 }
 
 
 void loop(){
-    nh.spinOnce();
+   nh.spinOnce();
    if (!md == false){
       md >> e;//エンコーダーの値を取る
       degree = -e*180/2048;   
@@ -104,14 +104,15 @@ void loop(){
   if(sol_mode==0) lowlow();
   if(sol_mode==1) {
     highlow();
-    lowlow();
+    //lowlow();
   }
   if(sol_mode==2) {
     lowhigh();
-    lowlow();
-    highlow();
-    lowlow();
+    //lowlow();
+    //highlow();
+    //lowlow();
   }
-  
+
+  delay(10);
   
 }
