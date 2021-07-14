@@ -32,6 +32,8 @@ int order_mode=0;
 int hassya=0;
 int pre_pw=-1;
 int pre_hassya=-1;
+int pre_set=-1;
+int pre_mode=-1;
 double kakudo=0;
 double std_kakudo=0;
 
@@ -54,6 +56,7 @@ void mode1(){
 
 //発射するモード
 void mode2(){
+	pw=0;
 	static int cnt=0;
 	
 	/* ROS_FATAL("cnt: %d", cnt); */
@@ -62,12 +65,12 @@ void mode2(){
 		cnt=0;
 		order_mode=0;
 	}else if(cnt > delay_hassya*FREQ/1000){
-		hassya=1;
+		hassya=2;
 	}else if(cnt > 100*FREQ/1000){ //100msec
 		hassya=0;
 	}else if(cnt >= 0){
-		hassya=2;
-		/* ROS_FATAL("hassya!!"); */
+		hassya=1;
+		 //ROS_FATAL("hassya!!"); 
 	}
 
 	cnt++;
@@ -104,8 +107,11 @@ void mode4(){
 
 /////////////setに対して///////////////////////////////////
 void set(){
-	hassya=0;
-	std_kakudo=kakudo;
+	if(pre_set==-1 || pre_set != order_set || pre_mode !=order_mode){
+		//modeが変わって101になったか、setが変わって101になったか、初めてのときしかsetできない
+		std_kakudo=kakudo;
+		ROS_FATAL("SET!%f",std_kakudo);
+	}
 }
 
 
@@ -160,6 +166,8 @@ int main(int argc, char** argv){
 		}
 		pre_pw = pw;
 		pre_hassya = hassya;
+		pre_set = order_set;
+		pre_mode = order_mode;
 
 		loop_rate.sleep();
 	}

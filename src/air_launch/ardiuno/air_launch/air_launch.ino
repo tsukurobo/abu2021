@@ -22,7 +22,7 @@ float degree;
 int pw=0;
 int sol_mode=0;
 
-IseMotorDriver md(0x15);
+IseMotorDriver md(0x17);
 
 
 //rosメッセージのインスタンス
