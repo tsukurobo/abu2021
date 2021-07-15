@@ -82,17 +82,20 @@ def main():
 	# path1.add_line(*(0,3),*(0,0), 'b')
 	# path1.add_point(*(0, 3), 'b')
 
-	# path1.add_line(*P_DR_RETRY, *(4.75, 5.95), 'b')
-	# path1.add_line(*(4.75, 5.95), *(5.25, 5.95), 'b')
+	# path1.add_line(*P_DR_RETRY, *(4.75, 3.45), 'b')
+	# path1.add_line(*(4.75, 3.45), *(4.75, 5.95), 'b')
 	# path1.make_csv('../pathes/dr_rt_type3.csv')
 
-	# path1.add_line(*P_DR_RETRY, *(4.75, 8.45), 'b')
-	# path1.add_line(*(4.75, 8.45), *(5.25, 8.45), 'b')
+	# path1.add_line(*P_DR_RETRY, *(4.75, 3.45), 'b')
+	# path1.add_line(*(4.75, 3.45), *(4.75, 8.45), 'b')
 	# path1.make_csv('../pathes/dr_rt_type2_oku.csv')
 
 	# path1.add_line(*P_DR_RETRY, *(4.75, 3.45), 'b')
 	# path1.add_line(*(4.75, 3.45), *(5.25, 3.45), 'b')
 	# path1.make_csv('../pathes/dr_rt_type2_temae.csv')
+
+	# path1.add_line(*(4.75, 8.45), *(4.75, 3.45), 'b')
+	# path1.make_csv('../pathes/dr_type2_oku_type2_temae.csv')
 
 	pf.show()
 
