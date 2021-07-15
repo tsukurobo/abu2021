@@ -69,7 +69,7 @@ void broadcast_tf(){
 }
 
 void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
-	odom_x = -odm->x;
+	odom_x = odm->x;
 	odom_y = -odm->y;
 }
 
