@@ -30,7 +30,7 @@ float PIDCalculator::calcValue(float curr_e, float goal_v=1.0){
     case BUMPLESS: //速度型PID
       P = kp*(curr_e - pre_e);
       I = ki*ts*curr_e;
-      D = kd*(tdel/(ts+tdel))*u + (kd/(ts+tdel))*(curr_e - pre_e);
+      D = kd*(tdel/(ts+tdel))*D + (kd/(ts+tdel))*(curr_e - pre_e);
       u += P + I + (D-D_pre);
       if(u > vmax) u = vmax;
       if(u < vmin) u = vmin;
@@ -49,7 +49,7 @@ float PIDCalculator::calcValue(float curr_e, float goal_v=1.0){
       err_sum += curr_e*ts;
       P = kp*curr_e;
       I = ki*err_sum;
-      D = (tdel/(ts+tdel))*u + (kd/(ts+tdel))*(curr_e - pre_e); //不完全微分
+      D = (tdel/(ts+tdel))*D + (kd/(ts+tdel))*(curr_e - pre_e); //不完全微分
       u += P + I + D;
       
       //アンチワインドアップ

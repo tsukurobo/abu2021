@@ -1,0 +1,69 @@
+rack_col: {
+  const: {
+    deg_ini1: 30,
+    deg_ini2: 40,
+    deg_pick1: 50,
+    deg_pick2: 40,
+    deg_load1: 40,
+    deg_load2: 60,
+    deg_up1: 30,
+    deg_up2: 40,
+  },
+
+  air: {
+    deg_ini1: 50,
+    deg_ini2: 120,
+    deg_pick1: 150,
+    deg_pick2: 120,
+    deg_load1: 70,
+    deg_load2: 100,
+    deg_up1: 50,
+    deg_up2: 120,
+  }
+}
+
+const: {
+  dist: 0.3,
+  dist2: 1.0,
+  dist3: 1.5
+}
+
+base: {
+  model: {
+    mode: 1,
+    width: 0.75,
+    height: 0.7,
+    wheel_radius: 0.08,
+    freq: 50,
+    acc: 3.5
+    #LPF_const_go: 0.3,
+    #LPF_const_stop: 0.7
+  },
+
+  velPID: {
+    kp: [ 150.0, 100.0, 100.0, 100.0 ],
+    ki: [ 0.0, 0.0, 0.0, 0.0 ],
+    kd: [ 0.0, 0.0, 0.0, 0.0 ],
+    tdel: [0.014, 0.014, 0.014, 0.014 ]
+  },
+
+  motor_driver: {
+    addrs: [ 0x14, 0x15, 0x23, 0x17 ]
+  },
+
+  gyro: {
+    kp: 0.0,
+    ki: 0.0
+  }
+
+}
+
+air: {
+  power: 180, #speed when adjust manually
+  position3: 4000,
+  position4: 7000,
+  pos3_range: 50,
+  pos4_range: 50,
+  delay_hassya: 2000, #
+  speed: -200
+}

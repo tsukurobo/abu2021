@@ -131,17 +131,17 @@ void chatterCallback2(const abu2021_msgs::air_launch_order::ConstPtr & sub_msg2)
 int main(int argc, char** argv){
 	ros::init(argc, argv, "air_launch_node");
 	ros::NodeHandle nh;
-	ros::NodeHandle nhp("~");
+	//ros::NodeHandle nhp("~");
 	pub = nh.advertise<std_msgs::Int32MultiArray>("air_launch_tpc", 1);
 	//ros::Subscriber sub = nh.subscribe("air_launch_enc", 1, chatterCallback);
 	sub = nh.subscribe("air_launch_enc", 1, chatterCallback);
 	sub2 = nh.subscribe("air_launch_order", 1, chatterCallback2);
-	nhp.getParam("position3", position3);
-	nhp.getParam("position4", position4);
-	nhp.getParam("pos3_range", pos3_range);
-	nhp.getParam("pos4_range", pos4_range);
-	nhp.getParam("delay_hassya", delay_hassya);
-	nhp.getParam("speed", speed);
+	/*nhp*/while(!nh.getParam("air/position3", position3));
+	/*nhp*/while(!nh.getParam("air/position4", position4));
+	/*nhp*/while(!nh.getParam("air/pos3_range", pos3_range));
+	/*nhp*/while(!nh.getParam("air/pos4_range", pos4_range));
+	/*nhp*/while(!nh.getParam("air/delay_hassya", delay_hassya));
+	/*nhp*/while(!nh.getParam("air/speed", speed));
 	ros::Rate loop_rate(FREQ);
 
 	while (ros::ok()){

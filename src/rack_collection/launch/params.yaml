@@ -1,0 +1,22 @@
+#1->servo #12 or #10, 2->servo #11 or #13
+const: {
+  deg_ini1: 30,
+  deg_ini2: 40,
+  deg_pick1: 50,
+  deg_pick2: 40,
+  deg_load1: 40,
+  deg_load2: 60,
+  deg_up1: 30,
+  deg_up2: 40,
+}
+
+air: {
+  deg_ini1: 50,
+  deg_ini2: 120,
+  deg_pick1: 150,
+  deg_pick2: 120,
+  deg_load1: 70,
+  deg_load2: 100,
+  deg_up1: 50,
+  deg_up2: 120,
+}

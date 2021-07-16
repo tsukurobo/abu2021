@@ -1,8 +1,11 @@
 #include "../include/pure_pursuit.h"
 
 //コンストラクタ
-Pure_pursuit::Pure_pursuit(double dt){
-	this->loop_dt = dt;
+Pure_pursuit::Pure_pursuit(std::string file_name, int ahead_num){
+	this->file_name = file_name;
+	this->ahead_num = ahead_num;
+
+	load_csv();
 }
 
 //経路再設定
@@ -38,35 +41,21 @@ void Pure_pursuit::set_posture(double yaw){
 	this->state_yaw = yaw;
 }
 
-//pid設定
-void Pure_pursuit::set_pos_pid(double p, double i, double d, double max_w){
-	this->pid_p = p;
-	this->pid_i = i;
-	this->pid_d = d;
-	this->pid_max = max_w;
-}
-
 /******* 司令 *******/
 //角速度司令[rad/s]
-void Pure_pursuit::cmd_angular_v(double target){
-	double angle = target - state_yaw; //姿勢角と目標角との偏角
+void Pure_pursuit::cmd_angular_v(double max, double p, double i, double d){
+	double angle = target_dir_global() - state_yaw; //姿勢角と目標角との偏角
 	static double sum_angle = 0;
-	static double pre_angle = angle;
-	double p = this->pid_p;
-	double i = this->pid_i;
-	double d = this->pid_d;
-	double max = this->pid_max;
-	double dt = this->loop_dt;
-
+	static double pre_angle = 0;
 
 	//偏角定義域修正
 	if(angle > M_PI)       while(angle >  M_PI) angle -= 2*M_PI;	
 	else if(angle < -M_PI) while(angle < -M_PI) angle += 2*M_PI;
 
-	sum_angle += angle*dt;
+	sum_angle += angle;
 
 	//PID制御
-	cmd_w = p*angle + i*sum_angle - d*(pre_angle-angle)/dt;
+	cmd_w = p*angle + i*sum_angle - d*(angle - pre_angle);
 
 	//最大角速度制限
 	if(cmd_w > max)       cmd_w =  max;

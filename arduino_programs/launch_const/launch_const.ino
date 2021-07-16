@@ -1,10 +1,13 @@
 #include <ros.h>
-#include <std_msgs/Int32.h>
+//#include <std_msgs/Int32.h>
+#include <abu2021_msgs/tr_order.h>
 #include "ise_motor_driver_v3.h"
 #include <math.h>
 
+#define CONST_LAUNCH 0
+
 /*ピンアサインとI2Cのアドレス*/
-#define SOLENOID 6
+#define SOLENOID 10
 #define MD_ADDR 0x15
 #define ROCK_SENS 2
 #define ROCKED HIGH
@@ -20,17 +23,17 @@
  * is_data_recieved: 0なら受け取ってない、1なら受け取っている
  * enc_pre, enc_now: エンコーダカウンタを格納
  */
-const float dist = 0.3, dist2 = 1.0, dist3 = 1.5;
-const int enc_resol = 4096, motor_spd = 250, loop_period = 10;
+float dist = 0.3, dist2 = 1.0, dist3 = 1.5;
+const int enc_resol = 4096, motor_spd = 180, loop_period = 10;
 uint8_t state = 0, received_data = 0, is_data_received = 0;
 long enc_pre = 0, enc_now = 0;
 IseMotorDriver md(MD_ADDR);
 
-void cmdCb(const std_msgs::Int32 &); //コールバック関数
+void cmdCb(const abu2021_msgs::tr_order &); //コールバック関数
 
 /*ros objects*/
 ros::NodeHandle nh;
-ros::Subscriber<std_msgs::Int32> cmd_sub("tr_order", &cmdCb);
+ros::Subscriber<abu2021_msgs::tr_order> cmd_sub("tr_order", &cmdCb);
 
 void setup() {
   /*Arduino側のセットアップ*/
@@ -52,6 +55,10 @@ void setup() {
     nh.spinOnce();
     delay(100);
   }
+  /*load params*/
+  while(!nh.getParam("/const/dist",&dist, 1));
+  while(!nh.getParam("/const/dist2",&dist2, 1));
+  while(!nh.getParam("/const/dist3",&dist3, 1));
 }
 
 void loop() {
@@ -154,7 +161,9 @@ void loop() {
   delay(loop_period);
 }
 
-void cmdCb(const std_msgs::Int32 &cmd){
-  received_data = cmd.data;
-  is_data_received = 1;
+void cmdCb(const abu2021_msgs::tr_order &cmd){
+  if(cmd.nodeId == CONST_LAUNCH){
+    received_data = cmd.orderId;
+    is_data_received = 1;
+  }
 }
