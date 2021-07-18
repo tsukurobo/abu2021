@@ -22,19 +22,25 @@ IseMotorDriver md(0x21); //AVRのアドレスに合わせて変更
 
 void joy_operation(const std_msgs::Int16MultiArray &mode){
   //右アームを開く
-  if(mode.data[0]==1){
+  if(mode.data[0]==2){
     open_righthand();
   }//右アームを閉じる
-  else{
+  else if(mode.data[0]==1){
     close_righthand();
+  }//右アームをリリース
+  else{
+    release_righthand();
   }
   
   //左アームを開く
-  if(mode.data[1]==1){
+  if(mode.data[1]==2){
     open_lefthand();
   }//左アームを閉じる
-  else{
+  else if(mode.data[1]==1){
     close_lefthand();
+  }//左アームをリリース
+  else{
+    release_lefthand();
   }
   
   pw_dist = mode.data[3];
@@ -96,7 +102,13 @@ void close_lefthand(){
   digitalWrite(close_leftSOLENOID, LOW);
   digitalWrite(open_leftSOLENOID, LOW);
   digitalWrite(close_leftSOLENOID, HIGH);   //閉めた後開放しない
-  string_msg.data = "Leftand closed";
+  string_msg.data = "Lefthand closed";
+}
+//左アームをリリース
+void release_lefthand(){
+  digitalWrite(close_leftSOLENOID, LOW);
+  digitalWrite(open_leftSOLENOID, LOW);
+  string_msg.data = "Lefthand released";
 }
 
 //右アームを開く
@@ -113,6 +125,13 @@ void close_righthand(){
   digitalWrite(open_rightSOLENOID, LOW);
   digitalWrite(close_rightSOLENOID, HIGH);   //閉めた後開放しない
   string_msg.data = "Righthand closed";
+}
+
+//左アームをリリース
+void release_righthand(){
+  digitalWrite(close_rightSOLENOID, LOW);
+  digitalWrite(open_rightSOLENOID, LOW);
+  string_msg.data = "Righthand released";
 }
 
 //妨害する

@@ -58,4 +58,3 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	pub_ad.publish(ad_order);
 	pub_turn_and_dist.publish(t_d);
 }
-
