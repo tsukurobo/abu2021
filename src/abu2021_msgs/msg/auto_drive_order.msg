@@ -4,6 +4,10 @@ int16 path1
 int16 path2
 int16 path3
 int16 path4
+int16 path5
+int16 path6
+int16 path7
+int16 path8
 int16 set1
 int16 set2
 int16 set3

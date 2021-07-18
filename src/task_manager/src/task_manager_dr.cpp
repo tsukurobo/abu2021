@@ -6,6 +6,17 @@
 #include <abu2021_msgs/auto_drive_order.h>
 #include <abu2021_msgs/turn_and_dist.h>
 
+#define but1 msg->buttons[0]
+#define but2 msg->buttons[1]
+#define but3 msg->buttons[2]
+#define but4 msg->buttons[3]
+#define butL msg->buttons[4]
+#define butR msg->buttons[5]
+#define butZL msg->buttons[6]
+#define butZR msg->buttons[7]
+
+double TURN_R = 1; //回転台操作の旋回半径[m]
+
 ros::Publisher pub;
 ros::Publisher pub_ad;
 ros::Publisher pub_turn_and_dist;
@@ -33,25 +44,37 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	abu2021_msgs::auto_drive_order ad_order;
 	abu2021_msgs::turn_and_dist t_d;
 
-	cmd.vx = 2.0*msg->axes[1];
-	cmd.vy = 2.0*msg->axes[0];
-	cmd.w  = 3.0*msg->axes[3];
+	if(butR == 0){ //手動走行
+		cmd.vx = 2.0*msg->axes[1];
+		cmd.vy = 2.0*msg->axes[0];
+		cmd.w  = 3.0*msg->axes[3];
+	}else if(butR == 1){ //回転台操作走行
+		cmd.vx = 2.0*msg->axes[2];
+		cmd.vy = 0;
+		cmd.w  = -2.0*msg->axes[2]/TURN_R;
+	}
 
-	ad_order.go = msg->buttons[4];
-	ad_order.emg_stop = msg->buttons[5];
-	if     (msg->buttons[5]==1 && msg->buttons[2]==1) ad_order.set1 = 1;
-	else if(msg->buttons[5]==1 && msg->buttons[3]==1) ad_order.set2 = 1;
-	else if(msg->buttons[5]==1 && msg->buttons[0]==1) ad_order.set3 = 1;
-	else if(msg->buttons[2]==1) ad_order.path1 = 1;
-	else if(msg->buttons[3]==1) ad_order.path2 = 1;
-	else if(msg->buttons[0]==1) ad_order.path3 = 1;
-	else if(msg->buttons[1]==1) ad_order.path4 = 1;
+	//自動走行
+	ad_order.go = but4;
+	ad_order.emg_stop = butL;
+	if(butL == 1){
+		if     (but1 == 1) ad_order.set1 = 1;
+		else if(but2 == 1) ad_order.set2 = 1;
+		else if(but3 == 1) ad_order.set3 = 1;
+	}
+	//経路設定
+	else if(but1 == 1) ad_order.path1 = 1;
+	else if(but2 == 1) ad_order.path2 = 1;
+	else if(but3 == 1) ad_order.path3 = 1;
+	else if(but4 == 1) ad_order.path4 = 1;
 
-	if(msg->buttons[6]==1) t_d.solenoid_r = 1;
+	//回転台操作
+	if(butZR == 1) t_d.solenoid_r = 1;
 	else t_d.solenoid_r = 0;
-	if(msg->buttons[7]==1) t_d.solenoid_l = 1;
+	if(butZL == 1) t_d.solenoid_l = 1;
 	else t_d.solenoid_l = 0;
-	if(msg->buttons[8]==1) t_d.dist = 1;
+	//妨害
+	if(butR == 1) t_d.dist = 1;
 	else t_d.dist = 0;
 
 	pub.publish(cmd);
