@@ -56,19 +56,19 @@ int main(int argc, char **argv){
     double vx = 0, vy = 0, vth = 0, vx_pre = 0, vy_pre = 0, vth_pre = 0, motor_v[MOTOR_NUM]={0}, v_now[MOTOR_NUM] = {0}, v_pre[MOTOR_NUM]={0}; //前回のループの値
     double gyro_ki = 0, gyro_kp = 0, robot_th = 0, robot_th_sum = 0;
     //パラメータの読み込み
-    nh.getParam("model/mode",mode);
+    while(!nh.getParam("base/model/mode",mode));
     if(mode == MODE_TR){
-        nh.getParam("model/width", w);
-        nh.getParam("model/height", h);
+        while(!nh.getParam("base/model/width", w));
+        while(!nh.getParam("base/model/height", h));
     }
     else if(mode == MODE_DR){
-        nh.getParam("model/distance_to_center", dtoc);
+        while(!nh.getParam("base/model/distance_to_center", dtoc));
     }
 
-    nh.getParam("model/acc", acc);
-    nh.getParam("model/freq", freq);
-    nh.getParam("gyro/kp", gyro_kp);
-    nh.getParam("gyro/ki", gyro_ki);
+    while(!nh.getParam("base/model/acc", acc));
+    while(!nh.getParam("base/model/freq", freq));
+    while(!nh.getParam("base/gyro/kp", gyro_kp));
+    while(!nh.getParam("base/gyro/ki", gyro_ki));
     ros::Rate loop_rate(freq);
 
     //パブリッシャとサブスクライバをつくる
@@ -95,9 +95,9 @@ int main(int argc, char **argv){
         else if(vy > vy_raw) vy = vy_pre - acc*(1.0/freq);
         if((vy - vy_raw)*(vy_pre - vy_raw) <= 0) vy = vy_raw;
 
-        /*if(vth < vth_raw) vth = vth_pre + acc*(1.0/freq);
-        else if(vth > vth_raw) vth = vth_pre - acc*(1.0/freq);
-        if((vth - vth_raw)*(vth_pre - vth_raw) <= 0) vth = vth_raw;*/
+        if(vth < vth_raw) vth = vth_pre + 2.0*acc*(1.0/freq);
+        else if(vth > vth_raw) vth = vth_pre - 2.0*acc*(1.0/freq);
+        if((vth - vth_raw)*(vth_pre - vth_raw) <= 0) vth = vth_raw;
 
         /*角度修正システム
         加速中かつ回転速度司令が0rad/sのときに動作させる*/
@@ -108,12 +108,12 @@ int main(int argc, char **argv){
         }else{
             robot_th = 0;
             robot_th_sum = 0;
-            vth = vth_raw;
+            //vth = vth_raw;
         }
 
         vx_pre = vx;
         vy_pre = vy;
-        //vth_pre = vth;
+        vth_pre = vth;
 
         if(mode == MODE_DR){
             //4輪オムニ
