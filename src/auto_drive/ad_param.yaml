@@ -20,13 +20,13 @@ pure_pursuit: {
   ahead_num: 100,
   range_fin: 0.05,
   range_dcl: 0.5,
-  path1: /home/koki/abu2021/src/auto_drive/pathes/dr_st_rt.csv,
-  path2: /home/koki/abu2021/src/auto_drive/pathes/dr_rt_type3.csv,
-  path3: /home/koki/abu2021/src/auto_drive/pathes/dr_rt_type2_oku.csv,
-  path4: /home/koki/abu2021/src/auto_drive/pathes/dr_type2_oku_type2_temae.csv,
-  path5: /home/koki/abu2021/src/auto_drive/pathes/up.csv,
-  path6: /home/koki/abu2021/src/auto_drive/pathes/up.csv,
-  path7: /home/koki/abu2021/src/auto_drive/pathes/up.csv,
-  path8: /home/koki/abu2021/src/auto_drive/pathes/up.csv
+  path1: /home/robosa/abu2021/src/auto_drive/pathes/dr_st_rt.csv,
+  path2: /home/robosa/abu2021/src/auto_drive/pathes/dr_rt_type3.csv,
+  path3: /home/robosa/abu2021/src/auto_drive/pathes/dr_rt_type2_oku.csv,
+  path4: /home/robosa/abu2021/src/auto_drive/pathes/dr_type2_oku_type2_temae.csv,
+  path5: /home/robosa/abu2021/src/auto_drive/pathes/up.csv,
+  path6: /home/robosa/abu2021/src/auto_drive/pathes/up.csv,
+  path7: /home/robosa/abu2021/src/auto_drive/pathes/up.csv,
+  path8: /home/robosa/abu2021/src/auto_drive/pathes/up.csv
   # path1: /home/koki/abu2021/src/auto_drive/pathes/dr_st_rt.csv
 }
