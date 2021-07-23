@@ -1,10 +1,6 @@
-#define ROS
-
 /*includes*/
-#ifdef ROS
 #include <ros.h>
 #include <abu2021_msgs/tr_order.h>
-#endif
 #include <Servo.h>
 
 /*defines*/
@@ -106,16 +102,18 @@ int air_deg_ini1 = 140;
 int air_deg_ini2 = 130;*/
 int deg_ini1[2]={}, deg_ini2[2]={}, deg_pick1[2]={},
     deg_pick2[2]={}, deg_load1[2]={}, deg_load2[2]={},
-    deg_up1[2]={}, deg_up2[2]={}, deg_pick2_1[2], deg_pick2_2[2];
+    deg_up1[2]={}, deg_up2[2]={}, deg_pick2_1[2], deg_pick2_2[2],
+    deg_up2_1[2]={}, deg_up2_2[2]={},pick_up = 0;
+int time_delay = 0;
+int orderId = 0;
+bool isMsgReceived = false;
 
 //int const_deg_servo1 = deg_ini1;
 //int const_deg_servo2 = deg_ini2;
-int solenoid_const = 0, solenoid_air = 0;
+//int solenoid_const = 0, solenoid_air = 0;
 
-#ifdef ROS
 ros::NodeHandle nh;
 //abu2021_msgs::tr_order ord;
-#endif
 
 /*RackCollection constRackCol(pin_const_servo1, pin_const_servo2, 
                             pin_const_solenoid1, pin_const_solenoid2), 
@@ -124,73 +122,19 @@ ros::NodeHandle nh;
   RackCollection constRackCol, airRackCol;
 //Servo ser1, ser2;
 
-#ifdef ROS
 void get_order(const abu2021_msgs::tr_order& ard_order) {
-  static RackCollection *col;
-  static int mecha_sel = 0;
-  
-  if(ard_order.nodeId == RACK_COLLECT){
-    if(ard_order.orderId <= CONST_INITIAL_POSITION){
-      col = &constRackCol;
-      mecha_sel = CONST;
-      
-    }else{
-      col = &airRackCol;
-      mecha_sel = AIR;
-    }
-    
-    switch(ard_order.orderId){
-      case CONST_DOWN:
-      case AIR_DOWN:
-        col->moveServo(deg_pick1[mecha_sel], deg_pick2[mecha_sel]);
-        break;
-
-      case CONST_DOWN2:
-      case AIR_DOWN2:
-        col->moveServo(deg_pick2_1[mecha_sel], deg_pick2_2[mecha_sel]);
-        break;
-
-      case CONST_CLOSE:
-      case AIR_CLOSE:
-        col->hand_close();
-        break;
-
-      case CONST_UP:
-      case AIR_UP:
-        col->moveServo(deg_up1[mecha_sel], deg_up2[mecha_sel]);
-        break;
-
-      case CONST_LOAD:
-      case AIR_LOAD:
-        col->moveServo(deg_load1[mecha_sel], deg_load2[mecha_sel]);
-        break;
-
-      case CONST_OPEN:
-      case AIR_OPEN:
-        col->hand_open();
-        break;
-
-      case CONST_INITIAL_POSITION:
-      case AIR_INITIAL_POSITION:
-        col->moveServo(deg_ini1[mecha_sel], deg_ini2[mecha_sel]);
-        break;
-
-      default:
-        break;
-
-    }
-  }
-
+  if(ard_order.nodeId ==RACK_COLLECT){
+    isMsgReceived = true;
+    orderId = ard_order.orderId;
+  } 
 }
 
 
 ros::Subscriber<abu2021_msgs::tr_order> sub_order("tr_order", get_order);
-#endif
 
 void setup() {
     //ser1.attach(pin_const_servo1);
     //ser2.attach(pin_const_servo2);
-#ifdef ROS
     nh.getHardware()->setBaud(115200);
     nh.initNode();
 
@@ -215,6 +159,8 @@ void setup() {
     while(!nh.getParam("/rack_col/const/deg_load2",&deg_load2[CONST], 1));
     while(!nh.getParam("/rack_col/const/deg_up1",&deg_up1[CONST], 1));
     while(!nh.getParam("/rack_col/const/deg_up2",&deg_up2[CONST], 1));
+    while(!nh.getParam("/rack_col/const/deg_up2_1",&deg_up2_1[CONST], 1));
+    while(!nh.getParam("/rack_col/const/deg_up2_2",&deg_up2_2[CONST], 1));
     while(!nh.getParam("/rack_col/const/deg_pick2_1",&deg_pick2_1[CONST], 1));
     while(!nh.getParam("/rack_col/const/deg_pick2_2",&deg_pick2_2[CONST], 1));
 
@@ -226,30 +172,31 @@ void setup() {
     while(!nh.getParam("/rack_col/air/deg_load2",&deg_load2[AIR], 1));
     while(!nh.getParam("/rack_col/air/deg_up1",&deg_up1[AIR], 1));
     while(!nh.getParam("/rack_col/air/deg_up2",&deg_up2[AIR], 1));
-    while(!nh.getParam("/rack_col/air/deg_pick1",&deg_pick2_1[AIR], 1));
-    while(!nh.getParam("/rack_col/air/deg_pick2",&deg_pick2[AIR], 1));
+    while(!nh.getParam("/rack_col/air/deg_up2_1",&deg_up2_1[AIR], 1));
+    while(!nh.getParam("/rack_col/air/deg_up2_2",&deg_up2_2[AIR], 1));
+    while(!nh.getParam("/rack_col/air/deg_pick2_1",&deg_pick2_1[AIR], 1));
+    while(!nh.getParam("/rack_col/air/deg_pick2_2",&deg_pick2_2[AIR], 1));
 
-#endif
+    while(!nh.getParam("/rack_col/time_delay",&time_delay, 1));
+    while(!nh.getParam("/rack_col/pick_up",&pick_up, 1));
+
     constRackCol.init(pin_const_servo1, pin_const_servo2, 
                       pin_const_solenoid1, pin_const_solenoid2);
     airRackCol.init(pin_air_servo1, pin_air_servo2, 
                     pin_air_solenoid1, pin_air_solenoid2);
-#ifdef ROS
     constRackCol.moveServo(deg_ini1[CONST], deg_ini2[CONST]);
     constRackCol.hand_free();
     airRackCol.moveServo(deg_ini1[AIR], deg_ini2[AIR]);
     airRackCol.hand_free();
-#endif
 }
 
 void loop() {
-#ifdef ROS
+    static RackCollection *col;
+    static int mecha_sel = 0;
+
     nh.spinOnce();
-#endif
-#ifndef ROS
-    constRackCol.moveServo(0,10);
-    airRackCol.moveServo(30,180);
-#endif
+    //constRackCol.moveServo(0,10);
+    //airRackCol.moveServo(30,180);
     /*//サーボ１
     ser1.write(100);
 
@@ -273,6 +220,63 @@ void loop() {
         digitalWrite(pin_solenoid2, HIGH);
         
     }*/
+  if(isMsgReceived == true){
+    isMsgReceived = false;
+  
+    if(orderId <= CONST_INITIAL_POSITION){
+      col = &constRackCol;
+      mecha_sel = CONST;
+      
+    }else{
+      col = &airRackCol;
+      mecha_sel = AIR;
+    }
+    
+    switch(orderId){
+      case CONST_DOWN:
+      case AIR_DOWN:
+        col->moveServo(deg_pick1[mecha_sel], deg_pick2[mecha_sel]);
+        break;
 
-    delay(10);
+      case CONST_DOWN2:
+      case AIR_DOWN2:
+        col->moveServo(deg_pick2_1[mecha_sel], deg_pick2_2[mecha_sel]);
+        break;
+
+      case CONST_CLOSE:
+      case AIR_CLOSE:
+        col->hand_close();
+        delay(time_delay);
+        col->moveServo(deg_pick1[mecha_sel]+pick_up, deg_pick2[mecha_sel]);
+        break;
+
+      case CONST_UP:
+      case AIR_UP:
+        col->moveServo(deg_up1[mecha_sel], deg_up2[mecha_sel]);
+        delay(time_delay);
+        //nh.spinOnce();
+        col->moveServo(deg_up2_1[mecha_sel], deg_up2_2[mecha_sel]);
+        break;
+
+      case CONST_LOAD:
+      case AIR_LOAD:
+        col->moveServo(deg_load1[mecha_sel], deg_load2[mecha_sel]);
+        break;
+
+      case CONST_OPEN:
+      case AIR_OPEN:
+        col->hand_open();
+        break;
+
+      case CONST_INITIAL_POSITION:
+      case AIR_INITIAL_POSITION:
+        col->moveServo(deg_ini1[mecha_sel], deg_ini2[mecha_sel]);
+        break;
+
+      default:
+        break;
+
+    }
+  }
+    //delay(100);
 }

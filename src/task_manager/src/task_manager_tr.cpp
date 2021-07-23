@@ -57,7 +57,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 
 	cmd.vx = 2.0*msg->axes[1];
 	cmd.vy = 2.0*msg->axes[0];
-	cmd.w  = 3.0*msg->axes[3];
+	cmd.w  = -3.0*msg->axes[3];
 	
 	//LB+(LT+)1~4 -> drive const_launch
 	if ((msg->LB == PUSHED) && (msg->ONE == PUSHED)) {
@@ -83,7 +83,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	//LB/RB + (LT/RT +) UP, DOWN, LEFT, RIGHT -> drive rack_collection
 	} else if ((msg->LB == PUSHED) && (msg->AX_UPDOWN == UP)) {
 		order.nodeId = RACK_COL;
-		(msg->LT != PUSHED) ? (order.orderId = 0) : (order.orderId = 4);
+		(msg->LT != PUSHED) ? (order.orderId = 0) : (order.orderId = 6);
 		pub_touteki.publish(order);
 	
 	} else if ((msg->LB == PUSHED) && (msg->AX_UPDOWN == DOWN)) {
@@ -93,7 +93,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	
 	} else if ((msg->LB == PUSHED) && (msg->AX_LR == RIGHT)) {
 		order.nodeId = RACK_COL;
-		(msg->LT != PUSHED) ? (order.orderId = 1) : (order.orderId = 6);
+		(msg->LT != PUSHED) ? (order.orderId = 1) : (order.orderId = 4);
 		pub_touteki.publish(order);
 
 	} else if ((msg->LB == PUSHED) && (msg->AX_LR == LEFT)) {
@@ -103,7 +103,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	
 	} else if ((msg->RB == PUSHED) && (msg->AX_UPDOWN == UP)) {
 		order.nodeId = RACK_COL;
-		(msg->RT != PUSHED) ? (order.orderId = 7) : (order.orderId = 11);
+		(msg->RT != PUSHED) ? (order.orderId = 7) : (order.orderId = 13);
 		pub_touteki.publish(order);
 	
 	} else if ((msg->RB == PUSHED) && (msg->AX_UPDOWN == DOWN)) {
@@ -113,7 +113,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	
 	} else if ((msg->RB == PUSHED) && (msg->AX_LR == RIGHT)) {
 		order.nodeId = RACK_COL;
-		(msg->RT != PUSHED) ? (order.orderId =8) : (order.orderId = 13);
+		(msg->RT != PUSHED) ? (order.orderId =8) : (order.orderId = 11);
 		pub_touteki.publish(order);
 	
 	} else if ((msg->RB == PUSHED) && (msg->AX_LR == LEFT)) {
