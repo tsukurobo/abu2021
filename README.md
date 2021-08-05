@@ -45,6 +45,7 @@ task_manager_tr
 ```
 ### kinematics_model
 メカナム・オムニの動力学モデルを利用して各モータの指令値を計算
+**注意：mecanum_pid_i2c.inoの162行目は、TRはenc_prev[i]-enc_now[i]とする。そうしないと暴走する。**
 ```
 kinematics_model
   sub
