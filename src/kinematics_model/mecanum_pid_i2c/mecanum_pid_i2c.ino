@@ -157,9 +157,9 @@ void loop(){
       if(!(*md[i]) == false) *md[i] >> enc_now[i];
       else{
         enc_now[i]=0;
-        nh.logerror("md not connected!");
+        nh.logerror("md  not connected!");
       }
-      enc_delta[i] = a*(float)(enc_now[i] - enc_prev[i]) + (1 - a)*enc_delta_pre[i];
+      enc_delta[i] = a*(float)(enc_prev[i] - enc_now[i]) + (1 - a)*enc_delta_pre[i];
       enc_prev[i] = enc_now[i];
       enc_delta_pre[i] = enc_delta[i];
       
@@ -168,7 +168,7 @@ void loop(){
       //changeGains(PID[i], vx-vy_pre, vy-vy_pre, i); //加減速時はPIDのゲインを変更
       motor_pwm = (int)PID[i]->calcValue(goal_vel[i] - speed_now[i], goal_vel[i]/wheel_radius);
       //motor_pwm = 255.0*goal_vel[i];
-      if(fabs(speed_now[i])<0.0001 && goal_vel[i]==0) motor_pwm = 0; //高周波音の抑制 
+      if(fabs(goal_vel[i])<=0.0001) motor_pwm = 0; //高周波音の抑制 
       *md[i] << motor_pwm; //モーターを回転させる
     }
     

@@ -10,7 +10,7 @@
 #define MODE_TR 1
 
 int mode = 0; //デフォルトはDRモード
-double h=1.0, w=1.0, dtoc=1.0, max_lin_v=2.0;// max_ang_v=1.0;
+double h=1.0, w=1.0, dtoc=1.0, max_lin_v=6.0;// max_ang_v=1.0;
 double vx_raw = 0, vy_raw = 0, vth_raw = 0, gyro_m = 0;
 
 void velcallback(const abu2021_msgs::cmd_vw& vc){
@@ -67,6 +67,7 @@ int main(int argc, char **argv){
 
     while(!nh.getParam("base/model/acc", acc));
     while(!nh.getParam("base/model/freq", freq));
+    while(!nh.getParam("base/model/max_lin_vel", max_lin_v));
     while(!nh.getParam("base/gyro/kp", gyro_kp));
     while(!nh.getParam("base/gyro/ki", gyro_ki));
     ros::Rate loop_rate(freq);
@@ -124,10 +125,10 @@ int main(int argc, char **argv){
         }
         else if(mode == MODE_TR){
         //メカナム
-            motor_v[0] = vy + vx + 0.5*(vth)*(w+h);
-            motor_v[1] = vy - vx + 0.5*(vth)*(w+h);
-            motor_v[2] = -vy - vx + 0.5*(vth)*(w+h);
-            motor_v[3] = -vy + vx + 0.5*(vth)*(w+h);
+            motor_v[0] = vy - vx + 0.5*(vth)*(w+h);
+            motor_v[1] = -vy - vx + 0.5*(vth)*(w+h);
+            motor_v[2] = -vy + vx + 0.5*(vth)*(w+h);
+            motor_v[3] = vy + vx + 0.5*(vth)*(w+h);
         }
 
 

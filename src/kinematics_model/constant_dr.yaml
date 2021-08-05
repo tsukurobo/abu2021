@@ -8,7 +8,8 @@ model: {
   #LPF_const_go: 1.0,
   #LPF_const_stop: 0.7,
   #to_zero_th: 0,
-  acc: 3.5
+  acc: 3.5,
+  max_lin_vel: 1.5
 },
 
 velPID: {
@@ -19,7 +20,7 @@ velPID: {
 },
 
 motor_driver: {
-  addrs: [ 0x14, 0x22, 0x20, 0x33 ]
+  addrs: [ 0x21, 0x33, 0x20, 0x15 ]
 },
 
 gyro: {

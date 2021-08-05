@@ -55,9 +55,9 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	static abu2021_msgs::tr_order order;
 	static abu2021_msgs::air_launch_order air_order;
 
-	cmd.vx = 2.0*msg->axes[1];
-	cmd.vy = 2.0*msg->axes[0];
-	cmd.w  = -3.0*msg->axes[3];
+	cmd.vx = 6.0*msg->axes[1];
+	cmd.vy = 6.0*msg->axes[0];
+	cmd.w  = 4.0*msg->axes[3];
 	
 	//LB+(LT+)1~4 -> drive const_launch
 	if ((msg->LB == PUSHED) && (msg->ONE == PUSHED)) {
@@ -80,28 +80,28 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 		(msg->LT != PUSHED) ? (order.orderId = 3) : (order.orderId = 4);
 		pub_touteki.publish(order);
 	
-	//LB/RB + (LT/RT +) UP, DOWN, LEFT, RIGHT -> drive rack_collection
-	} else if ((msg->LB == PUSHED) && (msg->AX_UPDOWN == UP)) {
+	//(RB +) UP, DOWN, LEFT, RIGHT -> drive rack_collection
+	} else if (msg->AX_UPDOWN == UP) {
 		order.nodeId = RACK_COL;
-		(msg->LT != PUSHED) ? (order.orderId = 0) : (order.orderId = 6);
+		(msg->LB != PUSHED) ? (order.orderId = 0) : (order.orderId = 6);
 		pub_touteki.publish(order);
 	
-	} else if ((msg->LB == PUSHED) && (msg->AX_UPDOWN == DOWN)) {
+	} else if (msg->AX_UPDOWN == DOWN) {
 		order.nodeId = RACK_COL;
-		(msg->LT != PUSHED) ? (order.orderId = 2) :(order.orderId = 5);
+		(msg->LB != PUSHED) ? (order.orderId = 2) :(order.orderId = 5);
 		pub_touteki.publish(order);
 	
-	} else if ((msg->LB == PUSHED) && (msg->AX_LR == RIGHT)) {
+	} else if (msg->AX_LR == RIGHT) {
 		order.nodeId = RACK_COL;
-		(msg->LT != PUSHED) ? (order.orderId = 1) : (order.orderId = 4);
+		(msg->LB != PUSHED) ? (order.orderId = 1) : (order.orderId = 4);
 		pub_touteki.publish(order);
 
-	} else if ((msg->LB == PUSHED) && (msg->AX_LR == LEFT)) {
+	} else if (msg->AX_LR == LEFT) {
 		order.nodeId = RACK_COL;
 		order.orderId = 3;
 		pub_touteki.publish(order);
-	
-	} else if ((msg->RB == PUSHED) && (msg->AX_UPDOWN == UP)) {
+
+	} /*else if ((msg->RB == PUSHED) && (msg->AX_UPDOWN == UP)) {
 		order.nodeId = RACK_COL;
 		(msg->RT != PUSHED) ? (order.orderId = 7) : (order.orderId = 13);
 		pub_touteki.publish(order);
@@ -121,7 +121,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 		order.orderId = 10;
 		pub_touteki.publish(order);
 	
-	}
+	}*/
 	
 	//RB+(RT)+1~4 -> drive air launch
 	else if ((msg->RB == PUSHED) && (msg->ONE == PUSHED)) {

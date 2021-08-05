@@ -1,40 +1,40 @@
 rack_col: {
   const: {
-    deg_ini1: 30,
-    deg_ini2: 40,
-    deg_pick1: 110,
+    deg_ini1: 115,
+    deg_ini2: 30,
+    deg_pick1: 115,
     deg_pick2: 50,
-    deg_pick2_1: 105,
-    deg_pick2_2: 30,
+    deg_pick2_1: 35,
+    deg_pick2_2: 20,
     deg_load1: 0,
     deg_load2: 50,
     deg_up1: 20,
     deg_up2: 50,
     deg_up2_1: 20,
-    deg_up2_2: 80  },
+    deg_up2_2: 85  },
 
   air: {
-    deg_ini1: 50,
-    deg_ini2: 120,
-    deg_pick1: 160,
-    deg_pick2: 120,
-    deg_pick2_1: 160,
-    deg_pick2_2: 140,
+    deg_ini1: 150,
+    deg_ini2: 140,
+    deg_pick1: 155,
+    deg_pick2: 110,
+    deg_pick2_1: 50,
+    deg_pick2_2: 115,
     deg_load1: 30,
-    deg_load2: 130,
-    deg_up1: 70,
-    deg_up2: 120,
-    deg_up2_1: 70,
-    deg_up2_2: 55,
+    deg_load2: 125,
+    deg_up1: 70, 
+    deg_up2: 125,
+    deg_up2_1: 65,
+    deg_up2_2: 60, 
   },
   time_delay: 500,
-  pick_up: -20
+  pick_up: -5
 }
 
 const: {
-  dist: 1.05,
-  dist2: 1.9,
-  dist3: 2.35
+  dist: 0.55,
+  dist2: 1.65,
+  dist3: 2.0
 }
 
 base: {
@@ -44,20 +44,21 @@ base: {
     height: 0.7,
     wheel_radius: 0.08,
     freq: 50,
-    acc: 3.5
+    acc: 10.5,
+    max_lin_vel: 6.0
     #LPF_const_go: 0.3,
-    #LPF_const_stop: 0.7
+    #LPF_const_stop: 0.70
   },
 
   velPID: {
-    kp: [ 120.0, 120.0, 120.0, 120.0 ],
-    ki: [ 10.0, 10.0, 10.0, 10.0 ],
-    kd: [ 0.0, 0.0, 0.0, 0.0 ],
-    tdel: [0.014, 0.014, 0.014, 0.014 ]
+    kp: [ 200.0, 200.0, 200.0, 200.0 ],
+    ki: [ 20.0, 20.0, 20.0, 20.0 ],
+    kd: [ 0.2, 0.2, 0.2, 0.2 ],
+    tdel: [0.028, 0.028, 0.028, 0.028 ]
   },
 
   motor_driver: {
-    addrs: [ 0x14, 0x15, 0x23, 0x17 ]
+    addrs: [ 0x19, 0x15, 0x23, 0x17 ]
   },
 
   gyro: {
@@ -68,11 +69,11 @@ base: {
 }
 
 air: {
-  power: 180, #speed when adjust manually
-  position3: 300,
-  position4: 4500,
+  power: 230, #speed when adjust manually
+  position3: 550,
+  position4: 4250,
   pos3_range: 50,
   pos4_range: 50,
-  delay_hassya: 2000, #
-  speed: -200
+  delay_hassya: 2000, 
+  speed: -230
 }

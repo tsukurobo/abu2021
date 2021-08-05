@@ -46,9 +46,9 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 
 
 	if(butR == 0){ //手動走行
-		cmd.vx = 2.0*msg->axes[1];
-		cmd.vy = 2.0*msg->axes[0];
-		cmd.w  = 3.0*msg->axes[3];
+		cmd.vx = 1.5*msg->axes[1];
+		cmd.vy = 1.5*msg->axes[0];
+		cmd.w  = 1.5*msg->axes[3];
 	}else if(butR == 1){ //回転台操作走行
 		cmd.vx = 2.0*msg->axes[2];
 		cmd.vy = 0;

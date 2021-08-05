@@ -63,7 +63,7 @@ void mode2(){
 	if(cnt > (delay_hassya+100)*FREQ/1000){
 		hassya=0;
 		cnt=0;
-		order_mode=0;
+		order_mode=3; //make ready to launch again
 	}else if(cnt > delay_hassya*FREQ/1000){
 		hassya=2;
 	}else if(cnt > 100*FREQ/1000){ //100msec

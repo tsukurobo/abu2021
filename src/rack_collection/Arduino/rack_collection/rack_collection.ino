@@ -18,7 +18,7 @@
 #define CONST 0
 #define AIR 1
 
-#define CONST_DOWN 0
+/*#define CONST_DOWN 0
 #define CONST_CLOSE 1
 #define CONST_UP 2
 #define CONST_LOAD 3
@@ -31,7 +31,15 @@
 #define AIR_LOAD 10
 #define AIR_OPEN 11
 #define AIR_DOWN2 12
-#define AIR_INITIAL_POSITION 13
+#define AIR_INITIAL_POSITION 13*/
+
+#define DOWN 0
+#define CLOSE 1
+#define UP 2
+#define LOAD 3
+#define OPEN 4
+#define DOWN2 5
+#define INITIAL_POSITION 6
 
 /*class definition*/
 class RackCollection{
@@ -78,6 +86,11 @@ inline void RackCollection::moveServo(int deg1, int deg2){
   ser2.write(deg2);
 }
 
+inline void RackCollection::hand_free(void){
+  digitalWrite(sol_pin_open, LOW);
+  digitalWrite(sol_pin_close, LOW);
+}
+
 inline void RackCollection::hand_open(void){
   digitalWrite(sol_pin_open, HIGH);
   digitalWrite(sol_pin_close, LOW);
@@ -87,13 +100,6 @@ inline void RackCollection::hand_close(void){
   digitalWrite(sol_pin_open, LOW);
   digitalWrite(sol_pin_close, HIGH);
 }
-
-inline void RackCollection::hand_free(void){
-  digitalWrite(sol_pin_open, LOW);
-  digitalWrite(sol_pin_close, LOW);
-}
-
-
 
 /*main body*/
 /*int const_deg_ini1 = 140;
@@ -191,8 +197,8 @@ void setup() {
 }
 
 void loop() {
-    static RackCollection *col;
-    static int mecha_sel = 0;
+    //static RackCollection *col;
+    //static int mecha_sel = 0;
 
     nh.spinOnce();
     //constRackCol.moveServo(0,10);
@@ -223,54 +229,62 @@ void loop() {
   if(isMsgReceived == true){
     isMsgReceived = false;
   
-    if(orderId <= CONST_INITIAL_POSITION){
+    /*if(orderId <= CONST_INITIAL_POSITION){
       col = &constRackCol;
       mecha_sel = CONST;
       
     }else{
       col = &airRackCol;
       mecha_sel = AIR;
-    }
+    }*/
     
     switch(orderId){
-      case CONST_DOWN:
-      case AIR_DOWN:
-        col->moveServo(deg_pick1[mecha_sel], deg_pick2[mecha_sel]);
+      case DOWN:
+        constRackCol.moveServo(deg_pick1[CONST], deg_pick2[CONST]);
+        airRackCol.moveServo(deg_pick1[AIR], deg_pick2[AIR]);
         break;
 
-      case CONST_DOWN2:
-      case AIR_DOWN2:
-        col->moveServo(deg_pick2_1[mecha_sel], deg_pick2_2[mecha_sel]);
+      case DOWN2:
+        constRackCol.moveServo(deg_pick2_1[CONST], deg_pick2_2[CONST]);
+        airRackCol.moveServo(deg_pick2_1[AIR], deg_pick2_2[AIR]);
         break;
 
-      case CONST_CLOSE:
-      case AIR_CLOSE:
-        col->hand_close();
+      case CLOSE:
+        constRackCol.hand_close();
+        airRackCol.hand_close();
         delay(time_delay);
-        col->moveServo(deg_pick1[mecha_sel]+pick_up, deg_pick2[mecha_sel]);
+        constRackCol.hand_free();
+        airRackCol.hand_free();
+        
+        constRackCol.moveServo(deg_pick1[CONST]+pick_up, deg_pick2[CONST]);
+        airRackCol.moveServo(deg_pick1[AIR]+pick_up, deg_pick2[AIR]);
         break;
 
-      case CONST_UP:
-      case AIR_UP:
-        col->moveServo(deg_up1[mecha_sel], deg_up2[mecha_sel]);
+      case UP:
+        constRackCol.moveServo(deg_up1[CONST], deg_up2[CONST]);
+        airRackCol.moveServo(deg_up1[AIR], deg_up2[AIR]);
         delay(time_delay);
         //nh.spinOnce();
-        col->moveServo(deg_up2_1[mecha_sel], deg_up2_2[mecha_sel]);
+        constRackCol.moveServo(deg_up2_1[CONST], deg_up2_2[CONST]);
+        airRackCol.moveServo(deg_up2_1[AIR], deg_up2_2[AIR]);
         break;
 
-      case CONST_LOAD:
-      case AIR_LOAD:
-        col->moveServo(deg_load1[mecha_sel], deg_load2[mecha_sel]);
+      case LOAD:
+        constRackCol.moveServo(deg_load1[CONST], deg_load2[CONST]);
+        airRackCol.moveServo(deg_load1[AIR], deg_load2[AIR]);
         break;
 
-      case CONST_OPEN:
-      case AIR_OPEN:
-        col->hand_open();
+      case OPEN:
+        constRackCol.hand_open();
+        airRackCol.hand_open();
+        delay(200);
+        constRackCol.hand_free();
+        airRackCol.hand_free();
         break;
 
-      case CONST_INITIAL_POSITION:
-      case AIR_INITIAL_POSITION:
-        col->moveServo(deg_ini1[mecha_sel], deg_ini2[mecha_sel]);
+      case INITIAL_POSITION:
+        constRackCol.moveServo(deg_ini1[CONST], deg_ini2[CONST]);
+        airRackCol.moveServo(deg_ini1[AIR], deg_ini2[AIR]);
         break;
 
       default:
