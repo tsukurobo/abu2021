@@ -29,6 +29,6 @@ class IseMotorDriver {
     bool write_addr(uint8_t);
     bool write_byte(uint8_t);
     bool read_byte(uint8_t *, char);
-    void stop_i2c();
+    void stop_i2c(void);
 };
 #endif

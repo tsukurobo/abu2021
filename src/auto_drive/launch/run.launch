@@ -16,11 +16,11 @@
 
 	
 	<node pkg="rosserial_python" type="serial_node.py" name="serial_node1">
-		<param name="port" value="/dev/ttyACM1"/>
+		<param name="port" value="/dev/ttyACM2"/>
 	</node>
 
 	<node pkg="rosserial_python" type="serial_node.py" name="serial_node2">
-		<param name="port" value="/dev/ttyACM2"/>
+		<param name="port" value="/dev/ttyACM3"/>
 	</node>
 
 </launch>

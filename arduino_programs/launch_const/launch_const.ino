@@ -1,10 +1,13 @@
 #include <ros.h>
-#include <std_msgs/Int32.h>
+//#include <std_msgs/Int32.h>
+#include <abu2021_msgs/tr_order.h>
 #include "ise_motor_driver_v3.h"
 #include <math.h>
 
+#define CONST_LAUNCH 0
+
 /*ピンアサインとI2Cのアドレス*/
-#define SOLENOID 6
+#define SOLENOID 10
 #define MD_ADDR 0x15
 #define ROCK_SENS 2
 #define ROCKED HIGH
@@ -14,23 +17,25 @@
  * dist: プーリ何回転分でコンストばねを引くのを止めるか
  * enc_resol: エンコーダの分解能
  * motor_spd: 0~255
+ * trig_count_th: stateが1になるために、何ループROCKEDが検出されればよいか
  * loop_period: 単位はミリ秒
  * state: 0なら発射台はロックされていない. 1ならロックされている
  * received_data: PCから受け取ったデータを格納
  * is_data_recieved: 0なら受け取ってない、1なら受け取っている
  * enc_pre, enc_now: エンコーダカウンタを格納
  */
-const float dist = 0.3, dist2 = 1.0, dist3 = 1.5;
-const int enc_resol = 4096, motor_spd = 250, loop_period = 10;
+float dist = 0.3, dist2 = 1.0, dist3 = 1.5;
+int trig_count = 0;
+const int enc_resol = 4096, motor_spd = 220, loop_period = 10, trig_count_th = 5;
 uint8_t state = 0, received_data = 0, is_data_received = 0;
 long enc_pre = 0, enc_now = 0;
 IseMotorDriver md(MD_ADDR);
 
-void cmdCb(const std_msgs::Int32 &); //コールバック関数
+void cmdCb(const abu2021_msgs::tr_order &); //コールバック関数
 
 /*ros objects*/
 ros::NodeHandle nh;
-ros::Subscriber<std_msgs::Int32> cmd_sub("tr_order", &cmdCb);
+ros::Subscriber<abu2021_msgs::tr_order> cmd_sub("tr_order", &cmdCb);
 
 void setup() {
   /*Arduino側のセットアップ*/
@@ -52,6 +57,10 @@ void setup() {
     nh.spinOnce();
     delay(100);
   }
+  /*load params*/
+  while(!nh.getParam("/const/dist",&dist, 1));
+  while(!nh.getParam("/const/dist2",&dist2, 1));
+  while(!nh.getParam("/const/dist3",&dist3, 1));
 }
 
 void loop() {
@@ -67,26 +76,33 @@ void loop() {
       while(1){
         /*発射台がロックされると、モータを逆回転させる。決められた分だけ回転させたらモータを停止。*/
         if(digitalRead(ROCK_SENS) == ROCKED){
-          state = 1;
-          delay(200);
-          md << 0;
-          delay(50);
-          md << motor_spd;
-
-          md >> enc_pre;
-          do{
-            nh.spinOnce();
-            /*停止指令が来たら停止させる*/
-            if(is_data_received == 1 && received_data == 0){
-              is_data_received = 0;
-              nh.loginfo("stop");
-              break;
-            }
-            md >> enc_now;
-          }while((float)abs(enc_now - enc_pre)/enc_resol < dist);
+          trig_count++;
           
-          //md << 0;
-          break;
+          if(trig_count >= trig_count_th){
+            trig_count = 0;
+            state = 1;
+            delay(150);
+            md << 0;
+            delay(50);
+            md << motor_spd;
+  
+            md >> enc_pre;
+            do{
+              nh.spinOnce();
+              /*停止指令が来たら停止させる*/
+              if(is_data_received == 1 && received_data == 0){
+                is_data_received = 0;
+                nh.loginfo("stop");
+                break;
+              }
+              md >> enc_now;
+            }while((float)abs(enc_now - enc_pre)/enc_resol < dist);
+            
+            //md << 0;
+            break;
+          }else{
+            nh.spinOnce();
+          }
         
         }else{
           //nh.loginfo("@");
@@ -99,6 +115,7 @@ void loop() {
             break;
           }
         }
+
         delay(loop_period);
       
       }
@@ -111,6 +128,11 @@ void loop() {
       delay(200);
       digitalWrite(SOLENOID, LOW);
       state = 0;
+
+      //ロックを解除した後、再びソレノイドを動かして発射台と連結させる
+      delay(200);
+      is_data_received = 1;
+      received_data = 1;
     
     }else if(state == 1 && (received_data == 1 || received_data == 3 || received_data == 4)){
       float goal_d = 0, d_now = 0, delta = 0, delta_pre = 0; 
@@ -154,7 +176,9 @@ void loop() {
   delay(loop_period);
 }
 
-void cmdCb(const std_msgs::Int32 &cmd){
-  received_data = cmd.data;
-  is_data_received = 1;
+void cmdCb(const abu2021_msgs::tr_order &cmd){
+  if(cmd.nodeId == CONST_LAUNCH){
+    received_data = cmd.orderId;
+    is_data_received = 1;
+  }
 }

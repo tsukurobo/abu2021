@@ -166,12 +166,12 @@ void get_odom(const abu2021_msgs::odom_rad::ConstPtr& odm){
 	static double pre_x = 0;
 	static double pre_y = 0;
 
-	double dx = (-odm->x - pre_x)*WHEEL*cos(pp.state_yaw) - (-odm->y - pre_y)*WHEEL*sin(pp.state_yaw);
-	double dy = (-odm->x - pre_x)*WHEEL*sin(pp.state_yaw) + (-odm->y - pre_y)*WHEEL*cos(pp.state_yaw);
+	double dx = (odm->x - pre_x)*WHEEL*cos(pp.state_yaw) - (-odm->y - pre_y)*WHEEL*sin(pp.state_yaw);
+	double dy = (odm->x - pre_x)*WHEEL*sin(pp.state_yaw) + (-odm->y - pre_y)*WHEEL*cos(pp.state_yaw);
 
 	pp.set_position(pp.state_p.x + dx, pp.state_p.y + dy);
 
-	pre_x = -odm->x;
+	pre_x = odm->x;
 	pre_y = -odm->y;
 }
 

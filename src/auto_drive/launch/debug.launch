@@ -9,16 +9,14 @@
     <!-- <rosparam command="load" file="$(find kinematics_model)/constant_dr.yaml" /> -->
 	<!-- <node pkg="kinematics_model" name="kinematics_model" type="kinematics_model"/> -->
 
-	<!-- <node pkg="signal_processing" name="gyro_kalman" type="gyro_kalman"/> -->
+	<node pkg="signal_processing" name="gyro_kalman" type="gyro_kalman"/>
 
 	<node pkg="auto_drive" name="auto_driving" type="auto_driving"/>
-<!--
 	<node pkg="rosserial_python" type="serial_node.py" name="serial_node1">
-		<param name="port" value="/dev/ttyACM1"/>
+		<param name="port" value="/dev/ttyACM2"/>
 	</node>
 
 	<node pkg="rosserial_python" type="serial_node.py" name="serial_node2">
-		<param name="port" value="/dev/ttyACM2"/>
+		<param name="port" value="/dev/ttyACM3"/>
 	</node>
--->
 	</launch>

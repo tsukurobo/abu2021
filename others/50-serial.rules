@@ -1,0 +1,4 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", ATTRS{serial}=="55037313337351603101", SYMLINK+="arduino_rack_col", GROUP="dialout"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", ATTRS{serial}=="55736313438351713261", SYMLINK+="arduino_mecanum", GROUP="dialout"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", ATTRS{serial}=="55037313337351704180", SYMLINK+="arduino_const", GROUP="dialout"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", ATTRS{serial}=="6493833393235120C1D0", SYMLINK+="arduino_air", GROUP="dialout

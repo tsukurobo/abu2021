@@ -41,8 +41,8 @@ ros::NodeHandle nh;
 abu2021_msgs::motor_enc enc_msg;
 ros::Publisher enc_pub("encoder", &enc_msg);
 ////for debug////
-std_msgs::Float32 debug_data;
-ros::Publisher debug_pub("debug_info", &debug_data);
+//std_msgs::Float32 debug_data;
+//ros::Publisher debug_pub("debug_info", &debug_data);
 //geometry_msgs::Vector3 pid_msg;
 //ros::Publisher pid_pub("pid_info", &pid_msg);
 ////////////////
@@ -59,7 +59,7 @@ void setup(){
   ros::Subscriber<abu2021_msgs::motor_pw> vel_sub("motor_vel", &onReceivePower);
   nh.subscribe(vel_sub);
   nh.advertise(enc_pub);
-  nh.advertise(debug_pub);
+  //nh.advertise(debug_pub);
   
   //PIDパラメータの設定
   while(!nh.connected()) { //ノードがROSのシステムに接続されるまで待つ
@@ -70,19 +70,19 @@ void setup(){
   PIDSettings pidset[4];
   #ifdef ROS
   //while(!nh.getParam("/model/to_zero_th", &to_zero_th, 1)){};
-  while(!nh.getParam("/model/mode", &mode, 1)){};
-  while(!nh.getParam("/model/acc", &acc, 1)){};
-  while(!nh.getParam("/model/wheel_radius", &wheel_radius, 1)){};
-  if(mode == 1){ //TRモード時
+  //while(!nh.getParam("/model/mode", &mode, 1)){};
+  //while(!nh.getParam("/model/acc", &acc, 1)){};
+  while(!nh.getParam("/base/model/wheel_radius", &wheel_radius, 1)){};
+  /*if(mode == 1){ //TRモード時
     while(!nh.getParam("/model/width", &width, 1)){};
     while(!nh.getParam("/model/height", &height, 1)){}; 
   }else if(mode == 0){ //DRモード時
     while(!nh.getParam("/model/distance_to_center", &dtoc, 1)){};
-  }
-  while(!nh.getParam("/arduino_PID/kp", kp, MOTOR_NUM)){};
-  while(!nh.getParam("/arduino_PID/ki", ki, MOTOR_NUM)){};
-  while(!nh.getParam("/arduino_PID/kd", kd, MOTOR_NUM)){};
-  while(!nh.getParam("/arduino_PID/tdel", tdel, MOTOR_NUM)){};
+  }*/
+  while(!nh.getParam("/base/velPID/kp", kp, MOTOR_NUM)){};
+  while(!nh.getParam("/base/velPID/ki", ki, MOTOR_NUM)){};
+  while(!nh.getParam("/base/velPID/kd", kd, MOTOR_NUM)){};
+  while(!nh.getParam("/base/velPID/tdel", tdel, MOTOR_NUM)){};
   #endif
   for(int i=0; i<MOTOR_NUM; i++){
     pidset[i].kp = kp[i];
@@ -101,7 +101,7 @@ void setup(){
 
   //モードラの設定
   IseMotorDriver::begin();
-  while(!nh.getParam("/motor_driver/addrs", addrs, MOTOR_NUM)){};
+  while(!nh.getParam("/base/motor_driver/addrs", addrs, MOTOR_NUM)){};
   for(int i=0; i<MOTOR_NUM; i++){
     md[i] = new IseMotorDriver(addrs[i]);
     *md[i] << IseMotorDriver::createSettingData(PWM_8KHZ, SM_BRAKE_LOW_SIDE);
@@ -157,9 +157,9 @@ void loop(){
       if(!(*md[i]) == false) *md[i] >> enc_now[i];
       else{
         enc_now[i]=0;
-        nh.logerror("md not connected!");
+        nh.logerror("md  not connected!");
       }
-      enc_delta[i] = a*(float)(enc_now[i] - enc_prev[i]) + (1 - a)*enc_delta_pre[i];
+      enc_delta[i] = a*(float)(enc_prev[i] - enc_now[i]) + (1 - a)*enc_delta_pre[i];
       enc_prev[i] = enc_now[i];
       enc_delta_pre[i] = enc_delta[i];
       
@@ -168,7 +168,7 @@ void loop(){
       //changeGains(PID[i], vx-vy_pre, vy-vy_pre, i); //加減速時はPIDのゲインを変更
       motor_pwm = (int)PID[i]->calcValue(goal_vel[i] - speed_now[i], goal_vel[i]/wheel_radius);
       //motor_pwm = 255.0*goal_vel[i];
-      if(fabs(speed_now[i])<0.0001 && goal_vel[i]==0) motor_pwm = 0; //高周波音の抑制 
+      if(fabs(goal_vel[i])<=0.0001) motor_pwm = 0; //高周波音の抑制 
       *md[i] << motor_pwm; //モーターを回転させる
     }
     
@@ -186,8 +186,8 @@ void loop(){
     #endif
     
     #ifdef ROS
-    debug_data.data = goal_vel[1];//(t_now - t_pre)/1000;
-    debug_pub.publish(&debug_data);
+    //debug_data.data = goal_vel[1];//(t_now - t_pre)/1000;
+    //debug_pub.publish(&debug_data);
     //t_pre = t_now;
     nh.spinOnce();
     #endif

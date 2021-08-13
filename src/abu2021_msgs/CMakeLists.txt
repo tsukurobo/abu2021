@@ -57,6 +57,7 @@ add_message_files(
   auto_drive_order.msg
   air_launch_order.msg
   turn_and_dist.msg
+  tr_order.msg
 )
 
 ## Generate services in the 'srv' folder

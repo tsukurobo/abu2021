@@ -182,7 +182,7 @@ byte IseMotorDriver::createSettingData(uint8_t pwm_mode, uint8_t a3921_mode){
   return settings;
 }
 
-bool IseMotorDriver::start_i2c(){
+bool IseMotorDriver::start_i2c(void){
   TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN); //開始条件送信
   while(!(TWCR & (1<<TWINT))); //送信終了まで待つ
   
@@ -227,7 +227,7 @@ bool IseMotorDriver::read_byte(uint8_t *buf, char mode){
   return false;
 }
 
-void IseMotorDriver::stop_i2c(){
+void IseMotorDriver::stop_i2c(void){
   TWCR = (1<<TWINT) | (1<<TWSTO) | (1<<TWEN); //終了条件送信
   //while(!(TWCR & (1<<TWINT))); //送信終了まで待つ
   delayMicroseconds(WAIT_T_BET_TRANS); //少し待つ

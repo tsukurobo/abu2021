@@ -4,7 +4,7 @@
 #define NORMAL_WITH_FF 3
 #define BUMPLESS_WITH_FF 4
 
-typedef struct PIDSettings{
+struct PIDSettings{
   float kp, ki, kd, ts, tdel, vmax, vmin, a1, a2; //a1, a2はFF制御用
   uint8_t mode;
 };
