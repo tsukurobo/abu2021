@@ -1,8 +1,8 @@
 <launch>
 
         <!--<param name="use_sim_time" value="true" />-->
-	<rosparam command="load" file="$(find signal_processing)/constant.yaml"/>
-	<rosparam command="load" file="$(find signal_processing)/state.yaml"/>
+	<rosparam command="load" file="$(find nhk_robo)/constant.yaml"/>
+	<rosparam command="load" file="$(find nhk_robo)/state.yaml"/>
 
 	<!--<node pkg="pr" name="arduino_driver" type="pr_arduino_driver.py" output="screen"/>-->
 
@@ -35,8 +35,8 @@
   		<param name="update_min_d" value="0.20"/>
   		<param name="update_min_a" value="0.20"/>
   		<param name="odom_frame_id" value="odom"/>
-                <!--<param name="base_frame_id" value="base_link"/>-->
-                <!--<param name="global_frame_id" value="map"/>-->
+                <param name="base_frame_id" value="base_link"/>
+                <param name="global_frame_id" value="map"/>
   		<param name="resample_interval" value="3"/>
   		<param name="recovery_alpha_slow" value="0.001"/>
   		<param name="recovery_alpha_fast" value="0.1"/>
@@ -46,10 +46,16 @@
 		<param name="initial_pose_a" value="0.0"/> <!--1.57075-->
 	</node>
 
-	<node pkg="map_server" name="map_server" type="map_server" args="$(find signal_processing)/maps/field3.yaml">
+	<node pkg="map_server" name="map_server" type="map_server" args="$(find nhk_robo)/maps/field3.yaml">
 		<param name="frame_id" value="map"/>	
 	</node>
-         
+    
+	<node pkg="tf" type="static_transform_publisher" name="ltf" args="0 -0.42 0 0 0 M_PI base_link laser 10" />
+
+	<node pkg="tf" type="static_transform_publisher" name="mtf" args="0 0 0 0 0 0 map odom 10" />
+
+
         <!--<node name="rviz" pkg="rviz" type="rviz" />-->
        
 </launch>
+
