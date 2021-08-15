@@ -1,17 +1,17 @@
 rack_col: {
   const: {
-    deg_ini1: 115,
-    deg_ini2: 30,
-    deg_pick1: 115,
-    deg_pick2: 50,
-    deg_pick2_1: 35,
-    deg_pick2_2: 20,
-    deg_load1: 0,
-    deg_load2: 50,
-    deg_up1: 20,
-    deg_up2: 50,
-    deg_up2_1: 20,
-    deg_up2_2: 85  },
+    deg_ini1: 40,
+    deg_ini2: 120,
+    deg_pick1: 40,
+    deg_pick2: 110,
+    deg_pick2_1: 180,
+    deg_pick2_2: 135,
+    deg_load1: 165,
+    deg_load2: 115,
+    deg_up1: 145,
+    deg_up2: 115,
+    deg_up2_1: 145,
+    deg_up2_2: 70  },
 
   air: {
     deg_ini1: 150,
@@ -22,16 +22,19 @@ rack_col: {
     deg_pick2_2: 115,
     deg_load1: 30,
     deg_load2: 125,
-    deg_up1: 70, 
+    deg_up1: 60, 
     deg_up2: 125,
-    deg_up2_1: 65,
+    deg_up2_1: 60,
     deg_up2_2: 60, 
   },
   time_delay: 500,
+
   pick_up: -5
 }
 
 const: {
+
+
   dist: 0.55,
   dist2: 1.65,
   dist3: 2.0

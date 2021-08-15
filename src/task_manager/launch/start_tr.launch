@@ -1,9 +1,9 @@
 <launch>
     <!-- select nodes that are launched -->
-    <arg name="LaunchRackCollection" value="true"/>
-    <arg name="LaunchAirLaunch" value="true"/>
-    <arg name="LaunchConstLaunch" value="true"/>
-    <arg name="LaunchKinematicsModel" value="true"/>
+    <arg name="LaunchRackCollection" value="False"/>
+    <arg name="LaunchAirLaunch" value="False"/>
+    <arg name="LaunchConstLaunch" value="True"/>
+    <arg name="LaunchKinematicsModel" value="False"/>
 
     <!-- load parameters -->
     <rosparam command="load" file="$(find task_manager)/launch/tr_params.yaml"/>

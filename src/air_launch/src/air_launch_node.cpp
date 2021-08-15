@@ -35,7 +35,7 @@ int pre_hassya=-1;
 int pre_set=-1;
 int pre_mode=-1;
 double kakudo=0;
-double std_kakudo=0;
+double std_kakudo;
 
 std_msgs::Int32MultiArray pub_msg;
 ros::Publisher  pub;

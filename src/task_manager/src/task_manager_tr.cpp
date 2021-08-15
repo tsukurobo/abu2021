@@ -136,26 +136,26 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 		}
 		
 		pub_air.publish(air_order);
+	} else if ((msg->RB == PUSHED) && (msg->THREE == PUSHED)) {
+		if(msg->RT != PUSHED){
+			air_order.mode = 4;
+			air_order.pow = 0;
+			air_order.set = 0;
+		}else{
+			air_order.mode = 1;
+			air_order.pow = 0;
+			air_order.set = 1;
+		}
+		pub_air.publish(air_order);	
 	} else if ((msg->RB == PUSHED) && (msg->TWO == PUSHED)) {
 		if(msg->RT != PUSHED){
 			air_order.mode = 2;
 			air_order.pow = 0;
 			air_order.set = 0;
 		}else{
-			air_order.mode = 4;
-			air_order.pow = 0;
-			air_order.set = 0;
-		}
-		pub_air.publish(air_order);	
-	} else if ((msg->RB == PUSHED) && (msg->THREE == PUSHED)) {
-		if(msg->RT != PUSHED){
 			air_order.mode = 1;
 			air_order.pow = power;
 			air_order.set = 0;
-		}else{
-			air_order.mode = 1;
-			air_order.pow = 0;
-			air_order.set = 1;
 		}
 		pub_air.publish(air_order);
 	} else if ((msg->RB == PUSHED) && (msg->FOUR == PUSHED)) {
