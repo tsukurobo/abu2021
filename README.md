@@ -45,6 +45,7 @@ task_manager_tr
 ```
 ### kinematics_model
 メカナム・オムニの動力学モデルを利用して各モータの指令値を計算
+**注意：mecanum_pid_i2c.inoの162行目は、TRはenc_prev[i]-enc_now[i]とする。そうしないと暴走する。**
 ```
 kinematics_model
   sub
@@ -98,6 +99,27 @@ dead_reckoning
   tf broadcast
   odom->base_link：機体の相対座標[m,m,rad]
 ```
+
+### air_launch
+射出機構と妨害
+```
+air_launch_node
+　タスクマネージャーからの司令で射出モーターの回転と発射をardiunoに送る
+  sub
+  [air_launch_order] (abu2021_msgs::air_launch_order)：タスクマネージャーからの司令
+  [air_launch_enc] (std_msgs::Float64)：エンコーダーの値[degree]
+  pub
+  [air_launch_tpc](std_msgs::Int32MultiArray)：ardiunoに送るモーターのパワーと、エアシリンダの状態
+```
+```
+defense_node
+  妨害用の回転するだけ
+  sub
+  [defense_order] (std_msgs::Int16)：on/offのタスクマネージャーからの司令
+　pub
+　[defense_to_ardiuno](std_msgs::Int16)：モーターのパワーを0/-200でardiunoに送る
+```
+
 
 ### abu2021_msgs
 メッセージ用パッケージ．使うカスタムメッセージは全部ここに入れる．ノード無し
