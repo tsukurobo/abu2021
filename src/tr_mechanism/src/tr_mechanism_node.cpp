@@ -4,13 +4,21 @@
 #include "abu2021_msgs/rack_msg.h"
 #include "abu2021_msgs/tr_order.h"
 
-double sens_enc;
-int sens_touch;
-int order_air;
-int order_const;
-int order_rack;
-int order_stop;
+int FREQ = 100; //制御周期
+int AIR_HIGH_TIME = 200; //[msec]
+int AIR_LAUNCH_TIME = 2000; //[msec]
 
+double sens_enc = 0;
+int sens_touch = 0;
+int order_air = 0;
+int order_const = 0;
+int order_rack = 0;
+int order_stop = 0;
+int step_air = 0;
+int step_const = 0;
+int step_rack = 0;
+
+void task_air();
 void get_launch_sensor(const abu2021_msgs::launch_sens::ConstPtr& msg);
 void get_order(const abu2021_msgs::tr_order::ConstPtr& msg);
 
@@ -31,9 +39,9 @@ int main(int argc, char **argv){
 	while (ros::ok()){
 		ros::spinOnce();
 
-		/* if(emg_stop == 1){ */
-		/* 	all stop(); */
-		/* } */
+		if(order_air == 1 || step_air > 0){
+			task_air();
+		}
 
 
 		loop_rate.sleep();
@@ -41,6 +49,21 @@ int main(int argc, char **argv){
 	return 0;
 }
 
+void task_air(){
+	static int cnt = 0;
+
+	if(step_air == 0){
+
+		step_air = 1;
+	}else if(step_air == 1){
+		cnt++;
+
+		if(cnt > AIR_HIGH_TIME*FREQ/1000){
+
+		}
+	}
+
+}
 
 
 void get_launch_sensor(const abu2021_msgs::launch_sens::ConstPtr& msg){
