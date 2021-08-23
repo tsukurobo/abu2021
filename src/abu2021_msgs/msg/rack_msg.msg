@@ -1,9 +1,6 @@
 int16 air_1
 int16 air_2
-int16 air_3
-int16 const_l_1
-int16 const_l_2
-int16 const_l_3
-int16 const_r_1
-int16 const_r_2
-int16 const_r_3
+int8  air_hand
+int16 const_1
+int16 const_2
+int8  const_hand

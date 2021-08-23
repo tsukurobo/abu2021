@@ -61,6 +61,7 @@ add_message_files(
   launch_act.msg
   launch_sens.msg
   rack_msg.msg
+  tr_order.msg
 )
 
 ## Generate services in the 'srv' folder
