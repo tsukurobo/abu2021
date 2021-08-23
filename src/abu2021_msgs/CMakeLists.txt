@@ -58,6 +58,9 @@ add_message_files(
   # air_launch_order.msg
   turn_and_dist.msg
   # tr_order.msg
+  launch_act.msg
+  launch_sens.msg
+  rack_msg.msg
 )
 
 ## Generate services in the 'srv' folder
