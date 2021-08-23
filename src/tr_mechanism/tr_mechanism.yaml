@@ -1,0 +1,4 @@
+arduino: {
+  addres: 0x21,
+  resolution: 2046
+}
