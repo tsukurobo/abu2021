@@ -61,44 +61,44 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	
 	//LB+(LT+)1~4 -> drive const_launch
 	if ((msg->LB == PUSHED) && (msg->ONE == PUSHED)) {
-		order.nodeId = CONST_LAUNCH;
-		order.orderId = 0;
+		//order.nodeId = CONST_LAUNCH;
+		//order.orderId = 0;
 		pub_touteki.publish(order);
 
 	} else if ((msg->LB == PUSHED) && (msg->TWO == PUSHED)) {
-		order.nodeId = CONST_LAUNCH;
-		order.orderId = 2;
+		//order.nodeId = CONST_LAUNCH;
+		//order.orderId = 2;
 		pub_touteki.publish(order);
 
 	} else if ((msg->LB == PUSHED) && (msg->FOUR == PUSHED)) {
-		order.nodeId = CONST_LAUNCH;
-		order.orderId = 1;
+		//order.nodeId = CONST_LAUNCH;
+		//order.orderId = 1;
 		pub_touteki.publish(order);
 	
 	}  else if ((msg->LB == PUSHED) && (msg->THREE == PUSHED)) {
-		order.nodeId = CONST_LAUNCH;
-		(msg->LT != PUSHED) ? (order.orderId = 3) : (order.orderId = 4);
+		//order.nodeId = CONST_LAUNCH;
+		//(msg->LT != PUSHED) ? (order.orderId = 3) : (order.orderId = 4);
 		pub_touteki.publish(order);
 	
 	//(RB +) UP, DOWN, LEFT, RIGHT -> drive rack_collection
 	} else if (msg->AX_UPDOWN == UP) {
-		order.nodeId = RACK_COL;
-		(msg->LB != PUSHED) ? (order.orderId = 0) : (order.orderId = 6);
+		//order.nodeId = RACK_COL;
+		//(msg->LB != PUSHED) ? (order.orderId = 0) : (order.orderId = 6);
 		pub_touteki.publish(order);
 	
 	} else if (msg->AX_UPDOWN == DOWN) {
-		order.nodeId = RACK_COL;
-		(msg->LB != PUSHED) ? (order.orderId = 2) :(order.orderId = 5);
+		//order.nodeId = RACK_COL;
+		//(msg->LB != PUSHED) ? (order.orderId = 2) :(order.orderId = 5);
 		pub_touteki.publish(order);
 	
 	} else if (msg->AX_LR == RIGHT) {
-		order.nodeId = RACK_COL;
-		(msg->LB != PUSHED) ? (order.orderId = 1) : (order.orderId = 4);
+		//order.nodeId = RACK_COL;
+		//(msg->LB != PUSHED) ? (order.orderId = 1) : (order.orderId = 4);
 		pub_touteki.publish(order);
 
 	} else if (msg->AX_LR == LEFT) {
-		order.nodeId = RACK_COL;
-		order.orderId = 3;
+		//order.nodeId = RACK_COL;
+		//order.orderId = 3;
 		pub_touteki.publish(order);
 
 	} /*else if ((msg->RB == PUSHED) && (msg->AX_UPDOWN == UP)) {
