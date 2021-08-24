@@ -1,3 +1,73 @@
+common: {
+  freq: 100
+}
+
+air: {
+  high_time: 200,
+  launch_time: 2000,
+  hl: 1,
+  lh: 2
+}
+
+const: {
+  target_rot_1: 0.5,
+  target_rot_2: 1.65,
+  target_rot_3: 2.0,
+  mot_pow_up: 100,
+  mot_pow_down: -100,
+  sol_high_time: 200,
+  sol_wait_time: 200,
+  sol_low: 0,
+  sol_high: 1,
+  touch_lock_on: 1,
+  touch_lock_off: 0
+}
+
+rack: {
+  air: {
+    deg_ini1: 150,
+    deg_ini2: 140,
+    deg_pick1: 155,
+    deg_pick2: 110,
+    deg_pick2_1: 50,
+    deg_pick2_2: 115,
+    deg_load1: 30,
+    deg_load2: 125,
+    deg_up1: 60, 
+    deg_up2: 125,
+    deg_up2_1: 60,
+    deg_up2_2: 60, 
+  },
+  const_l: {
+    deg_ini1: 40,
+    deg_ini2: 120,
+    deg_pick1: 40,
+    deg_pick2: 110,
+    deg_pick2_1: 180,
+    deg_pick2_2: 135,
+    deg_load1: 165,
+    deg_load2: 115,
+    deg_up1: 145,
+    deg_up2: 115,
+    deg_up2_1: 145,
+    deg_up2_2: 70
+  },
+  const_r: {
+    deg_ini1: 40,
+    deg_ini2: 120,
+    deg_pick1: 40,
+    deg_pick2: 110,
+    deg_pick2_1: 180,
+    deg_pick2_2: 135,
+    deg_load1: 165,
+    deg_load2: 115,
+    deg_up1: 145,
+    deg_up2: 115,
+    deg_up2_1: 145,
+    deg_up2_2: 70
+  }
+}
+
 arduino: {
   addres: 0x21,
   resolution: 2046
