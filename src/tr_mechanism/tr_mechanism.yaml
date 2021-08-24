@@ -1,9 +1,9 @@
 common: {
-  freq: 100
+  freq: 100,
+  sol_high_time: 200
 }
 
 air: {
-  high_time: 200,
   launch_time: 2000,
   hl: 1,
   lh: 2
@@ -37,20 +37,8 @@ rack: {
     deg_up2: 125,
     deg_up2_1: 60,
     deg_up2_2: 60, 
-  },
-  const_l: {
-    deg_ini1: 40,
-    deg_ini2: 120,
-    deg_pick1: 40,
-    deg_pick2: 110,
-    deg_pick2_1: 180,
-    deg_pick2_2: 135,
-    deg_load1: 165,
-    deg_load2: 115,
-    deg_up1: 145,
-    deg_up2: 115,
-    deg_up2_1: 145,
-    deg_up2_2: 70
+    hl: 1,
+    lh: 2
   },
   const_r: {
     deg_ini1: 40,
@@ -64,8 +52,28 @@ rack: {
     deg_up1: 145,
     deg_up2: 115,
     deg_up2_1: 145,
-    deg_up2_2: 70
-  }
+    deg_up2_2: 70,
+    hl: 1,
+    lh: 2
+  },
+  const_l: {
+    deg_ini1: 40,
+    deg_ini2: 120,
+    deg_pick1: 40,
+    deg_pick2: 110,
+    deg_pick2_1: 180,
+    deg_pick2_2: 135,
+    deg_load1: 165,
+    deg_load2: 115,
+    deg_up1: 145,
+    deg_up2: 115,
+    deg_up2_1: 145,
+    deg_up2_2: 70,
+    hl: 1,
+    lh: 2
+  },
+  delay_time: 500,
+  pick_up_deg: -5
 }
 
 arduino: {
