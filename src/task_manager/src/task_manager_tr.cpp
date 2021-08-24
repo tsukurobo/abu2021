@@ -2,13 +2,13 @@
 #include <sensor_msgs/Joy.h>
 #include <abu2021_msgs/cmd_vw.h>
 #include <abu2021_msgs/tr_order.h>
-#include <abu2021_msgs/air_launch_order.h>
 
 #define ONE buttons[0]
 #define TWO buttons[1]
 #define THREE buttons[2]
 #define FOUR buttons[3]
-#define AX_UPDOWN axes[5]
+/* #define AX_UPDOWN axes[5] */
+#define AX_UD axes[5]
 #define AX_LR axes[4]
 #define LB buttons[4]
 #define LT buttons[6]
@@ -26,10 +26,7 @@
 #define RACK_COL 2
 
 ros::Publisher pub;
-ros::Publisher pub_touteki;
-ros::Publisher pub_air;
-
-int power = 100;
+ros::Publisher pub_tr;
 
 void get_joy(const sensor_msgs::Joy::ConstPtr& msg);
 
@@ -38,12 +35,9 @@ int main(int argc, char **argv){
 
 	ros::NodeHandle nh;
 
-	pub = nh.advertise<abu2021_msgs::cmd_vw>("cmd", 1);
-	pub_touteki = nh.advertise<abu2021_msgs::tr_order>("tr_order", 1);
-	pub_air = nh.advertise<abu2021_msgs::air_launch_order>("air_launch_order", 1);
+	pub    = nh.advertise<abu2021_msgs::cmd_vw>("cmd", 1);
+	pub_tr = nh.advertise<abu2021_msgs::tr_order>("tr_order", 1);
 	ros::Subscriber sub = nh.subscribe("joy", 1, get_joy);
-
-	while(!nh.getParam("air/power", power));
 
 	ros::spin();
 
@@ -53,12 +47,36 @@ int main(int argc, char **argv){
 void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	static abu2021_msgs::cmd_vw cmd;
 	static abu2021_msgs::tr_order order;
-	static abu2021_msgs::air_launch_order air_order;
 
+	//move
 	cmd.vx = 6.0*msg->axes[1];
 	cmd.vy = 6.0*msg->axes[0];
 	cmd.w  = 4.0*msg->axes[3];
 	
+	pub.publish(cmd);
+
+	order.air = 0;
+	order.const_ready = 0;
+	order.const_launch = 0;
+	order.rack = 0;
+	order.emg_stop = 0;
+
+	//air
+	if ((msg->RB == PUSHED) && (msg->TWO == PUSHED)) order.air = 1;
+	//const
+	if(msg->LB == PUSHED){
+		if      (msg->ONE   == PUSHED) order.emg_stop = 1;
+		else if (msg->TWO   == PUSHED) order.const_launch = 1;
+		else if (msg->THREE == PUSHED) order.const_ready = 1;
+		else if (msg->FOUR  == PUSHED) order.const_ready = 2;
+	}
+	//rack
+	/* if     (AX_UD == UP) order.rack = 1; */
+	/* else if(AX_LR == LEFT) order.rack = 2; */
+
+	pub_tr.publish(order);
+
+	/*
 	//LB+(LT+)1~4 -> drive const_launch
 	if ((msg->LB == PUSHED) && (msg->ONE == PUSHED)) {
 		//order.nodeId = CONST_LAUNCH;
@@ -101,7 +119,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 		//order.orderId = 3;
 		pub_touteki.publish(order);
 
-	} /*else if ((msg->RB == PUSHED) && (msg->AX_UPDOWN == UP)) {
+	}*/ /*else if ((msg->RB == PUSHED) && (msg->AX_UPDOWN == UP)) {
 		order.nodeId = RACK_COL;
 		(msg->RT != PUSHED) ? (order.orderId = 7) : (order.orderId = 13);
 		pub_touteki.publish(order);
@@ -123,6 +141,7 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	
 	}*/
 	
+	/*
 	//RB+(RT)+1~4 -> drive air launch
 	else if ((msg->RB == PUSHED) && (msg->ONE == PUSHED)) {
 		if(msg->RT != PUSHED){
@@ -164,6 +183,6 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 		air_order.set = 0;
 		pub_air.publish(air_order);	
 	}
+	*/
 
-	pub.publish(cmd);
 }

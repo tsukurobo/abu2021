@@ -1,9 +1,0 @@
-<launch>
-	<node pkg="joy" type="joy_node" name="joy_node" output="screen">
-		<param name="dev" type="string" value="/dev/input/js0"/>
-	</node>
-
-	<node pkg="task_manager" type="task_manager_dr" name="manager_DR" />
-	<node pkg="task_manager" type="task_manager_tr" name="manager_TR" />
-
-</launch>
