@@ -21,7 +21,12 @@ int c_l_s;
 int a_1;
 int a_2;
 int a_s;
-
+int prevS_r_1;
+int prevS_r_2;
+int prevS_l_1;
+int prevS_l_2;
+int prevS_a_1;
+int prevS_a_2;
 class RackCollection{
   private:
   Servo ser1, ser2;
@@ -92,17 +97,35 @@ void setup() {
     constRackCol_L.moveSol(c_l_s);
     airRackCol.moveServo(a_1, a_2);
     airRackCol.moveSol(a_s);
+    prevS_r_1=c_r_1;
+    prevS_r_2=c_r_2;
+    prevS_l_1=c_l_1;
+    prevS_l_2=c_l_2;
+    prevS_a_1=a_1;
+    prevS_a_2=a_2;
     
 }
 
 void loop() {
   nh.spinOnce();
   // put your main code here, to run repeatedly:
+  if(c_r_1!=prevS_r_1||c_r_2!=prevS_r_2){
      constRackCol_R.moveServo(c_r_1,c_r_2);
+     prevS_r_1=c_r_1;
+     prevS_r_2=c_r_2;
+  }
     constRackCol_R.moveSol(c_r_s);
-    constRackCol_L.moveServo(c_l_1,c_l_2);
+  if(c_l_1!=prevS_l_1||c_l_2!=prevS_l_2){
+     constRackCol_L.moveServo(c_l_1,c_l_2);
+     prevS_l_1=c_l_1;
+     prevS_l_2=c_l_2;
+  }
     constRackCol_L.moveSol(c_l_s);
+  if(a_1!=prevS_a_1||a_2!=prevS_a_2){
     airRackCol.moveServo(a_1, a_2);
+    prevS_a_1=a_1;
+    prevS_a_2=a_2;
+  }
     airRackCol.moveSol(a_s);
     delay(10);
 
