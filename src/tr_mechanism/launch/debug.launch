@@ -9,9 +9,14 @@
 	
 	<node pkg="tr_mechanism" type="tr_mechanism_node" name="tr_mechanism_node"/>
 
-	<node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mechanism">
+	<node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mech1">
 		<param name="port" value="/dev/ttyACM0"/>
 		<param name="baud" value="250000"/>
 	</node>
+
+	<!-- <node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mecha2"> -->
+	<!-- 	<param name="port" value="/dev/ttyACM1"/> -->
+	<!-- 	<param name="baud" value="250000"/> -->
+	<!-- </node> -->
 
 </launch>

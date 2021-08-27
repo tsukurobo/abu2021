@@ -1,30 +1,58 @@
-common: {
-  freq: 100,
-  sol_high_time: 200
+common: { #各機構共通部分
+  freq: 100, #ノードの周波数[Hz]
+  sol_high_time: 200 #電磁弁をHIGHにする時間[ms]（あまり長いと電力食う）
 }
 
-air: {
-  launch_time: 1000,
-  hl: 1,
-  lh: 2
+air: { #エア射出について
+  launch_time: 1000, #射出時ロッドを伸ばす時間[ms]
+  hl: 1, #電磁弁のH-L切り替え(1 or 2)
+  lh: 2  #電磁弁のH-L切り替え(1 or 2) 
 }
 
-const: {
-  target_rot_1: 0.5,
-  target_rot_2: 1.65,
-  target_rot_3: 2.0,
-  mot_pow_up: -70,
-  mot_pow_down: 70,
-  sol_high_time: 200,
-  sol_wait_time: 200,
-  sol_low: 0,
-  sol_high: 1,
-  touch_lock_on: 1,
-  touch_lock_off: 0
+const: { #コンスト射出について
+  target_rot_1: 0.5, #装填位置（ロックオンからモータ何回転分か）[回転]
+  target_rot_2: 1.65, #中距離射出位置（ロックオンからモータ何回転分か）[回転]
+  target_rot_3: 2.0, #長距離射出位置（ロックオンからモータ何回転分か）[回転]
+  mot_pow_up: -70, #ロック機構上昇パワー[0-255]
+  mot_pow_down: 70, #ロック機構下降パワー[0-255]
+  sol_high_time: 200, #ソレノイドをHIGHにする時間[ms]
+  sol_wait_time: 200, #ソレノイドをHIGHにしてから，上昇し始めるまでの待機時間[ms]
+  sol_low: 0, #ソレノイドのH-L切り替え(0 or 1)
+  sol_high: 1, #ソレノイドのH-L切り替え(0 or 1)
+  touch_lock_on: 1, #タッチセンサのH-L切り替え(0 or 1)
+  touch_lock_off: 0 #タッチセンサのH-L切り替え(0 or 1)
 }
 
-rack: {
-  air_r: {
+rack: { #ラック回収機構について
+  air_r: { #エア射出のラック回収（矢が飛ぶ方向を正面に右）
+    deg_ini1: 150, #初期位置（根本）
+    deg_ini2: 140, #初期位置（手先）
+    deg_pick1: 155, #pick位置（根本）
+    deg_pick2: 110, #pick位置（手先）
+    deg_up1: 60, #up位置（根本）
+    deg_up2: 125, #up位置（手先）
+    deg_load1_1: 30, #load位置1（根本）
+    deg_load1_2: 125, #load位置1（手先）
+    deg_load2_1: 40, #load位置2（根本）
+    deg_load2_2: 100, #load位置2（手先）
+    hl: 1, #電磁弁のH-L切り替え(1 or 2)
+    lh: 2  #電磁弁のH-L切り替え(1 or 2)
+  },
+  air_l: { #エア射出のラック回収（矢が飛ぶ方向を正面に左）
+    deg_ini1: 150,
+    deg_ini2: 140,
+    deg_pick1: 155,
+    deg_pick2: 110,
+    deg_up1: 60, 
+    deg_up2: 125,
+    deg_load1_1: 30,
+    deg_load1_2: 125,
+    deg_load2_1: 40,
+    deg_load2_2: 100,
+    hl: 1,
+    lh: 2 
+  },
+  const: { #コンスト射出のラック回収
     deg_ini1: 150,
     deg_ini2: 140,
     deg_pick1: 155,
@@ -38,39 +66,11 @@ rack: {
     hl: 1,
     lh: 2
   },
-  air_l: {
-    deg_ini1: 150,
-    deg_ini2: 140,
-    deg_pick1: 155,
-    deg_pick2: 110,
-    deg_up1: 60, 
-    deg_up2: 125,
-    deg_load1_1: 30,
-    deg_load1_2: 125,
-    deg_load2_1: 40,
-    deg_load2_2: 100,
-    hl: 1,
-    lh: 2
-  },
-  const: {
-    deg_ini1: 150,
-    deg_ini2: 140,
-    deg_pick1: 155,
-    deg_pick2: 110,
-    deg_up1: 60, 
-    deg_up2: 125,
-    deg_load1_1: 30,
-    deg_load1_2: 125,
-    deg_load2_1: 40,
-    deg_load2_2: 100,
-    hl: 1,
-    lh: 2
-  },
-  delay_time: 500,
-  pick_up_deg: -5
+  delay_time: 500, #矢を掴んで少し上げる時やload1からload2に行くまでの待機時間[ms]
+  pick_up_deg: -5 # 矢を掴んでから少し持ち上げる角度[サーボstep]
 }
 
-arduino: {
-  addres: 0x15,
-  resolution: 2046
+arduino: { #arduinoに関して
+  addres: 0x15, #コンスト射出のMDのアドレス
+  resolution: 2046 #コンスト射出のエンコーダの分解能
 }
