@@ -1,0 +1,9 @@
+<launch>
+    <rosparam command="load" file="$(find tr_mechanism)/tr_mechanism.yaml"/>
+
+	<node pkg="rosserial_python" type="serial_node.py" name="arduino_mega">
+		<param name="port" value="/dev/ttyACM0"/>
+		<param name="baud" value="250000"/>
+	</node>
+
+</launch>

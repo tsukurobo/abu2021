@@ -4,7 +4,7 @@ common: {
 }
 
 air: {
-  launch_time: 2000,
+  launch_time: 1000,
   hl: 1,
   lh: 2
 }
@@ -13,8 +13,8 @@ const: {
   target_rot_1: 0.5,
   target_rot_2: 1.65,
   target_rot_3: 2.0,
-  mot_pow_up: 100,
-  mot_pow_down: -100,
+  mot_pow_up: -70,
+  mot_pow_down: 70,
   sol_high_time: 200,
   sol_wait_time: 200,
   sol_low: 0,
@@ -24,51 +24,45 @@ const: {
 }
 
 rack: {
-  air: {
+  air_r: {
     deg_ini1: 150,
     deg_ini2: 140,
     deg_pick1: 155,
     deg_pick2: 110,
-    deg_pick2_1: 50,
-    deg_pick2_2: 115,
-    deg_load1: 30,
-    deg_load2: 125,
     deg_up1: 60, 
     deg_up2: 125,
-    deg_up2_1: 60,
-    deg_up2_2: 60, 
+    deg_load1_1: 30,
+    deg_load1_2: 125,
+    deg_load2_1: 40,
+    deg_load2_2: 100,
     hl: 1,
     lh: 2
   },
-  const_r: {
-    deg_ini1: 40,
-    deg_ini2: 120,
-    deg_pick1: 40,
+  air_l: {
+    deg_ini1: 150,
+    deg_ini2: 140,
+    deg_pick1: 155,
     deg_pick2: 110,
-    deg_pick2_1: 180,
-    deg_pick2_2: 135,
-    deg_load1: 165,
-    deg_load2: 115,
-    deg_up1: 145,
-    deg_up2: 115,
-    deg_up2_1: 145,
-    deg_up2_2: 70,
+    deg_up1: 60, 
+    deg_up2: 125,
+    deg_load1_1: 30,
+    deg_load1_2: 125,
+    deg_load2_1: 40,
+    deg_load2_2: 100,
     hl: 1,
     lh: 2
   },
-  const_l: {
-    deg_ini1: 40,
-    deg_ini2: 120,
-    deg_pick1: 40,
+  const: {
+    deg_ini1: 150,
+    deg_ini2: 140,
+    deg_pick1: 155,
     deg_pick2: 110,
-    deg_pick2_1: 180,
-    deg_pick2_2: 135,
-    deg_load1: 165,
-    deg_load2: 115,
-    deg_up1: 145,
-    deg_up2: 115,
-    deg_up2_1: 145,
-    deg_up2_2: 70,
+    deg_up1: 60, 
+    deg_up2: 125,
+    deg_load1_1: 30,
+    deg_load1_2: 125,
+    deg_load2_1: 40,
+    deg_load2_2: 100,
     hl: 1,
     lh: 2
   },
@@ -77,6 +71,6 @@ rack: {
 }
 
 arduino: {
-  addres: 0x21,
+  addres: 0x15,
   resolution: 2046
 }
