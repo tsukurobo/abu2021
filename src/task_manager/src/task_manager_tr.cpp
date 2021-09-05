@@ -82,18 +82,19 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	}
 	//rack
 	if(msg->LB != PUSHED && msg->RB != PUSHED && msg->RT != PUSHED){
-		if     (msg->AX_LR == LEFT ) order.rack = 1;
-		else if(msg->AX_UD == UP   ) order.rack = 2;
+		//if     (msg->AX_LR == LEFT ) order.rack = 1;
+		if(msg->AX_UD == UP   ) order.rack = 2;
 		else if(msg->AX_LR == RIGHT) order.rack = 3;
 		else if(msg->AX_UD == DOWN ) order.rack = 4;
 	}else if(msg->LB == PUSHED){
 		if     (msg->AX_LR == LEFT ) order.rack = 5;
 		else if(msg->AX_LR == RIGHT) order.rack = 6;
-		else if(msg->AX_UD == UP   ) order.rack = 7;
+		//else if(msg->AX_UD == UP   ) order.rack = 7;
+		else if(msg->AX_UD == UP   ) order.rack = 1;
 	}else if(msg->RB == PUSHED){
 		if     (msg->AX_LR == LEFT ) order.rack = 8;
-		else if(msg->AX_LR == RIGHT) order.rack = 9;
-		else if(msg->AX_UD == UP   ) order.rack = 10;
+		if(msg->AX_LR == RIGHT) order.rack = 9;
+		else if(msg->AX_UD == UP   ) order.rack = 7;
 	}
 
 	if(order != order_pre) pub_tr.publish(order);

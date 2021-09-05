@@ -324,7 +324,7 @@ void task_rack(){
 	const int UP	 = 4;
 	const int LOAD_S = 5;
 	const int OPEN_S = 6;
-	const int INIT_S = 7;
+	const int RELOAD = 7;
 	const int LOAD_C = 8;
 	const int OPEN_C = 9;
 	const int INIT_C = 10;
@@ -365,7 +365,7 @@ void task_rack(){
 				if(cnt > R_DELAY_TIME*FREQ/1000){
 					step_rack = 0;
 					set_rack_vlue(A_R, R_A_R_PICK1+R_PICK_UP, R_A_R_PICK2);
-					set_rack_vlue(A_L, R_A_L_PICK1+R_PICK_UP, R_A_L_PICK2);
+					set_rack_vlue(A_L, R_A_L_PICK1-R_PICK_UP, R_A_L_PICK2);
 					set_rack_vlue(CON, R_CON_PICK1+R_PICK_UP, R_CON_PICK2);
 					cnt = 0;
 					order = 0;
@@ -409,10 +409,23 @@ void task_rack(){
 				}
 			}
 			break;
-		case INIT_S:
-			set_rack_vlue(A_R, R_A_R_INI1, R_A_R_INI2);
-			set_rack_vlue(CON, R_CON_INI1, R_CON_INI2);
-			order = 0;
+		case RELOAD:
+			if(step_rack == 0){
+				step_rack = 1;
+				set_rack_vlue(A_R, R_A_R_LOAD1_1, R_A_R_LOAD1_2);
+				set_rack_vlue(A_L, R_A_L_LOAD1_1, R_A_L_LOAD1_2);
+				set_rack_vlue(CON, R_CON_LOAD1_1, R_CON_LOAD1_2);
+			}else if(step_rack == 1){
+				cnt++;
+				if(cnt > R_DELAY_TIME*FREQ/1000){
+					set_rack_vlue(A_R, R_A_R_UP1, R_A_R_UP2);
+					set_rack_vlue(A_L, R_A_L_UP1, R_A_L_UP2);
+					set_rack_vlue(CON, R_CON_UP1, R_CON_UP2);
+					step_rack = 0;
+					cnt = 0;
+					order = 0;
+				}
+			}
 			break;
 		case LOAD_C:
 			if(step_rack == 0){

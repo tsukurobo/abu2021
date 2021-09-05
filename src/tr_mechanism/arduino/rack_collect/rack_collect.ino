@@ -107,7 +107,7 @@ void get_order(const abu2021_msgs::rack_msg& sub_msg) {
  //独自メッセージ型も編集するべき
  a_r_1=sub_msg.air_r_1;
  a_r_2=sub_msg.air_r_2;
- a_r_s=sub_msg.air_l_hand;
+ a_r_s=sub_msg.air_r_hand;
  a_l_1=sub_msg.air_l_1;
  a_l_2=sub_msg.air_l_2;
  a_l_s=sub_msg.air_l_hand;
