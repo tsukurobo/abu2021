@@ -5,7 +5,7 @@
 #define pin_const_servo1 12
 #define pin_const_servo2 13
 #define pin_const_solenoid1 17
-#define pin_const_solenoid2 18
+#define pin_const_solenoid2 19
 #define pin_air_r_servo1 10
 #define pin_air_r_servo2 11
 #define pin_air_r_solenoid1 8
@@ -13,7 +13,7 @@
 #define pin_air_l_servo1 44
 #define pin_air_l_servo2 46
 #define pin_air_l_solenoid1 2
-#define pin_air_l_solenoid2 0
+#define pin_air_l_solenoid2 14
 
 #define R_HL 1
 #define R_LH 2
