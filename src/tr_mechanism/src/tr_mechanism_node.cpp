@@ -351,10 +351,12 @@ void task_rack(){
 			order = 0;
 			break;
 		case CLOSE:
+			//ROS_FATAL("%d, %d, %d", order, step_rack, cnt);
 			if(step_rack == 0){
 				step_rack = 1;
 				set_rack_hand(1);
 			}else if(step_rack == 1){
+				set_rack_hand(1);
 				cnt++;
 				if(cnt > SOL_HIGH_TIME*FREQ/1000){
 					set_rack_hand(0);
