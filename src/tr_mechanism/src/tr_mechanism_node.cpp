@@ -20,6 +20,7 @@ double TARGET_ROT_3 = 2.0; //[rotate] コンスト射出の引っ張る回転数
 int MOT_POW_UP = 100;   //ロック機構上昇時のモータパワー[0-255]
 int MOT_POW_DOWN = -100; //ロック機構下降時のモータパワー[0-255]
 int CONST_HIGH_TIME = 200; //[msec] コンスト射出のソレノイドonする時間
+int CONST_LOW_TIME  = 200; //[msec] コンスト射出のソレノイドoffする時間
 int CONST_WAIT_TIME = 200; //[msec] コンスと射出のロック解除後待つ時間
 int SOL_LOW  = 0; //ソレノイドLOWに対応する司令
 int SOL_HIGH = 1; //ソレノイドHIGHに対応する司令
@@ -127,6 +128,7 @@ int main(int argc, char **argv){
 	nh.getParam("const/mot_pow_up", MOT_POW_UP);
 	nh.getParam("const/mot_pow_down", MOT_POW_DOWN);
 	nh.getParam("const/sol_high_time", CONST_HIGH_TIME);
+	nh.getParam("const/sol_low_time", CONST_LOW_TIME);
 	nh.getParam("const/sol_wait_time", CONST_WAIT_TIME);
 	nh.getParam("const/sol_low", SOL_LOW);
 	nh.getParam("const/sol_high", SOL_HIGH);
@@ -282,7 +284,7 @@ void task_const_launch(){
 		data_launch.motor = 0;
 		data_launch.solenoid = SOL_LOW;
 		if     (sens_touch == TOUCH_LOCK_ON)  step_c_launch = 1; //ロックONならまず射出
-		else if(sens_touch == TOUCH_LOCK_OFF) step_c_launch = 3; //ロックOFFなら射出せず移動
+		else if(sens_touch == TOUCH_LOCK_OFF) step_c_launch = 4; //ロックOFFなら射出せず移動
 
 	}else if(step_c_launch == 1){ // solenoid on
 		data_launch.solenoid = SOL_HIGH;
@@ -291,20 +293,35 @@ void task_const_launch(){
 			step_c_launch = 2;
 			cnt = 0;
 		}
-	}else if(step_c_launch == 2){ // solenoid off
-		data_launch.solenoid = SOL_LOW;
-		cnt++;
-		if(cnt > CONST_WAIT_TIME*FREQ/1000){ //wait時間過ぎたら次へ
+		if(sens_touch == TOUCH_LOCK_OFF){ //ロックOFFなら先へ
 			step_c_launch = 3;
 			cnt = 0;
 		}
-	}else if(step_c_launch == 3){ // 上昇
+	}else if(step_c_launch == 2){ // solenoid off
+		data_launch.solenoid = SOL_LOW;
+		cnt++;
+		if(cnt > CONST_LOW_TIME*FREQ/1000){ //low時間過ぎたら次へ
+			step_c_launch = 1;
+			cnt = 0;
+		}
+		if(sens_touch == TOUCH_LOCK_OFF){ //ロックOFFなら先へ
+			step_c_launch = 3;
+			cnt = 0;
+		}
+	}else if(step_c_launch == 3){ // solenoid off
+		data_launch.solenoid = SOL_LOW;
+		cnt++;
+		if(cnt > CONST_WAIT_TIME*FREQ/1000){ //wait時間過ぎたら次へ
+			step_c_launch = 4;
+			cnt = 0;
+		}
+	}else if(step_c_launch == 4){ // 上昇
 		data_launch.motor = MOT_POW_UP;
 		if(sens_touch == TOUCH_LOCK_ON){ //ロックかかったら次へ
 			deg_standard = sens_enc;
-			step_c_launch = 4;
+			step_c_launch = 5;
 		}
-	}else if(step_c_launch == 4){ // 下降
+	}else if(step_c_launch == 5){ // 下降
 		data_launch.motor = MOT_POW_DOWN;
 		if((sens_enc - deg_standard)/360.0f > TARGET_ROT_1){ //装填位置まで下がったら終了
 			data_launch.motor = 0;

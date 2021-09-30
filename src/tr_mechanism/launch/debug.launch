@@ -1,11 +1,11 @@
 <launch>
-    <rosparam command="load" file="$(find tr_mechanism)/tr_mechanism.yaml"/>
+	<rosparam command="load" file="$(find tr_mechanism)/tr_mechanism.yaml"/>
 
-    <node pkg="joy" type="joy_node" name="joy_node">
-        <param name="dev" value="/dev/input/js0"/>
-    </node>
+	<node pkg="joy" type="joy_node" name="joy_node">
+	    <param name="dev" value="/dev/input/js0"/>
+	</node>
 
-    <node pkg="task_manager" type="task_manager_tr" name="task_manager_tr" />
+	<node pkg="task_manager" type="task_manager_tr" name="task_manager_tr" />
 	
 	<node pkg="tr_mechanism" type="tr_mechanism_node" name="tr_mechanism_node"/>
 
@@ -14,9 +14,9 @@
 		<param name="baud" value="250000"/>
 	</node>
 
-	 <node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mecha2"> 
-	 	<param name="port" value="/dev/ttyACM1"/> 
+	<node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mecha2"> 
+		<param name="port" value="/dev/ttyACM1"/> 
 	 	<param name="baud" value="250000"/> 
-	 </node> -->
+	</node>
 
 </launch>

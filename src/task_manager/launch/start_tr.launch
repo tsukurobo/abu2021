@@ -1,61 +1,41 @@
 <launch>
-    <!-- select nodes that are launched -->
-    <arg name="LaunchRackCollection" value="False"/>
-    <arg name="LaunchAirLaunch" value="False"/>
-    <arg name="LaunchConstLaunch" value="True"/>
-    <arg name="LaunchKinematicsModel" value="False"/>
+	<!-- select nodes that are launched -->
+	<arg name="LaunchMechanism" value="True"/>
+	<arg name="LaunchKinematicsModel" value="False"/>
 
-    <!-- load parameters -->
-    <rosparam command="load" file="$(find task_manager)/launch/tr_params.yaml"/>
+	<!-- load parameters -->
+	<rosparam command="load" file="$(find task_manager)/launch/tr_params.yaml"/>
 
-    <!-- launch nodes -->
-    <!-- rack_collection -->
-    <group if="$(arg LaunchRackCollection)">
-        <node pkg="rosserial_python" type="serial_node.py" name="arduion_mega_rack">
-            <param name="port" value="/dev/arduino_rack_col"/>
-            <param name="baud" value="115200"/>
-        </node>
-    </group>
+	<!-- joy and task_manager -->
+	<node pkg="joy" type="joy_node" name="joy_node">
+	    <param name="dev" value="/dev/input/js0"/>
+	</node>
+	<node pkg="task_manager" type="task_manager_tr" name="task_manager_tr" />
 
-    <!-- kinematics_model -->
-    <group if="$(arg LaunchKinematicsModel)">
-        <node pkg="rosserial_python" type="serial_node.py" name="arduino_mega_mecanum">
-            <param name="port" value="/dev/arduino_mecanum"/>
-            <param name="baud" value="250000"/>
-        </node>
-        <node pkg="kinematics_model" type="kinematics_model_node" name="kinematics_model" />
-    </group>
+	<!-- kinematics_model -->
+	<group if="$(arg LaunchKinematicsModel)">
+		<node pkg="rosserial_python" type="serial_node.py" name="arduino_mega_mecanum">
+			<param name="port" value="/dev/ttyACM0"/>
+			<param name="baud" value="250000"/>
+		</node>
+		<node pkg="kinematics_model" type="kinematics_model_node" name="kinematics_model" />
+	</group>
 
-    <!-- air_launch -->
-    <group if="$(arg LaunchAirLaunch)">
-	    <node name="air_launch_node" pkg="air_launch" type="air_launch_node"/>
-		    <!--<param name="position3" value="4000"/>
-		    <param name="position4" value="7000"/>
-		    <param name="pos3_range" value="50"/>
-		    <param name="pos4_range" value="50"/>
-		    <param name="delay_hassya" value="2000"/>
-		    <param name="speed" value="-200"/>
-	    </node>-->
+	<!-- mechanism -->
+	<group if="$(arg LaunchMechanism)">
+		<node pkg="tr_mechanism" type="tr_mechanism_node" name="tr_mechanism_node"/>
 
-	    <node name="serial_node" pkg="rosserial_python" type="serial_node.py" output="screen">
-	 	    <param name="port" type="string" value="/dev/arduino_air"/>
-		    <param name="baud" value="115200"/>
-	    </node>
-    </group>
+		<node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mech1">
+			<param name="port" value="/dev/ttyACM1"/>
+			<param name="baud" value="250000"/>
+		</node>
 
-    <!-- launch_const -->
-    <group if="$(arg LaunchConstLaunch)">
-        <node pkg="rosserial_python" type="serial_node.py" name="arduion_mega_const">
-            <param name="port" value="/dev/arduino_const"/>
-            <param name="baud" value="250000"/>
-        </node>
-    </group>    
+		<node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mech2"> 
+			<param name="port" value="/dev/ttyACM2"/> 
+			<param name="baud" value="250000"/> 
+		</node>
+	</group>
 
 
-    <!-- joy and task_manager -->
-    <node pkg="joy" type="joy_node" name="joy_node">
-        <param name="dev" value="/dev/input/js0"/>
-    </node>
-    <node pkg="task_manager" type="task_manager_tr" name="task_manager_tr" />
 
 </launch>
