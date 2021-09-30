@@ -16,7 +16,7 @@ $ git clone 後$ catkin build できない場合，$ catkin build trkikou と$ c
 ### パッケージ名
 パッケージの説明
 ```
-実行形式ファイル名
+<!-- 実行形式ファイル名 -->
 　ノードの説明
   param  
   変数の型　変数名：　説明  
@@ -45,7 +45,6 @@ task_manager_tr
 ```
 ### kinematics_model
 メカナム・オムニの動力学モデルを利用して各モータの指令値を計算
-**注意：mecanum_pid_i2c.inoの162行目は、TRはenc_prev[i]-enc_now[i]とする。そうしないと暴走する。**
 ```
 kinematics_model
   sub
@@ -55,6 +54,14 @@ kinematics_model
 ※補足: TR用に使う場合、パッケージ内のconstant_tr.yamlをパラメータサーバーに送ってノードを起動する必要がある
 同様に、DR用に使う場合、constant_dr.yamlをパラメータサーバーに送ってノードを起動する必要がある
 ```
+### 足回り機構用Arduinoスケッチ(arduino_sketches以下)
+- ise_motor_driver_slave_velctrl  
+メカナム・オムニ制御用のMDに搭載されたATmega328Pにはこれを書き込むこと  
+**注意: メカナム(TR)とオムニ(DR)で正回転の向きが異なるため、適宜ise_motor_driver_slave_velctrl.inoの77~78行目を変更する必要がある**  
+- mecanum_pid_i2c_velctrl  
+メカナム・オムニ制御用Arduinoにはこれを書き込むこと
+- mecanum_pid_i2c  
+メカナム・オムニ制御用Arduinoに書き込むスケッチの前バージョン
 ### trkikou
 TRのタスクマネージャからの司令をArduinoへの司令に変換する
 ```
