@@ -15,7 +15,7 @@
 	<!-- kinematics_model -->
 	<group if="$(arg LaunchKinematicsModel)">
 		<node pkg="rosserial_python" type="serial_node.py" name="arduino_mega_mecanum">
-			<param name="port" value="/dev/ttyACM0"/>
+			<param name="port" value="/dev/arduino_mecanum"/>
 			<param name="baud" value="250000"/>
 		</node>
 		<node pkg="kinematics_model" type="kinematics_model_node" name="kinematics_model" />
@@ -25,13 +25,13 @@
 	<group if="$(arg LaunchMechanism)">
 		<node pkg="tr_mechanism" type="tr_mechanism_node" name="tr_mechanism_node"/>
 
-		<node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mech1">
-			<param name="port" value="/dev/ttyACM1"/>
+		<node pkg="rosserial_python" type="serial_node.py" name="arduino_const_air">
+			<param name="port" value="/dev/arduino_const_air"/>
 			<param name="baud" value="250000"/>
 		</node>
 
-		<node pkg="rosserial_python" type="serial_node.py" name="arduino_tr_mech2"> 
-			<param name="port" value="/dev/ttyACM2"/> 
+		<node pkg="rosserial_python" type="serial_node.py" name="arduino_rack"> 
+			<param name="port" value="/dev/arduino_rack"/> 
 			<param name="baud" value="250000"/> 
 		</node>
 	</group>
