@@ -33,6 +33,11 @@ base: {
 
 }
 
+speed: {
+  xy: 6.0,
+  w: 4.0,
+}
+
 
 #
 #機構
@@ -69,7 +74,7 @@ rack: { #ラック回収機構について
     deg_ini1: 160, #初期位置（根本）
     deg_ini2: 140, #初期位置（手先）
     deg_pick1: 160, #pick位置（根本）
-    deg_pick2: 124, #pick位置（手先）
+    deg_pick2: 129, #pick位置（手先）
     deg_up1: 30, #up位置（根本）
     deg_up2: 125, #up位置（手先）
     deg_load1_1: 60, #load位置1（根本）
@@ -83,7 +88,7 @@ rack: { #ラック回収機構について
     deg_ini1: 5,
     deg_ini2: 70,
     deg_pick1: 5,
-    deg_pick2: 55,
+    deg_pick2: 45,
     deg_up1: 140, 
     deg_up2: 50,
     deg_load1_1: 105,
@@ -97,7 +102,7 @@ rack: { #ラック回収機構について
     deg_ini1: 170,
     deg_ini2: 100,
     deg_pick1: 170,
-    deg_pick2: 125,
+    deg_pick2: 120,
     deg_up1: 50, 
     deg_up2: 110,
     deg_load1_1: 75,

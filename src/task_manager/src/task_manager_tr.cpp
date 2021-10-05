@@ -30,6 +30,9 @@ ros::Publisher pub;
 ros::Publisher pub_tr;
 ros::Publisher pub_rack;
 
+double speed_xy = 6.0;
+double speed_w = 4.0;
+
 int srv[6] = {90, 90, 90, 90, 90, 90};
 
 void get_joy(const sensor_msgs::Joy::ConstPtr& msg);
@@ -47,6 +50,10 @@ int main(int argc, char **argv){
 	ros::Subscriber sub = nh.subscribe("joy", 1, get_joy);
 	ros::Subscriber sub_rack = nh.subscribe("rack_tpc", 1, get_rack);
 
+	//parameter
+        nh.getParam("speed/xy", speed_xy);
+        nh.getParam("speed/w", speed_w);
+
 	ros::spin();
 
 	return 0;
@@ -58,9 +65,9 @@ void get_joy(const sensor_msgs::Joy::ConstPtr& msg){
 	static abu2021_msgs::tr_order order_pre;
 
 	//move
-	cmd.vx = 6.0*msg->axes[1];
-	cmd.vy = 6.0*msg->axes[0];
-	cmd.w  = 4.0*msg->axes[3];
+	cmd.vx = speed_xy*msg->axes[1];
+	cmd.vy = speed_xy*msg->axes[0];
+	cmd.w  = speed_w *msg->axes[3];
 	pub.publish(cmd);
 
 	//mechanism

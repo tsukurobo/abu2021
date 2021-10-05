@@ -1,7 +1,7 @@
 <launch>
 	<!-- select nodes that are launched -->
 	<arg name="LaunchMechanism" value="True"/>
-	<arg name="LaunchKinematicsModel" value="True"/>
+	<arg name="LaunchKinematicsModel" value="False"/>
 
 	<!-- load parameters -->
 	<rosparam command="load" file="$(find task_manager)/launch/tr_params.yaml"/>
@@ -24,6 +24,7 @@
 	<!-- mechanism -->
 	<group if="$(arg LaunchMechanism)">
 		<node pkg="tr_mechanism" type="tr_mechanism_node" name="tr_mechanism_node"/>
+		<!--
 		<node pkg="rosserial_python" type="serial_node.py" name="arduino_const_air">
 			<param name="port" value="/dev/arduino_const_air"/>
 			<param name="baud" value="250000"/>
@@ -33,6 +34,7 @@
 			<param name="port" value="/dev/arduino_rack"/> 
 			<param name="baud" value="250000"/> 
 		</node>
+		-->
 	</group>
 
 

@@ -347,6 +347,7 @@ void task_rack(){
 	const int INIT_C = 10;
 
 	static int order = 0;
+	static int pre_order = 0;
 	static int cnt = 0;
 
 	set_rack_hand(0);
@@ -354,14 +355,20 @@ void task_rack(){
 	//orderにタスクの数字を代入（0以外の時）（orderはタスク終了するまで0にならない）
 	if(order_rack != 0) order = order_rack;
 
+	if(pre_order != order) step_rack = 0;
+
+	ROS_FATAL("rack_order: %d, order: %d,  step_rack: %d, cnt: %d", order_rack, order, step_rack, cnt);
+
 	switch(order){
 		case INIT:
+			step_rack = 0;
 			set_rack_vlue(A_R, R_A_R_INI1, R_A_R_INI2);
 			set_rack_vlue(A_L, R_A_L_INI1, R_A_L_INI2);
 			set_rack_vlue(CON, R_CON_INI1, R_CON_INI2);
 			order = 0;
 			break;
 		case PICK:
+			step_rack = 0;
 			set_rack_vlue(A_R, R_A_R_PICK1, R_A_R_PICK2);
 			set_rack_vlue(A_L, R_A_L_PICK1, R_A_L_PICK2);
 			set_rack_vlue(CON, R_CON_PICK1, R_CON_PICK2);
@@ -392,6 +399,7 @@ void task_rack(){
 			}
 			break;
 		case UP:
+			step_rack = 0;
 			set_rack_vlue(A_R, R_A_R_UP1, R_A_R_UP2);
 			set_rack_vlue(A_L, R_A_L_UP1, R_A_L_UP2);
 			set_rack_vlue(CON, R_CON_UP1, R_CON_UP2);
@@ -475,12 +483,14 @@ void task_rack(){
 			}
 			break;
 		case INIT_C:
+			step_rack = 0;
 			set_rack_vlue(A_L, R_A_L_INI1, R_A_L_INI2);
 			order = 0;
 			break;
 		default:
 			break;
 	}
+	pre_order = order;
 }
 
 void set_rack_vlue(int launch, int srv1, int srv2){
