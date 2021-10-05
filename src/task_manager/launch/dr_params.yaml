@@ -1,0 +1,45 @@
+base: {
+  model: {
+    mode: 0, #0でDR, 1でTRモード
+    #mode: "DR",
+    distance_to_center: 0.33,
+    wheel_radius: 0.053,
+    freq: 100.0,
+    #LPF_const_go: 1.0,
+    #LPF_const_stop: 0.7,
+    #to_zero_th: 0,
+    acc: 3.5,
+    max_lin_vel: 1.5
+  },
+  
+  velPID: {
+    kp: [ 250.0, 250.0, 250.0, 250.0 ],
+    ki: [ 2058.0, 2058.0, 2058.0, 2058.0 ],
+    kd: [ 2.0, 2.0, 2.0, 2.0 ],
+    tdel: [0.014, 0.014, 0.014, 0.014 ]
+  },
+  
+  motor_driver: {
+    addrs: [ 0x21, 0x33, 0x22, 0x15 ]
+  },
+  
+  gyro: {
+    kp: 0.0,
+    ki: 0.0
+  }
+}
+
+speed: {
+  xy: 1.5,
+  w: 1.5,
+  turn: 2.0,
+  turn_rad: 0.9
+}
+
+connection: {
+  pw_dist: 90
+}
+
+#turn_dist: {
+#  md_addr: 0x21
+#}

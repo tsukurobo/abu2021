@@ -1,0 +1,32 @@
+<launch>
+	<!-- select nodes that are launched -->
+	<arg name="LaunchMechanism" value="True"/>
+	<arg name="LaunchKinematicsModel" value="True"/>
+
+	<!-- load parameters -->
+	<rosparam command="load" file="$(find task_manager)/launch/dr_params.yaml"/>
+
+	<!-- joy and task_manager -->
+	<node pkg="joy" type="joy_node" name="joy_node">
+	    <param name="dev" value="/dev/input/js1"/>
+	</node>
+	<node pkg="task_manager" type="task_manager_dr" name="task_manager_dr" />
+
+	<!-- kinematics_model -->
+	<group if="$(arg LaunchKinematicsModel)">
+		<node pkg="rosserial_python" type="serial_node.py" name="arduino_omni">
+			<param name="port" value="/dev/arduino_omni"/>
+			<param name="baud" value="250000"/>
+		</node>
+		<node pkg="kinematics_model" type="kinematics_model_node" name="kinematics_model" />
+	</group>
+
+	<!-- mechanism -->
+	<group if="$(arg LaunchMechanism)">
+		<node name="connection" pkg="turntable" type="turntable"/>
+		<node name="arduino_turn_dist" pkg="rosserial_python" type="serial_node.py" output="screen">
+			<param name="port" type="string" value="/dev/arduino_turn_dist"/>
+			<param name="baud" value="115200"/>
+		</node>
+	</group>
+</launch>
