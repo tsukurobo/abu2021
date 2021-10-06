@@ -357,7 +357,7 @@ void task_rack(){
 
 	if(pre_order != order) step_rack = 0;
 
-	ROS_FATAL("rack_order: %d, order: %d,  step_rack: %d, cnt: %d", order_rack, order, step_rack, cnt);
+	/* ROS_FATAL("rack_order: %d, order: %d,  step_rack: %d, cnt: %d", order_rack, order, step_rack, cnt); */
 
 	switch(order){
 		case INIT:
