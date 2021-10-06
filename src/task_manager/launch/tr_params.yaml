@@ -72,7 +72,7 @@ const: { #コンスト射出について
 rack: { #ラック回収機構について
   air_r: { #エア射出のラック回収（矢が飛ぶ方向を正面に右）
     deg_ini1: 160, #初期位置（根本）
-    deg_ini2: 140, #初期位置（手先）
+    deg_ini2: 150, #初期位置（手先）
     deg_pick1: 160, #pick位置（根本）
     deg_pick2: 129, #pick位置（手先）
     deg_up1: 30, #up位置（根本）
@@ -80,21 +80,21 @@ rack: { #ラック回収機構について
     deg_load1_1: 60, #load位置1（根本）
     deg_load1_2: 125, #load位置1（手先）
     deg_load2_1: 60, #load位置2（根本）
-    deg_load2_2: 65, #load位置2（手先）
+    deg_load2_2: 55, #load位置2（手先）
     hl: 1, #電磁弁のH-L切り替え(1 or 2)
     lh: 2  #電磁弁のH-L切り替え(1 or 2)
   },
   air_l: { #エア射出のラック回収（矢が飛ぶ方向を正面に左）
     deg_ini1: 5,
-    deg_ini2: 70,
+    deg_ini2: 130,
     deg_pick1: 5,
-    deg_pick2: 45,
+    deg_pick2: 105,
     deg_up1: 140, 
-    deg_up2: 50,
+    deg_up2: 110,
     deg_load1_1: 105,
-    deg_load1_2: 50,
+    deg_load1_2: 110,
     deg_load2_1: 105,
-    deg_load2_2: 5,
+    deg_load2_2: 42,
     hl: 2,
     lh: 1
   },
