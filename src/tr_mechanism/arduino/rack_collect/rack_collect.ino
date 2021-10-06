@@ -19,14 +19,14 @@
 #define R_LH 2
 #define FREE 0
 
-int a_r_1 = 90;
-int a_r_2 = 90;
+int a_r_1 = 160;
+int a_r_2 = 129;
 int a_r_s = FREE;
-int a_l_1 = 90;
-int a_l_2 = 90;
+int a_l_1 = 5;
+int a_l_2 = 45;
 int a_l_s = FREE;
-int c_1 = 90;
-int c_2 = 90;
+int c_1 = 170;
+int c_2 = 120;
 int c_s = FREE;
 int prevS_r_1;
 int prevS_r_2;

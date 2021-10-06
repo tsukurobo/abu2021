@@ -1,7 +1,7 @@
 <launch>
 	<!-- select nodes that are launched -->
 	<arg name="LaunchMechanism" value="True"/>
-	<arg name="LaunchKinematicsModel" value="False"/>
+	<arg name="LaunchKinematicsModel" value="True"/>
 
 	<!-- load parameters -->
 	<rosparam command="load" file="$(find task_manager)/launch/tr_params.yaml"/>
